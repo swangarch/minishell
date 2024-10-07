@@ -1,0 +1,70 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/27 16:54:40 by yfan              #+#    #+#             */
+/*   Updated: 2024/09/27 16:54:44 by yfan             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef MINISHELL_H
+# define MINISHELL_H
+
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <errno.h>
+# include <string.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <signal.h>
+# include <termios.h>
+# include "struct.h"
+# include "define.h"
+
+void    init_shell(t_shell *shell, char **env);
+void    minishell_loop(t_shell *shell);
+void    set_signal_handler(void);
+void    handle_sigint(int sig);
+void	set_prompt(t_shell *shell);
+char	*ft_strdup(const char *s);
+char	*ft_strjoin(char const *s1, char const *s2);
+void    free_before_exit(t_shell *shell);
+size_t	ft_strlen(const char *s);
+void    configure_terminal(struct termios *termios_set);
+char	**ft_split(char const *s, char c);
+void    init_no_env(t_shell *shell, char ***env);
+t_env   *init_default_env(char **env);
+t_env	*init_env_node(char *str);
+void	free_char_array(char **array);
+char	*get_env_content(char *full, char *var_name);
+char	*empty_content_allocate(char *content);
+void	free_env(t_env *head);
+//void    print_env(t_env *head);
+void	add_back_env_node(t_env	*head, t_env *new);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*get_path(char **env);
+int	    ft_strncmp(const char *s1, const char *s2, size_t n);
+void	update_env(t_shell *shell);
+char	**env_list_to_char(t_env *env);
+int	    get_env_list_size(t_env *head);
+char	*get_full_env(t_env *env);
+void	ft_add_history(t_shell *shell);
+int	    is_only_space(char *str);
+int 	rep_prompt(char *prompt, char *prev_prompt);
+int	    ft_strcmp(char *s1, char *s2);
+char	*ft_strtrim(char const *s1, char const *set);
+int	    lexer(t_shell *shell);
+int 	is_empty_line_passed(t_shell *s);
+int 	bad_pipe(t_shell *shell);
+int 	syntax_error(char c);
+int 	syntax_error_newline(void);
+int     wrong_operator_check(const char *s);
+char	*ft_strchr(const char *s, int c);
+
+extern int  g_ctrl_c;
+
+#endif
