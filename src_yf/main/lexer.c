@@ -58,7 +58,7 @@ int wrong_operator_check(const char *input)
                     syntax_error('<');
                     return (TRUE);
                 }
-                if (input[i] == '<' && input[i + 1] == '|')
+                if (input[i] == '<'&& input[i + 1] == '|')
                 {
                     syntax_error('|');
                     return (TRUE);
