@@ -5,8 +5,8 @@
 *.o
 
 # Libraries
-*.lib
-*.a
+# *.lib
+# *.a
 
 # Executables
 *.out
