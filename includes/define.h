@@ -30,6 +30,7 @@
 # define MES_CREAT_NODE "Creat node failed!\n"
 # define MES_SQUOTE_ERR "Syntax error: unclosed single quote\n"
 # define MES_DQUOTE_ERR "Syntax error: unclosed double quote\n"
+# define MES_DUP_ERR "Dup failed!\n"
 
 # define SPACES " \n\t\r\f\v"
 # define OPERATOR "|><"

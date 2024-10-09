@@ -33,3 +33,13 @@ void	free_env(t_env *head)
 		head = next;
 	}
 }
+
+void	free_env_path(char **env, char *get_path)
+{
+	free(get_path);
+	free(env[0]);
+    free(env[1]);
+    free(env[2]);
+    free(env[3]);
+    free(env);
+}

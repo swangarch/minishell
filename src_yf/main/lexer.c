@@ -6,8 +6,7 @@ int lexer(t_shell *shell)
         return (FALSE);
     else if (wrong_operator_check(shell->trimmed_prompt) == TRUE)
     {
-        shell->exit_code = 2;
-        shell->cmd_has_been_executed = FALSE;
+        g_status = 2;
         return (FALSE);
     }
     else if (bad_pipe(shell) == TRUE)
@@ -69,12 +68,12 @@ int wrong_operator_check(const char *input)
     }
     if (in_squote)
     {
-        printf(MES_SQUOTE_ERR);
+        ft_putstr_fd(MES_SQUOTE_ERR, STDERR_FILENO);
         return TRUE;
     }
     if (in_dquote)
     {
-        printf(MES_DQUOTE_ERR);
+        ft_putstr_fd(MES_DQUOTE_ERR, STDERR_FILENO);
         return TRUE;
     }
     return (FALSE);
@@ -84,22 +83,20 @@ int is_empty_line_passed(t_shell *s)
 {
     if (s->trimmed_prompt[0] == '~' && ft_strlen(s->trimmed_prompt) == 1)
     {
-        s->exit_code = 126;
-        printf(SHELL "~ " ISDIR "\n");
+        g_status = 126;
+        ft_putstr_fd(SHELL "~ " ISDIR "\n", STDERR_FILENO);
         return (TRUE);
     }
     if (s->trimmed_prompt[0] == DQUOTE && s->trimmed_prompt[1] == DQUOTE && ft_strlen(s->trimmed_prompt) == 2)
     {
-        printf(SHELL CMD_NOT_FND "\n");
-        s->cmd_has_been_executed = FALSE;
-        s->exit_code = 127;
+        ft_putstr_fd(SHELL CMD_NOT_FND "\n", STDERR_FILENO);
+        g_status = 127;
         return (TRUE);
     }
     if (s->trimmed_prompt[0] == SQUOTE && s->trimmed_prompt[1] == SQUOTE && ft_strlen(s->trimmed_prompt) == 2)
     {
-        printf(SHELL CMD_NOT_FND "\n");
-        s->cmd_has_been_executed = FALSE;
-        s->exit_code = 127;
+        ft_putstr_fd(SHELL CMD_NOT_FND "\n", STDERR_FILENO);
+        g_status = 127;
         return (TRUE);
     }
     return (FALSE);
@@ -112,12 +109,12 @@ int bad_pipe(t_shell *shell)
     len = ft_strlen(shell->trimmed_prompt) - 1;
     if (shell->trimmed_prompt[0] == '|')
     {
-        shell->exit_code = 2;
+        g_status = 2;
         return (syntax_error('|'), TRUE);
     }
     else if (shell->trimmed_prompt[len] == '|' || shell->trimmed_prompt[len] == '>' || shell->trimmed_prompt[len] == '<')
     {
-        shell->exit_code = 2;
+        g_status = 2;
         return (syntax_error_newline(), TRUE);
     }
     return (FALSE);

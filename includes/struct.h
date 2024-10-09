@@ -51,27 +51,13 @@ typedef struct s_env
 
 typedef struct s_shell
 {
-	int				print;
-	char			**env;
-	int				envless;
 	char			*prompt;
 	char			*heredoc;
 	t_cmd_tbl		*cmd_tbls;
 	t_env			*env_head;
-	int				exit_code;
 	int				std_fds[2];
-	char			*user_name;
-	int				color_codes;
-	char			**cmd_paths;
-	char			*prev_prompt;
-	int				exec_on_pipe;
-	int				should_expand;
-	int				should_execute;
-	int				expand_heredoc;
-	struct termios	mirror_termios;
 	char			*trimmed_prompt;
 	char			*terminal_prompt;
-	int				cmd_has_been_executed;
 }	t_shell;
 
 #endif

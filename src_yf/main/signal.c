@@ -1,17 +1,19 @@
 #include "../../includes/minishell.h"
 
-void    configure_terminal(struct termios *termios_set)
+void    configure_terminal(void)
 {
-    tcgetattr(0, termios_set);
-    termios_set->c_lflag &= ~ECHOCTL;
-    tcsetattr(0, TCSANOW, termios_set);
+    struct termios  termios_set;
+
+    tcgetattr(0, &termios_set);
+    termios_set.c_lflag |= ECHOCTL;    
+    tcsetattr(0, TCSANOW, &termios_set);
 }
 
 void    handle_sigint(int sig)
 {
     if (sig == SIGINT)
     {
-        g_ctrl_c = 1;
+        g_status = 130;
         write(STDOUT_FILENO, "\n", 1);
         rl_on_new_line();
         rl_replace_line("", 0);
