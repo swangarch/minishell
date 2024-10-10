@@ -116,12 +116,12 @@ t_list	*split_line(char *line)
 
 //check error
 
-t_lstcmd	*tokenize_cmd(t_list *cmd_lst)
+t_cmd	*tokenize_cmd(t_list *cmd_lst)
 {
 	t_list	*full_cmd;
 	t_list	*redin;
 	t_list	*redout;
-	t_lstcmd	*cmd_struct = malloc(sizeof(t_lstcmd));
+	t_cmd	*cmd_struct = malloc(sizeof(t_cmd));
 
 	if (!cmd_struct)
 		return (NULL);
@@ -161,37 +161,13 @@ t_lstcmd	*tokenize_cmd(t_list *cmd_lst)
 	return (cmd_struct);
 }
 
-void	print_token_struct(t_lstcmd *cmd_lst)
+void	print_token_struct(t_cmd *cmd_struct)
 {
-	if (!cmd_lst)
+	if (!cmd_struct)
 		return ;
-	ft_putstr("The command is:  ");
-	print_lst(cmd_lst->full_cmd);
-	ft_putstr("The redirection in is:  ");
-	print_lst(cmd_lst->redin);
-	ft_putstr("The redirection out is:  ");
-	print_lst(cmd_lst->redout);
-	write(1, "\n", 1);
-}
-
-void	print_token_str(t_strcmd *cmd_str)
-{
-	int	i;
-
-	if (!cmd_str)
-		return ;
-	i = 0;
-	ft_putstr(GREEN "RED_IN :  " COLOR_END);
-	print_tab(cmd_str->redin);
-	ft_putstr(GREEN "RED_OUT:  " COLOR_END);
-	print_tab(cmd_str->redout);
-	ft_putstr(GREEN "CMD_TAB:  \n" COLOR_END);
-	while (cmd_str->tab_cmd[i])
-	{
-		ft_putstr("          ");
-		print_tab(cmd_str->tab_cmd[i]);
-		i++;
-	}
+	print_lst(cmd_struct->full_cmd);
+	print_lst(cmd_struct->redin);
+	print_lst(cmd_struct->redout);
 }
 
 void	parse_line(char *line)
@@ -200,80 +176,37 @@ void	parse_line(char *line)
 	t_list	*lst_tk;
 	t_list	**partition;
 	int		num_pipe;
-	t_lstcmd	*clean_tokens;
 
 	trimmed_line = ft_strtrim(line, " ");
 	lst_tk = split_line(trimmed_line);
 	num_pipe = count_pipe(lst_tk);
 	//print_lst(lst_tk);
-
-	if (check_token_err(lst_tk))
-	{
-		//lst clear
-		return ;
-	}
+	check_double_pipe(lst_tk);
 	//printf("The number of pipe is %d\n", num_pipe);
+	partition = partition_lst(lst_tk);
+	//print_lst_partition(partition);
+	/*
+	write(1, "\n", 1);
+	int	i = 0;
+	while (partition[i])
+	{
+		print_tab(lst_to_chatab(partition[i]));
+		i++;
+	}*/
 
-	clean_tokens = tokenize_cmd(lst_tk);
-	//print_token_struct(tokenize_cmd(lst_tk));
-	ft_lstclear(&lst_tk, &free);
-	partition = partition_lst(clean_tokens->full_cmd);
-
-	t_strcmd	*str_token;
-	str_token = malloc(sizeof(t_strcmd));  //destroy lst cmd
-	if (!str_token)
-		return ;
-	str_token->redin = lst_to_chatab(clean_tokens->redin);
-	str_token->redout = lst_to_chatab(clean_tokens->redout);
-	str_token->tab_cmd = malloc(sizeof(char **) * (num_pipe + 2));
-	if(str_token->tab_cmd == NULL)
-		return ;
-
+	//write(1, "\n", 1);
 	int	i = 0;
 	t_list	*part;
 	while (partition[i])
 	{
 		part = partition[i];
-		//print_lst(part);
-		str_token->tab_cmd[i] = lst_to_chatab(part);
+		print_token_struct(tokenize_cmd(part));
+		//ft_lstclear(&part, &free);
 		part = NULL;
+		if (partition[i + 1])
+			write(1, "\n", 1);
 		i++;
 	}
-	str_token->tab_cmd[i] = NULL;
-	print_token_str(str_token);
-
+	ft_lstclear(&lst_tk, &free);
 	return;
 }
-
-// void	parse_line(char *line)
-// {	
-// 	char	*trimmed_line;
-// 	t_list	*lst_tk;
-// 	t_list	**partition;
-// 	int		num_pipe;
-// 	t_cmd	*clean_tokens;
-
-// 	trimmed_line = ft_strtrim(line, " ");
-// 	lst_tk = split_line(trimmed_line);
-// 	num_pipe = count_pipe(lst_tk);
-// 	//print_lst(lst_tk);
-// 	check_double_pipe(lst_tk);
-// 	//printf("The number of pipe is %d\n", num_pipe);
-
-// 	clean_tokens = tokenize_cmd(lst_tk);
-// 	print_token_struct(tokenize_cmd(lst_tk));
-// 	ft_lstclear(&lst_tk, &free);
-
-// 	partition = partition_lst(clean_tokens->full_cmd);
-
-// 	int	i = 0;
-// 	t_list	*part;
-// 	while (partition[i])
-// 	{
-// 		part = partition[i];
-// 		print_lst(part);
-// 		part = NULL;
-// 		i++;
-// 	}
-// 	return;
-// }

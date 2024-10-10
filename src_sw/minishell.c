@@ -24,11 +24,12 @@ void	check_line(char *line)
 	if (!line && errno)
 	{
 		//perror.....
-		printf("Error\n");
+		printf("Error\n");//////////////
 		exit(0);
 	}
 	if (!line && !errno)
 	{
+		write(1, "exit\n", 5);
 		exit(0);
 	}
 }
@@ -42,8 +43,16 @@ void	minishell_loop(void)
 	{
 		prompt = join_prompt();
 		line = readline(prompt);
-		check_line(line);
 
+		add_history(line);
+		// if(line[0])
+		// {
+		// 	add_history(line);
+		// }
+		// else
+		// 	continue;
+
+		check_line(line);
 		lexer_check(line);
 		parse_line(line);
 		free(line);

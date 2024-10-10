@@ -42,12 +42,28 @@ char	*ft_str4join(char *s1, char *s2, char *s3, char *s4)
 	return (result);
 }
 
+char *last_dir(char *s)//////////////review
+{
+	int	i = 0;
+
+	if (!s)
+		return (NULL);
+	char **path = ft_split(s, '/');
+	if (!path)
+		return (NULL);
+	while (path[i])
+		i++;
+		/////free all other path  LEAK！！！！！！！！！！！！！！！！！！！！！！
+	return (path[i - 1]);
+}
+
 char	*join_prompt(void)//(char *s1, char *s2, char *s3)
 {
 	char	cwd[PATH_MAX];
 	char	*read_pwd;
 	char	*current_path = NULL;
 	char	*join_path = NULL;
+	char	*last_path = NULL;
 
 	read_pwd = getcwd(cwd, PATH_MAX);
 	if (!read_pwd)
@@ -59,8 +75,10 @@ char	*join_prompt(void)//(char *s1, char *s2, char *s3)
 	{
 		current_path = ft_strjoin(ft_strdup(cwd),"$ ");//protect
 	}
-	
-	join_path = ft_str4join(BLUE_B "yf&sw" COLOR_END, WHITE_B "@" COLOR_END, RED_B "minishell❄ " COLOR_END, current_path);
+
+	last_path = last_dir(current_path);//////////////free and protect
+
+	join_path = ft_str4join(BLUE_B "yf&sw" COLOR_END, WHITE_B "@" COLOR_END, RED_B "minishell❄" COLOR_END, last_path);
 	free(current_path);
 	return (join_path);
 	//return (ft_strjoin(text_color("yf&sw", 31), text_color("minishell❀", 33)));

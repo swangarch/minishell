@@ -29,8 +29,8 @@ void signals(void)
 	struct termios termios_settings;
 
 	tcgetattr(STDIN_FILENO, &termios_settings);
-	termios_settings.c_lflag &= ~ECHOCTL;
-	tcsetattr(STDIN_FILENO, TCSANOW, &termios_settings);
+	termios_settings.c_lflag |= ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &termios_settings);  ////////////////////ctrl + c  ^c
 
 	signal(SIGINT, &sigint_handler);
 	signal(SIGQUIT, SIG_IGN);

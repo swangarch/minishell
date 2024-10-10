@@ -39,6 +39,31 @@
 # define PATH_MAX 4096
 
 # define ERR_PREF "minishell: "
+# define TRUE 1
+# define FALSE 0
+
+
+typedef struct	s_lstcmd
+{
+	t_list *full_cmd;
+	t_list *redin;
+	t_list *redout;
+}	t_lstcmd;
+
+typedef struct	s_strcmd
+{
+	//char **full_cmd;
+	char **redin;
+	char **redout;
+	char ***tab_cmd;
+}	t_strcmd;
+
+#define REDIN 1
+#define HEREDOC 2
+#define REDOUT 3
+#define APPEND 4
+#define TEXT 0
+
 
 void    sigint_handler(int sig);
 void    signals(void);
@@ -50,7 +75,26 @@ void	parse_line(char *line);
 int		lexer_check(char *line);
 
 char	*ft_strndup(const char *s, int n);
+void	ft_putstr(char *s);
+char	*ft_strncpy(char *dest, char *src, unsigned int n);
 
 void    ft_err(char *s);
+
+int		is_red(char *s); //is redirection
+
+
+void	print_tab(char **s);
+void	print_lst(t_list *lst);
+void	print_lst_partition(t_list **partition);
+
+
+t_list	**partition_lst(t_list *lst_tk);
+char	**lst_to_chatab(t_list *lst);
+char	*lst_getstr(t_list *lst);
+
+int		count_pipe(t_list *lst);
+int		check_double_pipe(t_list *lst);
+int		check_red_file(t_list *lst);
+int		check_token_err(t_list *lst);
 
 #endif
