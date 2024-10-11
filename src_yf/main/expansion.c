@@ -86,12 +86,14 @@ char    *expand_var(char *input, t_env *lst_env)
         if (input[exp.i] == '\'' && !exp.in_dquote)
         {
             exp.in_squote = !exp.in_squote;
-            exp.result[exp.len++] = input[exp.i++];
+            //exp.result[exp.len++] = input[exp.i++];
+            exp.i++;
         }
         else if (input[exp.i] == '"' && !exp.in_squote)
         {
             exp.in_dquote = !exp.in_dquote;
-            exp.result[exp.len++] = input[exp.i++];
+            //exp.result[exp.len++] = input[exp.i++];
+            exp.i++;
         }
         else if (input[exp.i] == '$' && !exp.in_squote && valid_exp(input[exp.i + 1]))
         {
@@ -162,4 +164,29 @@ int	    ft_strcmp(const char *s1, const char *s2)
 		s2++;
 	}
 	return (*(unsigned char *)s1 - *(unsigned char *)s2);
+}
+
+char    *expand_tilde(char *input, t_env *lst_env)
+{
+    char    *home;
+    char    *result;
+    size_t  len;
+
+    if (input[0] == '~')
+    {
+        if (!input[1] || input[1] == '/')
+        {
+            home = mini_get_env("HOME", lst_env);
+            if (!home)
+                return (free(input), NULL);
+            if (!input[1])
+                return (free(input), ft_strdup(home));
+            if (input[1] == '/')
+            {
+                result = ft_strjoin(home, input + 1);
+                return (free(input), result);
+            }
+        }
+    }
+    return (input);
 }

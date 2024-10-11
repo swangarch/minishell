@@ -29,6 +29,7 @@ void    minishell_loop(t_shell *shell)
         // }
         if (lexer(shell))//parser(shell)
         {
+            shell->trimmed_prompt = expand_tilde(shell->trimmed_prompt, shell->env_head);
             shell->trimmed_prompt = expand_var(shell->trimmed_prompt, shell->env_head);
             printf("%s\n", shell->trimmed_prompt);
             //execute(shell, shell->cmd_tbls);

@@ -76,6 +76,7 @@ int		ft_isalnum(int c);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
 int     valid_exp(int c);
 int		ft_isdigit(int c);
+char    *expand_tilde(char *input, t_env *lst_env);
 
 extern int  g_status;
 
