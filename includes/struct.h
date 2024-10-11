@@ -60,4 +60,18 @@ typedef struct s_shell
 	char			*terminal_prompt;
 }	t_shell;
 
+typedef struct s_expansion
+{
+	int				size;
+	char			*result;
+	int				len;
+	int				i;
+	int				k;
+	int				in_squote;
+	int				in_dquote;
+	char			exit_status[12];
+	char			var_name[256];
+	char			*env_val;
+}	t_expansion;
+
 #endif

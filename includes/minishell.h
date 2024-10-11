@@ -64,6 +64,8 @@ int     wrong_operator_check(const char *s);
 char	*ft_strchr(const char *s, int c);
 void	free_env_path(char **env, char *get_path);
 void	ft_putstr_fd(char *s, int fd);
+char    *expand_var(const char *input);
+int     init_expansion(t_expansion *exp);
 
 extern int  g_status;
 

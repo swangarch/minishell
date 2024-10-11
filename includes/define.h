@@ -42,6 +42,8 @@
 # define SYN_ERR "syntax error near unexpected token"
 # define SYN_ERR_NEWLINE "syntax error near unexpected token `newline'"
 
+# define INIT_SIZE 64
+# define FACTOR 2
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 512
 # endif
