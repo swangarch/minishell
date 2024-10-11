@@ -52,7 +52,6 @@ typedef struct	s_lstcmd
 
 typedef struct	s_strcmd
 {
-	//char **full_cmd;
 	char **redin;
 	char **redout;
 	char ***tab_cmd;

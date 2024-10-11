@@ -45,12 +45,6 @@ void	minishell_loop(void)
 		line = readline(prompt);
 
 		add_history(line);
-		// if(line[0])
-		// {
-		// 	add_history(line);
-		// }
-		// else
-		// 	continue;
 
 		check_line(line);
 		lexer_check(line);

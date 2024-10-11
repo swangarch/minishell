@@ -56,11 +56,6 @@ int		is_wordchar(char c)
 	return (1);
 }
 
-void	test(void)
-{
-	
-}
-
 void	parse_word(char *line, t_list **lst_token, int *i)
 {
 	int		in_squote;
@@ -201,8 +196,7 @@ void	print_token_str(t_strcmd *cmd_str)
 
 t_strcmd	*convert_to_str_token(t_lstcmd	*clean_tokens, int num_pipe)
 {
-	t_list	**partition;
-	t_list	*part;
+	t_list		**partition;
 	t_strcmd	*str_token;
 
 	partition = partition_lst(clean_tokens->full_cmd);
@@ -212,14 +206,14 @@ t_strcmd	*convert_to_str_token(t_lstcmd	*clean_tokens, int num_pipe)
 	str_token->redin = lst_to_chatab(clean_tokens->redin);
 	str_token->redout = lst_to_chatab(clean_tokens->redout);
 	str_token->tab_cmd = malloc(sizeof(char **) * (num_pipe + 2));
-	if(str_token->tab_cmd == NULL)
+	if(str_token->tab_cmd == NULL)//destroy struct
 		return (NULL);
 	int	i = 0;
 	while (partition[i])
 	{
-		part = partition[i];
-		str_token->tab_cmd[i] = lst_to_chatab(part);
-		part = NULL;
+		str_token->tab_cmd[i] = lst_to_chatab(partition[i]);
+		free(partition[i]);
+		partition[i] = NULL;
 		i++;
 	}
 	str_token->tab_cmd[i] = NULL;
@@ -230,65 +224,20 @@ void	parse_line(char *line)
 {	
 	char	*trimmed_line;
 	t_list	*lst_tk;
-	int		num_pipe;
-	t_lstcmd	*clean_tokens;
+	int		n_pipe;
+	t_lstcmd	lst_token_cmd;
+	t_lstcmd	*ptr_lst_token_cmd;
 	t_strcmd	*str_token;
 
+	ptr_lst_token_cmd = &lst_token_cmd;
 	trimmed_line = ft_strtrim(line, " ");
 	lst_tk = split_line(trimmed_line);
-	num_pipe = count_pipe(lst_tk);
+	n_pipe = count_pipe(lst_tk);
 	if (check_token_err(lst_tk))
 		return ;
-	clean_tokens = tokenize_cmd(lst_tk);
+	ptr_lst_token_cmd = tokenize_cmd(lst_tk);
+	str_token = convert_to_str_token(ptr_lst_token_cmd, n_pipe);
 	ft_lstclear(&lst_tk, &free);
-	str_token = convert_to_str_token(clean_tokens, num_pipe);
 	print_token_str(str_token);
 	return;
 }
-
-// void	parse_line(char *line)
-// {	
-// 	char	*trimmed_line;
-// 	t_list	*lst_tk;
-// 	t_list	**partition;
-// 	int		num_pipe;
-// 	t_lstcmd	*clean_tokens;
-
-// 	trimmed_line = ft_strtrim(line, " ");
-// 	lst_tk = split_line(trimmed_line);
-// 	num_pipe = count_pipe(lst_tk);
-// 	//print_lst(lst_tk);
-
-// 	if (check_token_err(lst_tk))
-// 		return ;
-// 	//printf("The number of pipe is %d\n", num_pipe);
-
-// 	clean_tokens = tokenize_cmd(lst_tk);
-// 	//print_token_struct(tokenize_cmd(lst_tk));
-// 	ft_lstclear(&lst_tk, &free);
-// 	partition = partition_lst(clean_tokens->full_cmd);
-
-// 	t_strcmd	*str_token;
-// 	str_token = malloc(sizeof(t_strcmd));
-// 	if (!str_token)
-// 		return ;
-// 	str_token->redin = lst_to_chatab(clean_tokens->redin);
-// 	str_token->redout = lst_to_chatab(clean_tokens->redout);
-// 	str_token->tab_cmd = malloc(sizeof(char **) * (num_pipe + 2));
-// 	if(str_token->tab_cmd == NULL)
-// 		return ;
-// 	int	i = 0;
-// 	t_list	*part;
-// 	while (partition[i])
-// 	{
-// 		part = partition[i];
-// 		//print_lst(part);
-// 		str_token->tab_cmd[i] = lst_to_chatab(part);
-// 		part = NULL;
-// 		i++;
-// 	}
-// 	str_token->tab_cmd[i] = NULL;
-// 	print_token_str(str_token);
-
-// 	return;
-// }
