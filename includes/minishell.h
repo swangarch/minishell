@@ -42,7 +42,7 @@ t_env	*init_env_node(char *str);
 void	free_char_array(char **array);
 char	*get_env_content(char *full, char *var_name);
 void	free_env(t_env *head);
-void    print_env(t_env *head);//print the list of env!!!
+//void    print_env(t_env *head);//print the list of env!!!
 void	add_back_env_node(t_env	**head, t_env *new);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 int	    ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -53,7 +53,7 @@ int	    ft_strncmp(const char *s1, const char *s2, size_t n);
 //void	ft_add_history(t_shell *shell);
 //int	    is_only_space(char *str);
 //int 	rep_prompt(char *prompt, char *prev_prompt);
-//int	    ft_strcmp(char *s1, char *s2);
+int	    ft_strcmp(const char *s1, const char *s2);
 char	*ft_strtrim(char const *s1, char const *set);
 int	    lexer(t_shell *shell);
 int 	is_empty_line_passed(t_shell *s);
@@ -64,8 +64,18 @@ int     wrong_operator_check(const char *s);
 char	*ft_strchr(const char *s, int c);
 void	free_env_path(char **env, char *get_path);
 void	ft_putstr_fd(char *s, int fd);
-char    *expand_var(const char *input);
+char    *expand_var(char *input, t_env *lst_env);
 int     init_expansion(t_expansion *exp);
+char	*ft_itoa(int n);
+int     append_str(t_expansion *exp);
+int     append_env(t_expansion *exp);
+char    *expand_buffer(char *old_buffer, int *size);
+size_t	ft_strlcpy(char *dst, const char *src, size_t siz);
+char    *mini_get_env(const char *name, t_env *lst_env);
+int		ft_isalnum(int c);
+void	*ft_memcpy(void *dest, const void *src, size_t n);
+int     valid_exp(int c);
+int		ft_isdigit(int c);
 
 extern int  g_status;
 

@@ -1,4 +1,4 @@
-//#include "../../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 // char	**env_list_to_char(t_env *env)
 // {
@@ -49,3 +49,14 @@
 // 		return (tmp);
 // 	return (result);
 // }
+
+char    *mini_get_env(const char *name, t_env *lst_env)
+{
+    while (lst_env)
+    {
+        if (!ft_strcmp(lst_env->var_name, name))
+            return (lst_env->content);
+        lst_env = lst_env->next;
+    }
+    return (ft_strdup(""));
+}

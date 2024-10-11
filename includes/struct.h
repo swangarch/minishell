@@ -69,7 +69,7 @@ typedef struct s_expansion
 	int				k;
 	int				in_squote;
 	int				in_dquote;
-	char			exit_status[12];
+	char			*exit_status;
 	char			var_name[256];
 	char			*env_val;
 }	t_expansion;

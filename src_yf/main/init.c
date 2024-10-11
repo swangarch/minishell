@@ -57,19 +57,19 @@ void    init_shell(t_shell *shell, char **env)
         perror(MES_DUP_ERR);
         exit(EXIT_FAILURE);
     }
-    print_env(shell->env_head);
+    //print_env(shell->env_head);
 }
 
-void    print_env(t_env *head)
-{
-    if (!head)
-    {
-        return ;
-    }
-    while (head)
-    {
-        printf(GREEN "%s" COLOR_E "\n", head->var_name);
-        printf(YELLOW "%s" COLOR_E "\n", head->content);
-        head = head->next;
-    }
-}
+// void    print_env(t_env *head)
+// {
+//     if (!head)
+//     {
+//         return ;
+//     }
+//     while (head)
+//     {
+//         printf(GREEN "%s" COLOR_E "\n", head->var_name);
+//         printf(YELLOW "%s" COLOR_E "\n", head->content);
+//         head = head->next;
+//     }
+// }
