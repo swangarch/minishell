@@ -22,6 +22,7 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <termios.h>
+# include "libft.h"
 # include "struct.h"
 # include "define.h"
 
@@ -83,27 +84,11 @@ extern int  g_status;
 
 //-----------------------------------------------sw
 
-# include "libft.h"
+//# include "libft.h"
 
 # define ERR_PREF "minishell: "
 # define TRUE 1
 # define FALSE 0
-
-
-typedef struct	s_lstcmd
-{
-	t_list *full_cmd;
-	t_list *redin;
-	t_list *redout;
-}	t_lstcmd;
-
-typedef struct	s_strcmd
-{
-	char **redin;
-	char **redout;
-	char ***tab_cmd;
-	int	 num_cmd;
-}	t_strcmd;
 
 #define REDIN 1
 #define HEREDOC 2

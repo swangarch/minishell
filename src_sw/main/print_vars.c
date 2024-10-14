@@ -99,8 +99,10 @@ void	print_token_str(t_strcmd *cmd_str)
 	i = 0;
 	ft_putstr(GREEN "RED_IN :  " COLOR_END);
 	print_tab(cmd_str->redin);
+	printf(GREEN "REDIN_NUM:  %d\n" COLOR_END, cmd_str->num_redin);
 	ft_putstr(GREEN "RED_OUT:  " COLOR_END);
 	print_tab(cmd_str->redout);
+	printf(GREEN "REDOUT_NUM:  %d\n" COLOR_END, cmd_str->num_redout);
 	ft_putstr(GREEN "CMD_TAB:  \n" COLOR_END);
 	while (cmd_str->tab_cmd[i])
 	{
