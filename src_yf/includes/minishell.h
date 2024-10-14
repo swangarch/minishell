@@ -86,6 +86,10 @@ int     is_build_in(const char *s);
 void	execute(char **cmd, char **env);
 char	*get_path(char *cmd, char **env);
 char	**env_split(char **env);
+void    exec_cmd(t_strcmd *str_cmd, t_shell *shell);
+void    red_out(t_strcmd *str_cmd, t_shell *shell);
+void red_in(t_strcmd *str_cmd, t_shell *shell);
+void close_fds(int *fd, int num);
 
 extern int  g_status;
 

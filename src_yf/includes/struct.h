@@ -88,6 +88,8 @@ typedef struct	s_strcmd
 	char **redout;
 	char ***tab_cmd;
 	int	 num_cmd;
+	int	 num_redin;
+	int  num_redout;
 }	t_strcmd;
 
 #endif

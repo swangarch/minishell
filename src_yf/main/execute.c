@@ -7,6 +7,7 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
     pid_t pid;
     int *p_fd;
 
+    //exec_cmd(str_cmd, shell);
     if (str_cmd->num_cmd == 1)
     {
         if (is_build_in(str_cmd->tab_cmd[0][0]))

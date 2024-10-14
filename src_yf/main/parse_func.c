@@ -218,6 +218,15 @@ t_strcmd	*convert_to_str_token(t_lstcmd	*clean_tokens, int num_pipe)
 	}
 	str_token->tab_cmd[i] = NULL;
 	str_token->num_cmd = i;
+	i = 0;
+	while (str_token->redin[i])
+		i++;
+	str_token->num_redin = i / 2;
+
+	i = 0;
+	while (str_token->redout[i])
+		i++;
+	str_token->num_redout = i / 2;
 	return (str_token);
 }
 
