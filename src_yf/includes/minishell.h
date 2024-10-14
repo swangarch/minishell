@@ -13,6 +13,9 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "libft.h"
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -46,10 +49,10 @@ void	free_env(t_env *head);
 void	add_back_env_node(t_env	**head, t_env *new);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 int	    ft_strncmp(const char *s1, const char *s2, size_t n);
-//void	update_env(t_shell *shell);
-//char	**env_list_to_char(t_env *env);
-//int	    get_env_list_size(t_env *head);
-//char	*get_full_env(t_env *env);
+void	update_env(t_shell *shell);
+char	**env_list_to_char(t_env *env);
+int	    get_env_list_size(t_env *head);
+char	*get_full_env(t_env *env);
 //void	ft_add_history(t_shell *shell);
 //int	    is_only_space(char *str);
 //int 	rep_prompt(char *prompt, char *prev_prompt);
@@ -78,31 +81,20 @@ int     valid_exp(int c);
 int		ft_isdigit(int c);
 char    *expand_tilde(char *input, t_env *lst_env);
 
+void    mini_execute(t_shell *shell, t_strcmd *str_cmd);
+int     is_build_in(const char *s);
+void	execute(char **cmd, char **env);
+char	*get_path(char *cmd, char **env);
+char	**env_split(char **env);
+
 extern int  g_status;
 
 
 //-----------------------------------------------sw
 
-# include "libft.h"
-
 # define ERR_PREF "minishell: "
 # define TRUE 1
 # define FALSE 0
-
-
-typedef struct	s_lstcmd
-{
-	t_list *full_cmd;
-	t_list *redin;
-	t_list *redout;
-}	t_lstcmd;
-
-typedef struct	s_strcmd
-{
-	char **redin;
-	char **redout;
-	char ***tab_cmd;
-}	t_strcmd;
 
 #define REDIN 1
 #define HEREDOC 2

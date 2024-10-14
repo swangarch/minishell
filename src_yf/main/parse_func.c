@@ -217,6 +217,7 @@ t_strcmd	*convert_to_str_token(t_lstcmd	*clean_tokens, int num_pipe)
 		i++;
 	}
 	str_token->tab_cmd[i] = NULL;
+	str_token->num_cmd = i;
 	return (str_token);
 }
 

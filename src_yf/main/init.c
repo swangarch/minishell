@@ -45,6 +45,7 @@ void    init_shell(t_shell *shell, char **env)
             exit(EXIT_FAILURE);
         }
     }
+    shell->env = NULL;
     shell->prompt = NULL;
 	shell->heredoc = NULL;
 	shell->cmd_tbls = NULL;

@@ -108,4 +108,5 @@ void	print_token_str(t_strcmd *cmd_str)
 		print_tab(cmd_str->tab_cmd[i]);
 		i++;
 	}
+	printf(GREEN "CMD_NUM:  %d\n" COLOR_END, cmd_str->num_cmd);
 }

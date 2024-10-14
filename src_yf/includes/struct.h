@@ -55,6 +55,7 @@ typedef struct s_shell
 	char			*heredoc;
 	t_cmd_tbl		*cmd_tbls;
 	t_env			*env_head;
+	char			**env;
 	int				std_fds[2];
 	char			*trimmed_prompt;
 	char			*terminal_prompt;
@@ -73,5 +74,20 @@ typedef struct s_expansion
 	char			var_name[256];
 	char			*env_val;
 }	t_expansion;
+
+typedef struct	s_lstcmd
+{
+	t_list *full_cmd;
+	t_list *redin;
+	t_list *redout;
+}	t_lstcmd;
+
+typedef struct	s_strcmd
+{
+	char **redin;
+	char **redout;
+	char ***tab_cmd;
+	int	 num_cmd;
+}	t_strcmd;
 
 #endif
