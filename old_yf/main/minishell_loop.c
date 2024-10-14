@@ -1,38 +1,7 @@
-#include "../includes/minishell.h"
-
-void    expand_tab(char **tab, t_env *env_head)
-{
-    int i = 0;
-
-    if (!tab)
-        return ;
-    while (tab[i])
-    {
-        tab[i] = expand_tilde(tab[i], env_head);
-        tab[i] = expand_var(tab[i], env_head);
-        i++;
-    }
-}
-
-void    expand_str_cmd(t_strcmd	*str_cmd, t_env *env_head)
-{
-    int i = 0;
-
-    if (!str_cmd)
-        return ;
-    expand_tab(str_cmd->redin, env_head);
-    expand_tab(str_cmd->redout, env_head);
-    while (str_cmd->tab_cmd[i])
-    {
-        expand_tab(str_cmd->tab_cmd[i], env_head);
-        i++;
-    }
-}
+#include "../../includes/minishell.h"
 
 void    minishell_loop(t_shell *shell)
 {
-    t_strcmd	*str_cmd;
-
     configure_terminal();
     while (1)
     {
@@ -43,10 +12,7 @@ void    minishell_loop(t_shell *shell)
         if (!shell->prompt)
         {
             if (!errno)
-            {
-                write(1, "exit\n", 5);
                 break ;
-            }
             // else
             // {
             //     perror("Error reading input");
@@ -63,13 +29,9 @@ void    minishell_loop(t_shell *shell)
         // }
         if (lexer(shell))//parser(shell)
         {
-            //shell->trimmed_prompt = expand_var(shell->trimmed_prompt, shell->env_head);
-            //printf("%s\n", shell->trimmed_prompt);
-
-            str_cmd = parse_line(shell->prompt);
-            expand_str_cmd(str_cmd, shell->env_head);
-            //write(1, "\n\n", 2);
-            print_token_str(str_cmd);
+            shell->trimmed_prompt = expand_tilde(shell->trimmed_prompt, shell->env_head);
+            shell->trimmed_prompt = expand_var(shell->trimmed_prompt, shell->env_head);
+            printf("%s\n", shell->trimmed_prompt);
             //execute(shell, shell->cmd_tbls);
         }
         free(shell->prompt);
