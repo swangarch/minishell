@@ -56,7 +56,7 @@ void    minishell_loop(t_shell *shell)
         shell->trimmed_prompt = ft_strtrim(shell->prompt, SPACES);
         if (ft_strlen(shell->trimmed_prompt))
             add_history(shell->prompt);
-        //update_env(shell);
+        update_env(shell);
         // for (int i = 0; shell->env[i]; ++i)
         // {
         //     printf(RED "%s" COLOR_E "\n", shell->env[i]);
@@ -69,17 +69,17 @@ void    minishell_loop(t_shell *shell)
             str_cmd = parse_line(shell->prompt);
             expand_str_cmd(str_cmd, shell->env_head);
             //write(1, "\n\n", 2);
-            print_token_str(str_cmd);
-            //execute(shell, shell->cmd_tbls);
+            //print_token_str(str_cmd);
+            mini_execute(shell, str_cmd);
         }
         free(shell->prompt);
         free(shell->trimmed_prompt);
     }
 }
 
-// void	update_env(t_shell *shell)
-// {
-// 	if (shell->env != NULL)
-// 		free_char_array(shell->env);
-// 	shell->env = env_list_to_char(shell->env_head);
-// }
+void	update_env(t_shell *shell)
+{
+	if (shell->env != NULL)
+		free_char_array(shell->env);
+	shell->env = env_list_to_char(shell->env_head);
+}
