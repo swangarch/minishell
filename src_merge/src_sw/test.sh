@@ -1,1 +1,0 @@
-gcc -g *.c libft.a -Wall -Wextra -Werror -lreadline -I. -o minishell
