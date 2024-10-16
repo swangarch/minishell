@@ -118,14 +118,14 @@ void red_in(t_strcmd *str_cmd, t_shell *shell, char *here_doc)
             write(STDOUT_FILENO, "> ", 2);
             line = get_next_line(STDIN_FILENO);
 //////////////////////////////////
-            line = expand_var_here(line, shell->env_head);
+            //expand_var(line, shell->env_head);
             while (!(ft_strncmp(line, redin[i], ft_strlen(redin[i])) == 0 && line[ft_strlen(redin[i])] == '\n'))
             {
                 write(fd_infile[index_fd], line, ft_strlen(line));
                 free(line);
                 write(STDOUT_FILENO, "> ", 2);
                 line = get_next_line(STDIN_FILENO);
-                line = expand_var_here(line, shell->env_head);
+                //expand_var(line, shell->env_head);
             }
             free(line);
             close(fd_infile[index_fd]);

@@ -97,8 +97,6 @@ int     mini_builtin(int type, t_shell *shell, t_strcmd *cmd);
 int     mini_exit(t_shell *shell, t_strcmd *cmd);
 int     count_cmd(char **str);
 
-char    *expand_var_here(char *input, t_env *lst_env);
-
 extern int  g_status;
 
 
