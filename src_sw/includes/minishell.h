@@ -13,6 +13,9 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "libft.h"
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -22,7 +25,7 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <termios.h>
-# include "libft.h"
+//# include <sys/ioctl.h>//！！！！！！ioctl function
 # include "struct.h"
 # include "define.h"
 
@@ -35,7 +38,7 @@ char	*ft_strdup(const char *s);
 char	*ft_strjoin(char const *s1, char const *s2);
 void    free_before_exit(t_shell *shell);
 size_t	ft_strlen(const char *s);
-void    configure_terminal(void);
+void    configure_terminal(struct termios *termios_set);
 char	**ft_split(char const *s, char c);
 void    init_no_env(t_shell *shell);
 t_env   *init_default_env(char **env);
@@ -47,10 +50,10 @@ void	free_env(t_env *head);
 void	add_back_env_node(t_env	**head, t_env *new);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 int	    ft_strncmp(const char *s1, const char *s2, size_t n);
-//void	update_env(t_shell *shell);
-//char	**env_list_to_char(t_env *env);
-//int	    get_env_list_size(t_env *head);
-//char	*get_full_env(t_env *env);
+void	update_env(t_shell *shell);
+char	**env_list_to_char(t_env *env);
+int	    get_env_list_size(t_env *head);
+char	*get_full_env(t_env *env);
 //void	ft_add_history(t_shell *shell);
 //int	    is_only_space(char *str);
 //int 	rep_prompt(char *prompt, char *prev_prompt);
@@ -79,12 +82,25 @@ int     valid_exp(int c);
 int		ft_isdigit(int c);
 char    *expand_tilde(char *input, t_env *lst_env);
 
+void    mini_execute(t_shell *shell, t_strcmd *str_cmd);
+int     is_build_in(const char *s);
+void	execute(char **cmd, char **env);
+char	*get_path(char *cmd, char **env);
+char	**env_split(char **env);
+void    exec_cmd(t_strcmd *str_cmd, t_shell *shell);
+void    red_out(t_strcmd *str_cmd, t_shell *shell);
+void red_in(t_strcmd *str_cmd, t_shell *shell, char *here_doc);
+void close_fds(int *fd, int num);
+
+void child_signal_handler();
+int     mini_builtin(int type, t_shell *shell, t_strcmd *cmd);
+int     mini_exit(t_shell *shell, t_strcmd *cmd);
+int     count_cmd(char **str);
+
 extern int  g_status;
 
 
 //-----------------------------------------------sw
-
-//# include "libft.h"
 
 # define ERR_PREF "minishell: "
 # define TRUE 1
@@ -129,6 +145,9 @@ int		count_pipe(t_list *lst);
 int		check_double_pipe(t_list *lst);
 int		check_red_file(t_list *lst);
 int		check_token_err(t_list *lst);
+
+char *here_doc_name(void);
+int has_heredoc(t_strcmd *str_cmd, t_shell *shell);
 //-----------------------------------------------sw
 
 #endif

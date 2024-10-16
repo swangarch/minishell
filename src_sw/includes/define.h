@@ -46,6 +46,7 @@
 # define MES_SQUOTE_ERR "Syntax error: unclosed single quote\n"
 # define MES_DQUOTE_ERR "Syntax error: unclosed double quote\n"
 # define MES_DUP_ERR "Dup failed!\n"
+# define MES_EXIT_ERR "exit [no option]!\n"
 
 # define SPACES " \n\t\r\f\v"
 # define OPERATOR "|><"
@@ -63,14 +64,13 @@
 #  define BUFFER_SIZE 512
 # endif
 
-
-// # define EXTERNAL 0
-// # define ECHO 1
-// # define CD 2
-// # define PWD 3
-// # define EXPORT 4
-// # define UNSET 5
-// # define ENV 6
-// # define EXIT 7
+# define NOBULTIN 0
+# define MINI_ECHO 1
+# define MINI_CD 2
+# define MINI_PWD 3
+# define MINI_EXPORT 4
+# define MINI_UNSET 5
+# define MINI_ENV 6
+# define MINI_EXIT 7
 
 #endif

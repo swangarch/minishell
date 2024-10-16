@@ -33,7 +33,7 @@ void    minishell_loop(t_shell *shell)
 {
     t_strcmd	*str_cmd;
 
-    configure_terminal();
+    configure_terminal(&shell->termios_set);
     while (1)
     {
         set_signal_handler();
@@ -44,7 +44,7 @@ void    minishell_loop(t_shell *shell)
         {
             if (!errno)
             {
-                write(1, "exit\n", 5);
+                write(2, "exit\n", 5);
                 break ;
             }
             // else
@@ -54,9 +54,10 @@ void    minishell_loop(t_shell *shell)
             // }
         }
         shell->trimmed_prompt = ft_strtrim(shell->prompt, SPACES);
+        //printf("Trimmed prompt: '%s'\n", shell->trimmed_prompt);
         if (ft_strlen(shell->trimmed_prompt))
             add_history(shell->prompt);
-        //update_env(shell);
+        update_env(shell);
         // for (int i = 0; shell->env[i]; ++i)
         // {
         //     printf(RED "%s" COLOR_E "\n", shell->env[i]);
@@ -66,20 +67,21 @@ void    minishell_loop(t_shell *shell)
             //shell->trimmed_prompt = expand_var(shell->trimmed_prompt, shell->env_head);
             //printf("%s\n", shell->trimmed_prompt);
 
-            str_cmd = parse_line(shell->prompt);
+            str_cmd = parse_line(shell->trimmed_prompt);
             expand_str_cmd(str_cmd, shell->env_head);
             //write(1, "\n\n", 2);
-            print_token_str(str_cmd);
-            //execute(shell, shell->cmd_tbls);
+            //print_token_str(str_cmd);
+            mini_execute(shell, str_cmd);
         }
         free(shell->prompt);
         free(shell->trimmed_prompt);
     }
+    tcsetattr(STDIN_FILENO, TCSANOW, &shell->termios_set);
 }
 
-// void	update_env(t_shell *shell)
-// {
-// 	if (shell->env != NULL)
-// 		free_char_array(shell->env);
-// 	shell->env = env_list_to_char(shell->env_head);
-// }
+void	update_env(t_shell *shell)
+{
+	if (shell->env != NULL)
+		free_char_array(shell->env);
+	shell->env = env_list_to_char(shell->env_head);
+}

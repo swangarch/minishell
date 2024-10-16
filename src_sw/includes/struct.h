@@ -55,9 +55,11 @@ typedef struct s_shell
 	char			*heredoc;
 	t_cmd_tbl		*cmd_tbls;
 	t_env			*env_head;
+	char			**env;
 	int				std_fds[2];
 	char			*trimmed_prompt;
 	char			*terminal_prompt;
+	struct termios	termios_set;
 }	t_shell;
 
 typedef struct s_expansion
