@@ -25,7 +25,6 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <termios.h>
-//# include <sys/ioctl.h>//！！！！！！ioctl function
 # include "struct.h"
 # include "define.h"
 
@@ -38,7 +37,7 @@ char	*ft_strdup(const char *s);
 char	*ft_strjoin(char const *s1, char const *s2);
 void    free_before_exit(t_shell *shell);
 size_t	ft_strlen(const char *s);
-void    configure_terminal(struct termios *termios_set);
+void    configure_terminal(void);
 char	**ft_split(char const *s, char c);
 void    init_no_env(t_shell *shell);
 t_env   *init_default_env(char **env);
@@ -91,11 +90,6 @@ void    exec_cmd(t_strcmd *str_cmd, t_shell *shell);
 void    red_out(t_strcmd *str_cmd, t_shell *shell);
 void red_in(t_strcmd *str_cmd, t_shell *shell);
 void close_fds(int *fd, int num);
-
-void child_signal_handler();
-int     mini_builtin(int type, t_shell *shell, t_strcmd *cmd);
-int     mini_exit(t_shell *shell, t_strcmd *cmd);
-int     count_cmd(char **str);
 
 extern int  g_status;
 

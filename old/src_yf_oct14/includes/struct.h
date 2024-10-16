@@ -59,7 +59,6 @@ typedef struct s_shell
 	int				std_fds[2];
 	char			*trimmed_prompt;
 	char			*terminal_prompt;
-	struct termios	termios_set;
 }	t_shell;
 
 typedef struct s_expansion

@@ -33,7 +33,7 @@ void    minishell_loop(t_shell *shell)
 {
     t_strcmd	*str_cmd;
 
-    configure_terminal(&shell->termios_set);
+    configure_terminal();
     while (1)
     {
         set_signal_handler();
@@ -44,7 +44,7 @@ void    minishell_loop(t_shell *shell)
         {
             if (!errno)
             {
-                write(2, "exit\n", 5);
+                write(1, "exit\n", 5);
                 break ;
             }
             // else
@@ -54,7 +54,6 @@ void    minishell_loop(t_shell *shell)
             // }
         }
         shell->trimmed_prompt = ft_strtrim(shell->prompt, SPACES);
-        //printf("Trimmed prompt: '%s'\n", shell->trimmed_prompt);
         if (ft_strlen(shell->trimmed_prompt))
             add_history(shell->prompt);
         update_env(shell);
@@ -67,7 +66,7 @@ void    minishell_loop(t_shell *shell)
             //shell->trimmed_prompt = expand_var(shell->trimmed_prompt, shell->env_head);
             //printf("%s\n", shell->trimmed_prompt);
 
-            str_cmd = parse_line(shell->trimmed_prompt);
+            str_cmd = parse_line(shell->prompt);
             expand_str_cmd(str_cmd, shell->env_head);
             //write(1, "\n\n", 2);
             //print_token_str(str_cmd);
@@ -76,7 +75,6 @@ void    minishell_loop(t_shell *shell)
         free(shell->prompt);
         free(shell->trimmed_prompt);
     }
-    tcsetattr(STDIN_FILENO, TCSANOW, &shell->termios_set);
 }
 
 void	update_env(t_shell *shell)
