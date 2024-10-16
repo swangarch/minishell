@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int is_build_in(const char *s)
+int     is_build_in(const char *s)
 {
     if (!ft_strcmp(s, "echo"))
         return (MINI_ECHO);
@@ -19,9 +19,9 @@ int is_build_in(const char *s)
     return (NOBULTIN);
 }
 
-int count_cmd(char **str)
+int     count_cmd(char **str)
 {
-    int i;
+    int     i;
 
     i = 0;
     if (!str)
@@ -29,18 +29,4 @@ int count_cmd(char **str)
     while (str[i])
         ++i;
     return (i);
-}
-
-int is_valid_name(const char *var)
-{
-    if (!var || *var == '\0' || (!ft_isalpha(*var) && *var != '_'))
-        return (FALSE);
-    ++var;
-    while (*var)
-    {
-        if (!ft_isalnum(*var) && *var != '_')
-            return (FALSE);
-        ++var;
-    }
-    return (TRUE);
 }

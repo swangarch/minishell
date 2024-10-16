@@ -46,12 +46,7 @@
 # define MES_SQUOTE_ERR "Syntax error: unclosed single quote\n"
 # define MES_DQUOTE_ERR "Syntax error: unclosed double quote\n"
 # define MES_DUP_ERR "Dup failed!\n"
-# define MES_EXIT_OP "exit: options are not allowed\n"
-# define MES_EXIT_NUM ": numeric argument required\n"
-# define MES_EXIT_TOO_MANY "exit: too many arguments\n"
-# define MES_ENV_ERR "env: options and arguments are not allowed\n"
-# define MES_ENSET_ERR "unset [no options]!\n"
-# define MES_ENSET_OP "unset: options are not allowed\n"
+# define MES_EXIT_ERR "exit [no option]!\n"
 
 # define SPACES " \n\t\r\f\v"
 # define OPERATOR "|><"
