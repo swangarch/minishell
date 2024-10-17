@@ -52,6 +52,8 @@
 # define MES_ENV_ERR "env: options and arguments are not allowed\n"
 # define MES_ENSET_ERR "unset [no options]!\n"
 # define MES_ENSET_OP "unset: options are not allowed\n"
+# define MES_EXPORT_OP "export: options are not allowed\n"
+# define EXPORT_PRE "declare -x "
 
 # define SPACES " \n\t\r\f\v"
 # define OPERATOR "|><"

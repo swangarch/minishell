@@ -9,7 +9,7 @@ int     mini_builtin(int type, t_shell *shell, t_strcmd *cmd)
     else if (type == 3)
         ;//g_status = mini_pwd();
     else if (type == 4)
-        ;//g_status = mini_export();
+        g_status = mini_export(&shell->env_head, cmd->tab_cmd[0]);
     else if (type == 5)
         g_status = mini_unset(&shell->env_head, cmd->tab_cmd[0]);
     else if (type == 6)
@@ -103,6 +103,36 @@ int     mini_unset(t_env **head, char **cmd)
         }
         unset_var(head, cmd[i]);
         ++i;
+    }
+    return (0);
+}
+
+int     mini_export(t_env **head, char **cmd)
+{
+    t_env   *current;
+    int     i;
+
+    current = *head;
+    if (count_cmd(cmd) == 1)
+    {
+        while (current)
+        {
+            if (ft_strcmp(current->var_name, "_"))
+            {
+                printf(EXPORT_PRE "%s=%s\n", current->var_name, current->content);
+            }
+            current = current->next;
+        }
+        return (0);
+    }
+    i = 1;
+    while (cmd[i])
+    {
+        if (cmd[i][0] == '-')
+        {
+            ft_putstr_fd(MES_EXPORT_OP, STDERR_FILENO);
+            return (2);
+        }
     }
     return (0);
 }
