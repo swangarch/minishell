@@ -67,7 +67,7 @@ void	unset_var(t_env **lst_env, const char *name)
 	t_env	*current;
 
 	current = *lst_env;
-	while (!ft_strcmp(current->var_name, name))
+	while (current && !ft_strcmp(current->var_name, name))
 	{
 		free(current->content);
 		free(current->var_name);
@@ -175,3 +175,4 @@ void	set_pwd(t_env **lst_env, char *name, char *content)
 		free(tmp_new);
 	}
 }
+

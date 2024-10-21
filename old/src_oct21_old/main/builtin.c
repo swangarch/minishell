@@ -187,7 +187,7 @@ int mini_exit(t_shell *shell, t_cmd **tab_cmd, int place)
         exit((int)(val % 256));
     }
     ft_putstr_fd("exit\n", STDERR_FILENO);
-    free_before_exit(shell); // free tab_cmd aussi!
+    free_before_exit(shell); // free cmd aussi!
     exit(EXIT_SUCCESS);
 }
 

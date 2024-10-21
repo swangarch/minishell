@@ -14,39 +14,24 @@ void    expand_tab(char **tab, t_env *env_head)
     }
 }
 
-// void    expand_str_cmd(t_cmd **tab_cmd, t_env *env_head)
-// {
-//     int i = 0;
-
-//     if (!str_cmd)
-//         return ;
-//     expand_tab(str_cmd->redin, env_head);
-//     expand_tab(str_cmd->redout, env_head);
-//     while (str_cmd->tab_cmd[i])
-//     {
-//         expand_tab(str_cmd->tab_cmd[i], env_head);
-//         i++;
-//     }
-// }
-
-void    expand_str_cmd(t_cmd **tab_cmd, t_env *env_head)
+void    expand_str_cmd(t_strcmd	*str_cmd, t_env *env_head)
 {
     int i = 0;
 
-    if (!tab_cmd)
+    if (!str_cmd)
         return ;
-    while (tab_cmd[i])
+    expand_tab(str_cmd->redin, env_head);
+    expand_tab(str_cmd->redout, env_head);
+    while (str_cmd->tab_cmd[i])
     {
-        expand_tab(tab_cmd[i]->cmd, env_head);
-        expand_tab(tab_cmd[i]->redin, env_head);
-        expand_tab(tab_cmd[i]->redout, env_head);
+        expand_tab(str_cmd->tab_cmd[i], env_head);
         i++;
     }
 }
 
 void    minishell_loop(t_shell *shell)
 {
-    t_cmd	**tab_cmd;
+    t_strcmd	*str_cmd;
 
     configure_terminal(&shell->termios_set);
     while (1)
@@ -82,12 +67,11 @@ void    minishell_loop(t_shell *shell)
             //shell->trimmed_prompt = expand_var(shell->trimmed_prompt, shell->env_head);
             //printf("%s\n", shell->trimmed_prompt);
 
-            tab_cmd = parse_line(shell->trimmed_prompt);
-            expand_str_cmd(tab_cmd, shell->env_head);
+            str_cmd = parse_line(shell->trimmed_prompt);
+            expand_str_cmd(str_cmd, shell->env_head);
             //write(1, "\n\n", 2);
             //print_token_str(str_cmd);
-            //printf("expansion done\n");
-            mini_execute(shell, tab_cmd);
+            mini_execute(shell, str_cmd);
         }
         free(shell->prompt);
         free(shell->trimmed_prompt);

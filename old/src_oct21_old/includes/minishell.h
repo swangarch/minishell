@@ -83,20 +83,21 @@ int     valid_exp(int c);
 int		ft_isdigit(int c);
 char    *expand_tilde(char *input, t_env *lst_env);
 
-void    mini_execute(t_shell *shell, t_cmd **tab_cmd);
+void    mini_execute(t_shell *shell, t_strcmd *str_cmd);
 int     is_build_in(const char *s);
 void	execute(char **cmd, char **env);
 char	*get_path(char *cmd, char **env);
 char	**env_split(char **env);
-void    red_out(t_cmd *tab_cmd, t_shell *shell);
-void    red_in(t_cmd *tab_cmd, t_shell *shell, int index_p);
+void    exec_cmd(t_strcmd *str_cmd, t_shell *shell);
+void    red_out(t_strcmd *str_cmd, t_shell *shell);
+void red_in(t_strcmd *str_cmd, t_shell *shell);
 void close_fds(int *fd, int num);
 
 void child_signal_handler();
-int     mini_builtin(int type, t_shell *shell, t_cmd **tab_cmd, int i);
-int     mini_exit(t_shell *shell, t_cmd **tab_cmd, int place);
+int     mini_builtin(int type, t_shell *shell, t_strcmd *cmd, int i);
+int     mini_exit(t_shell *shell, t_strcmd *cmd, int place);
 int     count_cmd(char **str);
-int     mini_env(char **env, t_cmd **tab_cmd, int place);
+int     mini_env(char **env, t_strcmd *cmd, int place);
 int     mini_unset(t_env **head, char **cmd);
 int     str_to_ll(const char *str, long long *val);
 int     is_numeric(const char *str);
@@ -109,8 +110,6 @@ int     mini_echo(char **cmd);
 int     mini_pwd(char **cmd);
 int     mini_cd(t_env **head, char **cmd);
 void	set_pwd(t_env **lst_env, char *name, char *content);
-
-char    *expand_var_here(char *input, t_env *lst_env);
 
 extern int  g_status;
 
@@ -128,13 +127,13 @@ extern int  g_status;
 #define TEXT 0
 
 
-// void    sigint_handler(int sig);
-// void    signals(void);
-// char	*ft_str3join(char *s1, char *s2, char *s3);
+void    sigint_handler(int sig);
+void    signals(void);
+char	*ft_str3join(char *s1, char *s2, char *s3);
 char	*ft_str4join(char *s1, char *s2, char *s3, char *s4);
 char	*join_prompt(void);
 //void	minishell_loop(void);
-t_cmd	**parse_line(char *line);
+t_strcmd	*parse_line(char *line);
 int		lexer_check(char *line);
 
 char	*ft_strndup(const char *s, int n);
@@ -160,12 +159,6 @@ int		count_pipe(t_list *lst);
 int		check_double_pipe(t_list *lst);
 int		check_red_file(t_list *lst);
 int		check_token_err(t_list *lst);
-
-char *here_doc_name(int index_p);
-int has_heredoc(t_cmd *cmd, t_shell *shell);
-
-int	get_cmdtab_num(t_cmd **cmd_tab);
-int	get_tab_num(char **tab);
 //-----------------------------------------------sw
 
 #endif

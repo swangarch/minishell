@@ -6,7 +6,7 @@
 //     red_out(str_cmd, shell);
 // }
 
-void mini_execute(t_shell *shell, t_strcmd *str_cmd)
+void mini_execute(t_shell *shell, t_cmd **tab_cmd)
 {
     int i;
     int j;
@@ -16,67 +16,71 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
     char *here_doc;
 
     // exec_cmd(str_cmd, shell);
-    if (!str_cmd || !shell)
+    if (!tab_cmd || !shell)
         return ;/////protect
     
     here_doc = NULL;
-    if (has_heredoc(str_cmd, shell))
-    {
-        here_doc = here_doc_name();
-        {
-            if (!here_doc)
-                return ;
-        }
-    }
+    // if (has_heredoc(tab_cmd, shell))
+    // {
+    //     here_doc = here_doc_name();
+    //     {
+    //         if (!here_doc)
+    //             return ;
+    //     }
+    // }
 
     i = 0;
-    if (str_cmd->num_cmd == 1)
+    //if (str_cmd->num_cmd == 1)
+    if (get_cmdtab_num(tab_cmd) == 1)
     {
         //printf("1cmd\n");/////////////////////////////////////////
-        type_cmd = is_build_in(str_cmd->tab_cmd[0][0]);
+        type_cmd = is_build_in(tab_cmd[0]->cmd[0]);
         if (type_cmd)
         {
-            red_in(str_cmd, shell, here_doc);
-            red_out(str_cmd, shell);
-            g_status = mini_builtin(type_cmd, shell, str_cmd);
+            red_in(tab_cmd[0], shell, i);
+            red_out(tab_cmd[0], shell);
+            g_status = mini_builtin(type_cmd, shell, tab_cmd, 0);
             if (access(here_doc, F_OK) == 0)
                 unlink(here_doc);
+            dup2(shell->std_fds[0], STDIN_FILENO);
+            dup2(shell->std_fds[1], STDOUT_FILENO);
+            return ;
         }
-        else
-        {
-            pid = fork();
-            if (pid == -1)
-            {
-                g_status = 3;
-                perror("fork");
-                return;
-            }
-            else if (pid == 0)
-            {
-                child_signal_handler();
-                red_in(str_cmd, shell, here_doc);
-                red_out(str_cmd, shell);
-                execute(str_cmd->tab_cmd[i], shell->env);
-            }
-            signal(SIGINT, SIG_IGN);
-            signal(SIGQUIT, SIG_IGN);
-            if (access(here_doc, F_OK) == 0)
-                unlink(here_doc);
-            waitpid(pid, &g_status, 0);
-            if ((g_status & 0xFF) == SIGINT)
-                write(STDOUT_FILENO, "\n", 1);
-        }
-        return;
+        // else
+        // {
+        //     pid = fork();
+        //     if (pid == -1)
+        //     {
+        //         g_status = 3;
+        //         perror("fork");
+        //         return;
+        //     }
+        //     else if (pid == 0)
+        //     {
+        //         child_signal_handler();
+        //         red_in(str_cmd, shell, here_doc);
+        //         red_out(str_cmd, shell);
+        //         execute(str_cmd->tab_cmd[i], shell->env);
+        //     }
+        //     signal(SIGINT, SIG_IGN);
+        //     signal(SIGQUIT, SIG_IGN);
+        //     if (access(here_doc, F_OK) == 0)
+        //         unlink(here_doc);
+        //     waitpid(pid, &g_status, 0);
+        //     if ((g_status & 0xFF) == SIGINT)
+        //         write(STDOUT_FILENO, "\n", 1);
+        // }
+        // return;
     }
     //printf("n cmd\n");/////////////////////////////////////////
-    p_fd = (int *)malloc(2 * (str_cmd->num_cmd - 1) * sizeof(int));
+    p_fd = (int *)malloc(2 * (get_cmdtab_num(tab_cmd) - 1) * sizeof(int));
     if (!p_fd)
     {
         g_status = 1;
         ft_putstr_fd(MES_MALLOC_ERR, STDERR_FILENO);
         return;
     }
-    while (i < str_cmd->num_cmd - 1)
+    while (i < get_cmdtab_num(tab_cmd) - 1)
     {
         if (pipe(p_fd + i * 2) == -1)
         {
@@ -88,53 +92,61 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
         ++i;
     }
     i = 0;
-    while (i < str_cmd->num_cmd)
+    while (i < get_cmdtab_num(tab_cmd))
     {
+        type_cmd = is_build_in(tab_cmd[i]->cmd[0]);
         pid = fork();
         if (pid == -1)
         {
             g_status = 3;
-            perror("fork");
+            perror(SHELL "fork");
             free(p_fd);
             return;
         }
         else if (pid == 0)
         {
             child_signal_handler();
-            if (i == 0)
-            {
-                red_in(str_cmd, shell, here_doc);
-            }
-            if (i == str_cmd->num_cmd - 1)
-            {
-                red_out(str_cmd, shell);
-            }
+            // if (i == 0)
+            // {
+            //     red_in(tab_cmd[i], shell, here_doc);
+            // }
+            // if (i == get_cmdtab_num(tab_cmd) - 1)
+            // {
+            //     red_out(tab_cmd, shell);
+            // }
             if (i > 0)
             {
                 dup2(p_fd[(i - 1) * 2], 0);
             }
-            if (i < str_cmd->num_cmd - 1)
+            if (i < get_cmdtab_num(tab_cmd) - 1)
             {
                 dup2(p_fd[i * 2 + 1], 1);
             }
+            red_in(tab_cmd[i], shell, i);
+            red_out(tab_cmd[i], shell);
             j = 0;
-            while (j < 2 * (str_cmd->num_cmd - 1))
+            while (j < 2 * (get_cmdtab_num(tab_cmd) - 1))
             {
                 close(p_fd[j++]);
             }
-            execute(str_cmd->tab_cmd[i], shell->env);
+            if (type_cmd)
+            {
+                g_status = mini_builtin(type_cmd, shell, tab_cmd, i);
+                exit(g_status);
+            }
+            execute(tab_cmd[i]->cmd, shell->env);
         }
         ++i;
     }
     signal(SIGINT, SIG_IGN);  // ！！！！！！！！！！！1
     signal(SIGQUIT, SIG_IGN); // ！！！！！！！！！！！
     j = 0;
-    while (j < 2 * (str_cmd->num_cmd - 1))
+    while (j < 2 * (get_cmdtab_num(tab_cmd) - 1))
     {
         close(p_fd[j++]);
     }
     j = 0;
-    while (j < str_cmd->num_cmd)
+    while (j < get_cmdtab_num(tab_cmd))
     {
         waitpid(-1, &g_status, 0);
         j++;
@@ -143,11 +155,165 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
     }
     if ((g_status & 0xFF) == SIGINT)
         write(STDOUT_FILENO, "\n", 1);
+    g_status %= 256;
     if (access(here_doc, F_OK) == 0)
         unlink(here_doc);
     free(p_fd);
     // signal(SIGINT, handle_sigint);//！！！！！！！！！！1
 }
+
+// void mini_execute(t_shell *shell, t_strcmd *str_cmd)
+// {
+//     int i;
+//     int j;
+//     int type_cmd;
+//     pid_t pid;
+//     int *p_fd;
+//     char *here_doc;
+
+//     // exec_cmd(str_cmd, shell);
+//     if (!str_cmd || !shell)
+//         return ;/////protect
+    
+//     here_doc = NULL;
+//     if (has_heredoc(str_cmd, shell))
+//     {
+//         here_doc = here_doc_name();
+//         {
+//             if (!here_doc)
+//                 return ;
+//         }
+//     }
+
+//     i = 0;
+//     if (str_cmd->num_cmd == 1)
+//     {
+//         //printf("1cmd\n");/////////////////////////////////////////
+//         type_cmd = is_build_in(str_cmd->tab_cmd[0][0]);
+//         if (type_cmd)
+//         {
+//             red_in(str_cmd, shell, here_doc);
+//             red_out(str_cmd, shell);
+//             g_status = mini_builtin(type_cmd, shell, str_cmd, 0);
+//             if (access(here_doc, F_OK) == 0)
+//                 unlink(here_doc);
+//             dup2(shell->std_fds[0], STDIN_FILENO);
+//             dup2(shell->std_fds[1], STDOUT_FILENO);
+//             return ;
+//         }
+//         // else
+//         // {
+//         //     pid = fork();
+//         //     if (pid == -1)
+//         //     {
+//         //         g_status = 3;
+//         //         perror("fork");
+//         //         return;
+//         //     }
+//         //     else if (pid == 0)
+//         //     {
+//         //         child_signal_handler();
+//         //         red_in(str_cmd, shell, here_doc);
+//         //         red_out(str_cmd, shell);
+//         //         execute(str_cmd->tab_cmd[i], shell->env);
+//         //     }
+//         //     signal(SIGINT, SIG_IGN);
+//         //     signal(SIGQUIT, SIG_IGN);
+//         //     if (access(here_doc, F_OK) == 0)
+//         //         unlink(here_doc);
+//         //     waitpid(pid, &g_status, 0);
+//         //     if ((g_status & 0xFF) == SIGINT)
+//         //         write(STDOUT_FILENO, "\n", 1);
+//         // }
+//         // return;
+//     }
+//     //printf("n cmd\n");/////////////////////////////////////////
+//     p_fd = (int *)malloc(2 * (str_cmd->num_cmd - 1) * sizeof(int));
+//     if (!p_fd)
+//     {
+//         g_status = 1;
+//         ft_putstr_fd(MES_MALLOC_ERR, STDERR_FILENO);
+//         return;
+//     }
+//     while (i < str_cmd->num_cmd - 1)
+//     {
+//         if (pipe(p_fd + i * 2) == -1)
+//         {
+//             g_status = 2;
+//             perror("pipe failed");
+//             free(p_fd);
+//             return;
+//         }
+//         ++i;
+//     }
+//     i = 0;
+//     while (i < str_cmd->num_cmd)
+//     {
+//         type_cmd = is_build_in(str_cmd->tab_cmd[i][0]);
+//         pid = fork();
+//         if (pid == -1)
+//         {
+//             g_status = 3;
+//             perror(SHELL "fork");
+//             free(p_fd);
+//             return;
+//         }
+//         else if (pid == 0)
+//         {
+//             child_signal_handler();
+//             if (i == 0)
+//             {
+//                 red_in(str_cmd, shell, here_doc);
+//             }
+//             if (i == str_cmd->num_cmd - 1)
+//             {
+//                 red_out(str_cmd, shell);
+//             }
+//             if (i > 0)
+//             {
+//                 dup2(p_fd[(i - 1) * 2], 0);
+//             }
+//             if (i < str_cmd->num_cmd - 1)
+//             {
+//                 dup2(p_fd[i * 2 + 1], 1);
+//             }
+//             j = 0;
+//             while (j < 2 * (str_cmd->num_cmd - 1))
+//             {
+//                 close(p_fd[j++]);
+//             }
+//             if (type_cmd)
+//             {
+//                 g_status = mini_builtin(type_cmd, shell, str_cmd, i);
+//                 exit(g_status);
+//             }
+//             execute(str_cmd->tab_cmd[i], shell->env);
+//         }
+//         ++i;
+//     }
+//     signal(SIGINT, SIG_IGN);  // ！！！！！！！！！！！1
+//     signal(SIGQUIT, SIG_IGN); // ！！！！！！！！！！！
+//     j = 0;
+//     while (j < 2 * (str_cmd->num_cmd - 1))
+//     {
+//         close(p_fd[j++]);
+//     }
+//     j = 0;
+//     while (j < str_cmd->num_cmd)
+//     {
+//         waitpid(-1, &g_status, 0);
+//         j++;
+//         // if ((g_status & 0xFF) == SIGINT)
+//         //     write(STDOUT_FILENO, "\n", 1);
+//     }
+//     if ((g_status & 0xFF) == SIGINT)
+//         write(STDOUT_FILENO, "\n", 1);
+//     g_status %= 256;
+//     if (access(here_doc, F_OK) == 0)
+//         unlink(here_doc);
+//     free(p_fd);
+//     // signal(SIGINT, handle_sigint);//！！！！！！！！！！1
+// }
 
 void execute(char **cmd, char **env)
 {

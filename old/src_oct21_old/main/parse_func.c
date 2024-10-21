@@ -137,14 +137,14 @@ t_list *str_to_word_lst(char *cmd)
 	return (lst);
 }
 
-// typedef struct s_cmd
-// {
-// 	char **redin;
-// 	char **redout;
-// 	char **cmd;
-// 	int	 has_in;
-// 	int  has_out;
-// }	t_cmd;
+typedef struct s_cmd
+{
+	char **redin;
+	char **redout;
+	char **cmd;
+	int	 has_in;
+	int  has_out;
+}	t_cmd;
 
 void init_cmd_struct(t_cmd *command)
 {
@@ -243,7 +243,7 @@ t_cmd *create_cmd_from_lst(t_list *lst)
 	if ((command->has_in || command->has_out) && !(command->cmd[0]))
 	{
 		command->cmd = malloc(sizeof(char *) * 2);
-		command->cmd[0] = ft_strdup("");
+		command->cmd[0] = ft_strdup(".");
 		command->cmd[1] = NULL;
 	}
 	return (command);
@@ -323,18 +323,7 @@ int	parse_error(t_cmd **cmds)
 	return (0);
 }
 
-int	get_cmdtab_num(t_cmd **cmd_tab)
-{
-	int	i = 0;
-
-	if (!cmd_tab)
-		return (-1);
-	while(cmd_tab[i])
-		i++;
-	return (i);
-}
-
-t_cmd	**parse_line(char *line)
+t_strcmd	*parse_line(char *line)
 {	
 	char **tab_str;
 	t_cmd **tab_cmd;
@@ -346,5 +335,5 @@ t_cmd	**parse_line(char *line)
 		return (NULL);
 	print_multi_cmd(tab_cmd);
 
-	return(tab_cmd);
+	return(NULL);
 }

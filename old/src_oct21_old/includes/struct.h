@@ -83,7 +83,7 @@ typedef struct	s_lstcmd
 	t_list *redout;
 }	t_lstcmd;
 
-typedef struct	s_strcmd  //delete
+typedef struct	s_strcmd
 {
 	char **redin;
 	char **redout;
@@ -92,14 +92,5 @@ typedef struct	s_strcmd  //delete
 	int	 num_redin;
 	int  num_redout;
 }	t_strcmd;
-
-typedef struct s_cmd
-{
-	char **redin;
-	char **redout;
-	char **cmd;
-	int	 has_in;
-	int  has_out;
-}	t_cmd;
 
 #endif
