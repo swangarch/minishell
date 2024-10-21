@@ -36,11 +36,9 @@ char *here_doc_name(void)
         count++;
         free(filename);
         strnum = ft_itoa(count);
-        //printf("01 strnum: %s\n", strnum);
         if (!strnum)
             return (NULL);
         filename = ft_strjoin(basename, strnum);
-        //printf("02 filename: %s\n", filename);
         free(strnum);
         if (!filename)
             return (NULL);
@@ -72,6 +70,8 @@ void red_in(t_strcmd *str_cmd, t_shell *shell, char *here_doc)
     int index_fd = 0;
     int *fd_infile;
     char *line;
+
+    printf("REDIN\n");
 
     if (!redin[i])
     {
@@ -115,16 +115,16 @@ void red_in(t_strcmd *str_cmd, t_shell *shell, char *here_doc)
                 free(fd_infile);
                 return ;
             }
-            write(STDOUT_FILENO, "> ", 2);
-            line = get_next_line(STDIN_FILENO);
-//////////////////////////////////
+            line = readline("> ");///free
+            add_history(line);
             line = expand_var_here(line, shell->env_head);
-            while (!(ft_strncmp(line, redin[i], ft_strlen(redin[i])) == 0 && line[ft_strlen(redin[i])] == '\n'))
+            while (ft_strcmp(line, redin[i]))
             {
                 write(fd_infile[index_fd], line, ft_strlen(line));
+                write(fd_infile[index_fd], "\n", 1);
                 free(line);
-                write(STDOUT_FILENO, "> ", 2);
-                line = get_next_line(STDIN_FILENO);
+                line = readline("> ");
+                add_history(line);
                 line = expand_var_here(line, shell->env_head);
             }
             free(line);
@@ -134,7 +134,6 @@ void red_in(t_strcmd *str_cmd, t_shell *shell, char *here_doc)
                 unlink(here_doc);
                 continue ;
             }
-            
 
             fd_infile[index_fd] = open(here_doc, O_RDONLY | O_CREAT, 0666);
             if (fd_infile[index_fd] < 0)

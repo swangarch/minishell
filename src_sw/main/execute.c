@@ -32,6 +32,7 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
     i = 0;
     if (str_cmd->num_cmd == 1)
     {
+        //printf("1cmd\n");/////////////////////////////////////////
         type_cmd = is_build_in(str_cmd->tab_cmd[0][0]);
         if (type_cmd)
         {
@@ -67,6 +68,7 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
         }
         return;
     }
+    //printf("n cmd\n");/////////////////////////////////////////
     p_fd = (int *)malloc(2 * (str_cmd->num_cmd - 1) * sizeof(int));
     if (!p_fd)
     {
@@ -99,14 +101,6 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
         else if (pid == 0)
         {
             child_signal_handler();
-            if (i > 0)
-            {
-                dup2(p_fd[(i - 1) * 2], 0);
-            }
-            if (i < str_cmd->num_cmd - 1)
-            {
-                dup2(p_fd[i * 2 + 1], 1);
-            }
             if (i == 0)
             {
                 red_in(str_cmd, shell, here_doc);
@@ -114,6 +108,14 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
             if (i == str_cmd->num_cmd - 1)
             {
                 red_out(str_cmd, shell);
+            }
+            if (i > 0)
+            {
+                dup2(p_fd[(i - 1) * 2], 0);
+            }
+            if (i < str_cmd->num_cmd - 1)
+            {
+                dup2(p_fd[i * 2 + 1], 1);
             }
             j = 0;
             while (j < 2 * (str_cmd->num_cmd - 1))
@@ -150,7 +152,10 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
 void execute(char **cmd, char **env)
 {
     char *path;
+    struct stat cmd_stat;
 
+    if (!cmd[0][0])
+        exit(0);
     path = get_path(cmd[0], env);
     if (!path)
     {
@@ -158,6 +163,14 @@ void execute(char **cmd, char **env)
         ft_putstr_fd(cmd[0], 2);
         ft_putstr_fd("\n", 2);
         exit(127);
+    }
+    if (stat(path, &cmd_stat) == 0 && (cmd_stat.st_mode & S_IFMT) == S_IFDIR)
+    {
+        ft_putstr_fd(SHELL, STDERR_FILENO);
+        ft_putstr_fd(path, STDERR_FILENO);
+        ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+        free(path);
+        exit(126);
     }
     if (execve(path, cmd, env) == -1)
     {

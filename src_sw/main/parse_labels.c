@@ -14,6 +14,8 @@
 
 int		is_red(char *s) //is redirection
 {
+	if (!s)
+		return(0);
 	if (!strcmp(s, "<"))
 		return (REDIN);
 	if (!strcmp(s, "<<"))

@@ -16,6 +16,7 @@
 # include "libft.h"
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -96,6 +97,13 @@ void child_signal_handler();
 int     mini_builtin(int type, t_shell *shell, t_strcmd *cmd);
 int     mini_exit(t_shell *shell, t_strcmd *cmd);
 int     count_cmd(char **str);
+int     mini_env(char **env, t_strcmd *cmd);
+int     mini_unset(t_env **head, char **cmd);
+int     str_to_ll(const char *str, long long *val);
+int     is_numeric(const char *str);
+int is_valid_name(const char *var);
+void	unset_var(t_env **lst_env, const char *name);
+int     mini_export(t_env **head, char **cmd);
 
 char    *expand_var_here(char *input, t_env *lst_env);
 

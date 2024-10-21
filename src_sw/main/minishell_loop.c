@@ -71,6 +71,7 @@ void    minishell_loop(t_shell *shell)
             expand_str_cmd(str_cmd, shell->env_head);
             //write(1, "\n\n", 2);
             //print_token_str(str_cmd);
+            //printf("expansion done\n");
             mini_execute(shell, str_cmd);
         }
         free(shell->prompt);

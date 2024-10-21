@@ -60,3 +60,34 @@ char    *mini_get_env(const char *name, t_env *lst_env)
     }
     return (ft_strdup(""));
 }
+
+void	unset_var(t_env **lst_env, const char *name)
+{
+	t_env	*prev;
+	t_env	*current;
+
+	current = *lst_env;
+	while (!ft_strcmp(current->var_name, name))
+	{
+		free(current->content);
+		free(current->var_name);
+		*lst_env = current->next;
+		free(current);
+		current = *lst_env;
+	}
+	prev = current;
+	current = current->next;
+	while (current)
+    {
+        if (!ft_strcmp(current->var_name, name))
+        {
+			free(current->content);
+			free(current->var_name);
+			prev->next = current->next;
+			free(current);
+			current = prev;
+		}
+		prev = current;
+        current = current->next;
+    }
+}
