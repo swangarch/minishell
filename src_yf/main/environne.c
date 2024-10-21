@@ -55,7 +55,7 @@ char    *mini_get_env(const char *name, t_env *lst_env)
     while (lst_env)
     {
         if (!ft_strcmp(lst_env->var_name, name))
-            return (lst_env->content);
+            return (ft_strdup(lst_env->content));
         lst_env = lst_env->next;
     }
     return (ft_strdup(""));
@@ -67,7 +67,7 @@ void	unset_var(t_env **lst_env, const char *name)
 	t_env	*current;
 
 	current = *lst_env;
-	while (!ft_strcmp(current->var_name, name))
+	while (current && !ft_strcmp(current->var_name, name))
 	{
 		free(current->content);
 		free(current->var_name);
@@ -91,3 +91,88 @@ void	unset_var(t_env **lst_env, const char *name)
         current = current->next;
     }
 }
+
+void	set_var(t_env **lst_env, char **name, char *cmd)
+{
+	t_env	*current;
+	t_env	*new;
+
+	current = *lst_env;
+	if (!current)
+	{
+		new = init_env_node(cmd);
+		if (!new)
+		{
+			return ;
+		}
+		current = new;
+		return ;
+	}
+	while (current)
+    {
+        if (!ft_strcmp(current->var_name, name[0]))
+        {
+			free(current->content);
+			current->content = ft_strdup(name[1]);
+			return ;
+		}
+        current = current->next;
+    }
+	if (!current)
+	{
+		new = init_env_node(cmd);
+		if (!new)
+		{
+			return ;
+		}
+		add_back_env_node(lst_env, new);
+	}
+}
+
+void	set_pwd(t_env **lst_env, char *name, char *content)
+{
+	t_env	*current;
+	t_env	*new;
+	char	*tmp_old;
+	char	*tmp_new;
+
+	current = *lst_env;
+	tmp_old = ft_strjoin(name, "=");
+	tmp_new = ft_strjoin(tmp_old, content);
+	free(tmp_old);
+	if (!current)
+	{
+		new = init_env_node(tmp_new);
+		if (!new)
+		{
+			free(tmp_new);
+			return ;
+		}
+		current = new;
+		free(tmp_new);
+		return ;
+	}
+	while (current)
+    {
+        if (!ft_strcmp(current->var_name, name))
+        {
+			free(current->content);
+			current->content = ft_strdup(content);
+			free(tmp_new);
+			return ;
+		}
+        current = current->next;
+    }
+	if (!current)
+	{
+		new = init_env_node(tmp_new);
+		if (!new)
+		{
+			free(tmp_new);
+			return ;
+		}
+		add_back_env_node(lst_env, new);
+		free(tmp_new);
+	}
+}
+

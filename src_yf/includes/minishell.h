@@ -94,16 +94,22 @@ void red_in(t_strcmd *str_cmd, t_shell *shell);
 void close_fds(int *fd, int num);
 
 void child_signal_handler();
-int     mini_builtin(int type, t_shell *shell, t_strcmd *cmd);
-int     mini_exit(t_shell *shell, t_strcmd *cmd);
+int     mini_builtin(int type, t_shell *shell, t_strcmd *cmd, int i);
+int     mini_exit(t_shell *shell, t_strcmd *cmd, int place);
 int     count_cmd(char **str);
-int     mini_env(char **env, t_strcmd *cmd);
+int     mini_env(char **env, t_strcmd *cmd, int place);
 int     mini_unset(t_env **head, char **cmd);
 int     str_to_ll(const char *str, long long *val);
 int     is_numeric(const char *str);
 int is_valid_name(const char *var);
 void	unset_var(t_env **lst_env, const char *name);
 int     mini_export(t_env **head, char **cmd);
+void	set_var(t_env **lst_env, char **name, char *cmd);
+char    **split_by_equal(const char *s);
+int     mini_echo(char **cmd);
+int     mini_pwd(char **cmd);
+int     mini_cd(t_env **head, char **cmd);
+void	set_pwd(t_env **lst_env, char *name, char *content);
 
 extern int  g_status;
 

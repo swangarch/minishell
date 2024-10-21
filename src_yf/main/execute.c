@@ -23,35 +23,38 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
         {
             red_in(str_cmd, shell);
             red_out(str_cmd, shell);
-            g_status = mini_builtin(type_cmd, shell, str_cmd);
+            g_status = mini_builtin(type_cmd, shell, str_cmd, 0);
             if (access("here_doc", F_OK) == 0)
                 unlink("here_doc");
+            dup2(shell->std_fds[0], STDIN_FILENO);
+            dup2(shell->std_fds[1], STDOUT_FILENO);
+            return ;
         }
-        else
-        {
-            pid = fork();
-            if (pid == -1)
-            {
-                g_status = 3;
-                perror("fork");
-                return;
-            }
-            else if (pid == 0)
-            {
-                child_signal_handler();
-                red_in(str_cmd, shell);
-                red_out(str_cmd, shell);
-                execute(str_cmd->tab_cmd[i], shell->env);
-            }
-            signal(SIGINT, SIG_IGN);
-            signal(SIGQUIT, SIG_IGN);
-            if (access("here_doc", F_OK) == 0)
-                unlink("here_doc");
-            waitpid(pid, &g_status, 0);
-            if ((g_status & 0xFF) == SIGINT)
-                write(STDOUT_FILENO, "\n", 1);
-        }
-        return;
+        // else
+        // {
+        //     pid = fork();
+        //     if (pid == -1)
+        //     {
+        //         g_status = 3;
+        //         perror("fork");
+        //         return;
+        //     }
+        //     else if (pid == 0)
+        //     {
+        //         child_signal_handler();
+        //         red_in(str_cmd, shell);
+        //         red_out(str_cmd, shell);
+        //         execute(str_cmd->tab_cmd[i], shell->env);
+        //     }
+        //     signal(SIGINT, SIG_IGN);
+        //     signal(SIGQUIT, SIG_IGN);
+        //     if (access("here_doc", F_OK) == 0)
+        //         unlink("here_doc");
+        //     waitpid(pid, &g_status, 0);
+        //     if ((g_status & 0xFF) == SIGINT)
+        //         write(STDOUT_FILENO, "\n", 1);
+        // }
+        // return ;
     }
     p_fd = (int *)malloc(2 * (str_cmd->num_cmd - 1) * sizeof(int));
     if (!p_fd)
@@ -74,6 +77,7 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
     i = 0;
     while (i < str_cmd->num_cmd)
     {
+        type_cmd = is_build_in(str_cmd->tab_cmd[i][0]);
         pid = fork();
         if (pid == -1)
         {
@@ -85,14 +89,7 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
         else if (pid == 0)
         {
             child_signal_handler();
-            if (i > 0)
-            {
-                dup2(p_fd[(i - 1) * 2], 0);
-            }
-            if (i < str_cmd->num_cmd - 1)
-            {
-                dup2(p_fd[i * 2 + 1], 1);
-            }
+            // 修改逻辑！！！！！！！！！
             if (i == 0)
             {
                 red_in(str_cmd, shell);
@@ -101,12 +98,26 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
             {
                 red_out(str_cmd, shell);
             }
+            if (i > 0)
+            {
+                dup2(p_fd[(i - 1) * 2], 0);
+            }
+            if (i < str_cmd->num_cmd - 1)
+            {
+                dup2(p_fd[i * 2 + 1], 1);
+            }
             j = 0;
             while (j < 2 * (str_cmd->num_cmd - 1))
             {
                 close(p_fd[j++]);
             }
-            execute(str_cmd->tab_cmd[i], shell->env);
+            if (type_cmd)
+            {
+                g_status = mini_builtin(type_cmd, shell, str_cmd, i);
+                exit(g_status);
+            }
+            else
+                execute(str_cmd->tab_cmd[i], shell->env);
         }
         ++i;
     }
@@ -127,11 +138,12 @@ void mini_execute(t_shell *shell, t_strcmd *str_cmd)
     }
     if ((g_status & 0xFF) == SIGINT)
         write(STDOUT_FILENO, "\n", 1);
-    //检查g_status是否太大超出某个范围！！！处理逻辑是什么？？
+    // 检查g_status是否太大超出某个范围！！！处理逻辑是什么？？
+    g_status %= 256;
     if (access("here_doc", F_OK) == 0)
         unlink("here_doc");
     free(p_fd);
-    // signal(SIGINT, handle_sigint);//！！！！！！！！！！1
+    //signal(SIGINT, handle_sigint);//！！！！！！！！！！1
 }
 
 void execute(char **cmd, char **env)
@@ -175,7 +187,7 @@ char *get_path(char *cmd, char **env)
 
     i = -1;
     if (access(cmd, F_OK | X_OK) == 0)
-    //如果$HOME作为命令传过来，需要多一步判断不是文件夹
+        // 如果$HOME作为命令传过来，需要多一步判断不是文件夹
         return (cmd);
     all_path = env_split(env);
     if (!all_path)
