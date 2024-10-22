@@ -1,31 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/27 17:05:24 by yfan              #+#    #+#             */
-/*   Updated: 2024/09/27 17:05:28 by yfan             ###   ########.fr       */
+/*   Created: 2024/05/21 18:09:59 by yfan              #+#    #+#             */
+/*   Updated: 2024/05/28 16:50:00 by yfan             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-int g_sigint_flag;
-
-int main(int ac, char **av, char **env)
+size_t	ft_strlcpy(char *dst, const char *src, size_t siz)
 {
-    t_shell shell;
+	size_t	length;
+	size_t	index;
 
-    if (ac != 1 && av)
-    {
-        ft_putstr_fd(MES_ARG_NO_ONE, STDERR_FILENO);
-        exit(EXIT_SUCCESS);
-    }
-    init_shell(&shell, env);
-    minishell_loop(&shell);
-    free_before_exit(&shell);
-    exit(shell.status);
-    return (0);
+	length = ft_strlen(src);
+	index = 0;
+	if (siz)
+	{
+		while (src[index] && index < siz - 1)
+		{
+			dst[index] = src[index];
+			index++;
+		}
+		dst[index] = '\0';
+	}
+	return (length);
 }

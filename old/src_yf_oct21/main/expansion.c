@@ -6,7 +6,7 @@ char    *expand_buffer(char *old_buffer, int *size)
     char    *new_buffer;
     
     new_size = (*size) * FACTOR;
-    new_buffer = (char *)malloc(new_size * sizeof(char));
+    new_buffer = (char *)malloc(new_size);
     if (!new_buffer)
     {
         free(old_buffer);
@@ -27,7 +27,7 @@ int     append_str(t_expansion *exp)
     {
         exp->result = expand_buffer(exp->result, &exp->size);
         if (!exp->result)
-            return (free(exp->exit_status), 0);
+            return (0);
     }
     ft_strlcpy(exp->result + exp->len, exp->exit_status, exp->size);
     exp->len += str_len;
@@ -45,12 +45,10 @@ int     append_env(t_expansion *exp)
     {
         exp->result = expand_buffer(exp->result, &exp->size);
         if (!exp->result)
-            return (free(exp->env_val), 0);
+            return (0);
     }
     ft_strlcpy(exp->result + exp->len, exp->env_val, exp->size);
     exp->len += str_len;
-    free(exp->env_val);
-    exp->env_val = NULL;
     return (1);
 }
 
@@ -77,22 +75,24 @@ int     valid_exp(int c)
     return (0);
 }
 
-char    *expand_var(char *input, t_env *lst_env, int status)
+char    *expand_var(char *input, t_env *lst_env)
 {
     t_expansion exp;
 
     if (!init_expansion(&exp))
-        return (free(input), NULL);
+        return (NULL);
     while (input[exp.i] != '\0')
     {
         if (input[exp.i] == '\'' && !exp.in_dquote)
         {
             exp.in_squote = !exp.in_squote;
+            //exp.result[exp.len++] = input[exp.i++];
             exp.i++;
         }
         else if (input[exp.i] == '"' && !exp.in_squote)
         {
             exp.in_dquote = !exp.in_dquote;
+            //exp.result[exp.len++] = input[exp.i++];
             exp.i++;
         }
         else if (input[exp.i] == '$' && !exp.in_squote && valid_exp(input[exp.i + 1]))
@@ -101,9 +101,9 @@ char    *expand_var(char *input, t_env *lst_env, int status)
             if (input[exp.i] == '?')
             {
                 exp.i++;
-                exp.exit_status = ft_itoa(status);
+                exp.exit_status = ft_itoa(g_status);
                 if (!exp.exit_status || !append_str(&exp))
-                    return (free(input), free(exp.result), NULL);
+                    return (free(exp.result), NULL);
             }
             else if (ft_isdigit(input[exp.i]))
                 exp.i++;
@@ -118,15 +118,15 @@ char    *expand_var(char *input, t_env *lst_env, int status)
                     exp.i++;
                 if (!ft_strcmp(exp.var_name, "?"))
                 {
-                    exp.exit_status = ft_itoa(status);
+                    exp.exit_status = ft_itoa(g_status);
                     if (!exp.exit_status || !append_str(&exp))
-                        return (free(input), free(exp.result), NULL);
+                        return (free(exp.result), NULL);
                 }
                 else
                 {
                     exp.env_val = mini_get_env(exp.var_name, lst_env);
                     if (!exp.env_val || !append_env(&exp))
-                        return (free(input), free(exp.result), NULL);
+                        return (free(exp.result), NULL);
                 }
             }
             else if (ft_isalnum(input[exp.i]) || input[exp.i] == '_')
@@ -139,7 +139,7 @@ char    *expand_var(char *input, t_env *lst_env, int status)
                 {
                     exp.env_val = mini_get_env(exp.var_name, lst_env);
                     if (!exp.env_val || !append_env(&exp))
-                        return (free(input), free(exp.result), NULL);
+                        return (free(exp.result), NULL);
                 }
             }
         }
@@ -149,7 +149,7 @@ char    *expand_var(char *input, t_env *lst_env, int status)
         {
             exp.result = expand_buffer(exp.result, &exp.size);
             if (!exp.result)
-                return (free(input), NULL);
+                return (NULL);
         }
     }
     exp.result[exp.len] = '\0';
@@ -170,6 +170,7 @@ char    *expand_tilde(char *input, t_env *lst_env)
 {
     char    *home;
     char    *result;
+    size_t  len;
 
     if (input[0] == '~')
     {
@@ -179,11 +180,11 @@ char    *expand_tilde(char *input, t_env *lst_env)
             if (!home)
                 return (free(input), NULL);
             if (!input[1])
-                return (free(input), home);
+                return (free(input), ft_strdup(home));
             if (input[1] == '/')
             {
                 result = ft_strjoin(home, input + 1);
-                return (free(input), free(home), result);
+                return (free(input), result);
             }
         }
     }

@@ -1,28 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_labels.c                                     :+:      :+:    :+:   */
+/*   ft_error.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shuwang <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 12:46:33 by shuwang           #+#    #+#             */
-/*   Updated: 2024/10/08 12:46:35 by shuwang          ###   ########.fr       */
+/*   Created: 2024/10/03 14:11:53 by shuwang           #+#    #+#             */
+/*   Updated: 2024/10/03 14:11:59 by shuwang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int		is_red(char *s) //is redirection
+void    ft_err(char *s)
 {
-	if (!s)
-		return(0);
-	if (!strcmp(s, "<"))
-		return (REDIN);
-	if (!strcmp(s, "<<"))
-		return (HEREDOC);
-	if (!strcmp(s, ">"))
-		return (REDOUT);
-	if (!strcmp(s, ">>"))
-		return (APPEND);
-	return (TEXT);
+    ft_putstr_fd(s, 2);
 }

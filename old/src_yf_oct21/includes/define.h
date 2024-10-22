@@ -38,14 +38,14 @@
 # define TRUE 1
 # define FALSE 0
 
-# define MES_ARG_NO_ONE "Usage: ./minishell [no arguments]\n"
+# define MES_ARG_NO_ONE "Usage: ./minishell [no argument]\n"
 # define MES_PATH_ERR "Path got failed!\n"
-# define MES_CUR_PATH_ERR "minishell: Current path got failed!\n"
+# define MES_CUR_PATH_ERR "Current path got failed!\n"
 # define MES_MALLOC_ERR "Malloc failed!\n"
-# define MES_CREAT_NODE "minishell: Creat node failed!\n"
+# define MES_CREAT_NODE "Creat node failed!\n"
 # define MES_SQUOTE_ERR "Syntax error: unclosed single quote\n"
 # define MES_DQUOTE_ERR "Syntax error: unclosed double quote\n"
-# define MES_DUP_ERR "minishell: Dup failed!\n"
+# define MES_DUP_ERR "Dup failed!\n"
 # define MES_EXIT_OP "exit: options are not allowed\n"
 # define MES_EXIT_NUM ": numeric argument required\n"
 # define MES_EXIT_TOO_MANY "exit: too many arguments\n"

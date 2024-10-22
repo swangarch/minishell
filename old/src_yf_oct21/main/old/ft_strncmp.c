@@ -1,31 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/27 17:05:24 by yfan              #+#    #+#             */
-/*   Updated: 2024/09/27 17:05:28 by yfan             ###   ########.fr       */
+/*   Created: 2024/05/21 20:35:10 by yfan              #+#    #+#             */
+/*   Updated: 2024/05/21 20:44:11 by yfan             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-int g_sigint_flag;
-
-int main(int ac, char **av, char **env)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-    t_shell shell;
+	size_t	i;
 
-    if (ac != 1 && av)
-    {
-        ft_putstr_fd(MES_ARG_NO_ONE, STDERR_FILENO);
-        exit(EXIT_SUCCESS);
-    }
-    init_shell(&shell, env);
-    minishell_loop(&shell);
-    free_before_exit(&shell);
-    exit(shell.status);
-    return (0);
+	i = 0;
+	while (s1[i] && s1[i] == s2[i] && i < n)
+		i++;
+	if (i == n)
+		return (0);
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
