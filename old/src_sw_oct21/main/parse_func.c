@@ -283,9 +283,9 @@ int	red_next_err(char **tab)
 	i = 0;
 	while (tab[i])
 	{
-		if (is_red(tab[i]) != TEXT)//&& !is_red(tab[i + 1]) == WORD)
+		if (is_red(tab[i]) != WORD)//&& !is_red(tab[i + 1]) == WORD)
 		{
-			if (!tab[i + 1] || is_red(tab[i + 1]) != TEXT)
+			if (!tab[i + 1] || is_red(tab[i + 1]) != WORD)
 			{
 				ft_err(ERR_PREF "syntax error near unexpected token `");
 				if (tab[i + 1])

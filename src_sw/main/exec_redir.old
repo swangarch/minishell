@@ -1,0 +1,174 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_redir.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: shuwang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/21 18:13:04 by shuwang           #+#    #+#             */
+/*   Updated: 2024/10/21 18:13:07 by shuwang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/minishell.h"
+
+void close_fds(int *fd, int num)
+{
+    int i;
+
+    i = 0;
+    while(i < num)
+    {
+        close(fd[i]);
+        i++;
+    }
+}
+
+int red_in_fromfile(t_cmd *cmd, int *fd_infile, int *i)
+{
+    int index_fd = *i / 2;
+
+    (*i)++;
+    fd_infile[index_fd] = open(cmd->redin[*i], O_RDONLY);
+    if (fd_infile[index_fd] < 0)
+    {
+        perror("open infile");
+        close_fds(fd_infile, *i);
+        free(fd_infile);
+        return (0);
+    }
+    dup2(fd_infile[index_fd], STDIN_FILENO);
+    close(fd_infile[index_fd]);
+    return (1);
+}
+
+int red_open_heredoc_read(int *fd_infile, int *i, char *here_doc)
+{
+    int index_fd;
+
+    index_fd = *i / 2;
+    fd_infile[index_fd] = open(here_doc, O_RDONLY, 0666);
+    if (fd_infile[index_fd] < 0)
+    {
+        perror(here_doc);
+        close_fds(fd_infile, *i);
+        free(fd_infile);
+        return (0);
+    }
+    return (1);
+}
+
+int red_in_heredoc(int *fd_infile, int *i, t_shell *shell, int index_p, char **here_docs)
+{
+    char *here_doc;
+    int index_fd;
+
+    index_fd = (*i) / 2;
+    (*i)++;
+    if (!red_open_heredoc_read(fd_infile, i, here_docs[index_p]))
+        return (0);
+    dup2(fd_infile[index_fd], STDIN_FILENO);
+    close(fd_infile[index_fd]);
+    return (1);
+}
+
+void red_in(t_cmd *cmd, t_shell *shell, int index_p, char **here_docs)
+{
+    int i = 0;
+    int *fd_infile;
+
+    if (!cmd->redin[i])
+        return;
+    fd_infile = malloc(get_tab_num(cmd->redin) * sizeof(int));
+    if (!fd_infile)
+    {
+        ft_err(MES_MALLOC_ERR);
+        return ;
+    }
+    while (cmd->redin[i])
+    {
+        if (is_red(cmd->redin[i]) == REDIN)
+        {
+            if (!red_in_fromfile(cmd, fd_infile, &i))
+                return ;
+        }
+        else if (is_red(cmd->redin[i]) == HEREDOC && i / 2 == get_tab_num(cmd->redin) / 2 - 1)
+        {
+            if (!red_in_heredoc(fd_infile, &i, shell, index_p, here_docs))
+                return ;
+        }
+        i++;
+    }
+    free(fd_infile);
+}
+
+
+int red_out_tofile(t_cmd *cmd, int *fd_outfile, int *i)
+{
+    int index_fd;
+
+    index_fd = (*i) / 2;
+    (*i)++;
+    fd_outfile[index_fd] = open(cmd->redout[*i], O_CREAT | O_WRONLY | O_TRUNC, 0666);
+    if (fd_outfile[index_fd] < 0)
+    {
+        perror(cmd->redout[*i]);
+        close_fds(fd_outfile, *i);
+        free(fd_outfile);
+        //freeshell cmd
+        return (0);
+    }
+    return (1);
+}
+
+int red_out_append(t_cmd *cmd, int *fd_outfile, int *i)
+{
+    int index_fd;
+
+    index_fd = (*i) / 2;
+    (*i)++;
+    fd_outfile[index_fd] = open(cmd->redout[*i], O_CREAT | O_WRONLY | O_APPEND, 0666);
+    if (fd_outfile[index_fd] < 0)
+    {
+        perror(cmd->redout[*i]);
+        close_fds(fd_outfile, *i);
+        free(fd_outfile);
+        //freeshell cmd
+        return (0);
+    }
+    return (1);
+}
+
+void red_out(t_cmd *cmd, t_shell *shell)
+{
+    int i = 0;
+    int index_fd = 0;
+    int *fd_outfile;
+
+    if (!cmd->redout[i])
+        return;
+    fd_outfile = malloc(get_tab_num(cmd->redout) * sizeof(int));
+    if (!fd_outfile)
+    {
+        ft_err(MES_MALLOC_ERR);
+        return ;
+    }
+    while (cmd->redout[i])
+    {
+        if (is_red(cmd->redout[i]) == REDOUT)
+        {
+            if (!red_out_tofile(cmd, fd_outfile, &i))
+                return ;
+        }
+        else if (is_red(cmd->redout[i]) == APPEND)
+        {
+            if (!red_out_append(cmd, fd_outfile, &i))
+                return ;
+        }
+        i++;
+        index_fd++;
+    }
+    dup2(fd_outfile[index_fd - 1], STDOUT_FILENO);
+    close(fd_outfile[index_fd - 1]);
+    free(fd_outfile);    
+}

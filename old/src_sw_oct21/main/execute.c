@@ -1,5 +1,11 @@
 #include "../includes/minishell.h"
 
+// void    exec_cmd(t_strcmd *str_cmd, t_shell *shell)
+// {
+//     red_in(str_cmd, shell);
+//     red_out(str_cmd, shell);
+// }
+
 void mini_execute(t_shell *shell, t_cmd **tab_cmd)
 {
     int i;
@@ -7,42 +13,74 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
     int type_cmd;
     pid_t pid;
     int *p_fd;
-
-    char *here_doc; //++++++++++++++++++++++delete
-    char **here_docs;//++++++++++++++++++++++
-    int num_cmd;//++++++++++++++++++++++
+    char *here_doc;
 
     // exec_cmd(str_cmd, shell);
     if (!tab_cmd || !shell)
         return ;/////protect
     
-    num_cmd = get_cmdtab_num(tab_cmd);//++++++++++++++++++++++
     here_doc = NULL;
-    here_docs = process_heredocs(tab_cmd, shell);
+    // if (has_heredoc(tab_cmd, shell))
+    // {
+    //     here_doc = here_doc_name();
+    //     {
+    //         if (!here_doc)
+    //             return ;
+    //     }
+    // }
 
     i = 0;
-    if (num_cmd == 1)
+    //if (str_cmd->num_cmd == 1)
+    if (get_cmdtab_num(tab_cmd) == 1)
     {
+        //printf("1cmd\n");/////////////////////////////////////////
         type_cmd = is_build_in(tab_cmd[0]->cmd[0]);
         if (type_cmd)
         {
-            red_in(tab_cmd[i], shell, i, here_docs);
+            red_in(tab_cmd[0], shell, i);
             red_out(tab_cmd[0], shell);
             g_status = mini_builtin(type_cmd, shell, tab_cmd, 0);
-            delete_heredoc(here_docs);
+            if (access(here_doc, F_OK) == 0)
+                unlink(here_doc);
             dup2(shell->std_fds[0], STDIN_FILENO);
             dup2(shell->std_fds[1], STDOUT_FILENO);
             return ;
         }
+        // else
+        // {
+        //     pid = fork();
+        //     if (pid == -1)
+        //     {
+        //         g_status = 3;
+        //         perror("fork");
+        //         return;
+        //     }
+        //     else if (pid == 0)
+        //     {
+        //         child_signal_handler();
+        //         red_in(str_cmd, shell, here_doc);
+        //         red_out(str_cmd, shell);
+        //         execute(str_cmd->tab_cmd[i], shell->env);
+        //     }
+        //     signal(SIGINT, SIG_IGN);
+        //     signal(SIGQUIT, SIG_IGN);
+        //     if (access(here_doc, F_OK) == 0)
+        //         unlink(here_doc);
+        //     waitpid(pid, &g_status, 0);
+        //     if ((g_status & 0xFF) == SIGINT)
+        //         write(STDOUT_FILENO, "\n", 1);
+        // }
+        // return;
     }
-    p_fd = (int *)malloc(2 * (num_cmd - 1) * sizeof(int));
+    //printf("n cmd\n");/////////////////////////////////////////
+    p_fd = (int *)malloc(2 * (get_cmdtab_num(tab_cmd) - 1) * sizeof(int));
     if (!p_fd)
     {
         g_status = 1;
         ft_putstr_fd(MES_MALLOC_ERR, STDERR_FILENO);
         return;
     }
-    while (i < num_cmd - 1)
+    while (i < get_cmdtab_num(tab_cmd) - 1)
     {
         if (pipe(p_fd + i * 2) == -1)
         {
@@ -54,7 +92,7 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
         ++i;
     }
     i = 0;
-    while (i < num_cmd)
+    while (i < get_cmdtab_num(tab_cmd))
     {
         type_cmd = is_build_in(tab_cmd[i]->cmd[0]);
         pid = fork();
@@ -80,14 +118,14 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
             {
                 dup2(p_fd[(i - 1) * 2], 0);
             }
-            if (i < num_cmd - 1)
+            if (i < get_cmdtab_num(tab_cmd) - 1)
             {
                 dup2(p_fd[i * 2 + 1], 1);
             }
-            red_in(tab_cmd[i], shell, i, here_docs);
+            red_in(tab_cmd[i], shell, i);
             red_out(tab_cmd[i], shell);
             j = 0;
-            while (j < 2 * (num_cmd - 1))
+            while (j < 2 * (get_cmdtab_num(tab_cmd) - 1))
             {
                 close(p_fd[j++]);
             }
@@ -103,12 +141,12 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
     signal(SIGINT, SIG_IGN);  // ！！！！！！！！！！！1
     signal(SIGQUIT, SIG_IGN); // ！！！！！！！！！！！
     j = 0;
-    while (j < 2 * (num_cmd - 1))
+    while (j < 2 * (get_cmdtab_num(tab_cmd) - 1))
     {
         close(p_fd[j++]);
     }
     j = 0;
-    while (j < num_cmd)
+    while (j < get_cmdtab_num(tab_cmd))
     {
         waitpid(-1, &g_status, 0);
         j++;
@@ -118,7 +156,8 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
     if ((g_status & 0xFF) == SIGINT)
         write(STDOUT_FILENO, "\n", 1);
     g_status %= 256;
-    delete_heredoc(here_docs);
+    if (access(here_doc, F_OK) == 0)
+        unlink(here_doc);
     free(p_fd);
     // signal(SIGINT, handle_sigint);//！！！！！！！！！！1
 }

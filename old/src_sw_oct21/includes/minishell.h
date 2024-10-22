@@ -89,7 +89,7 @@ void	execute(char **cmd, char **env);
 char	*get_path(char *cmd, char **env);
 char	**env_split(char **env);
 void    red_out(t_cmd *tab_cmd, t_shell *shell);
-void    red_in(t_cmd *cmd, t_shell *shell, int index_p, char **here_docs);
+void    red_in(t_cmd *tab_cmd, t_shell *shell, int index_p);
 void close_fds(int *fd, int num);
 
 void child_signal_handler();
@@ -161,17 +161,11 @@ int		check_double_pipe(t_list *lst);
 int		check_red_file(t_list *lst);
 int		check_token_err(t_list *lst);
 
-int	get_cmdtab_num(t_cmd **cmd_tab);
-int	get_tab_num(char **tab);
-
 char *here_doc_name(int index_p);
 int has_heredoc(t_cmd *cmd, t_shell *shell);
-char *creat_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell, int index_p);
-char **process_heredocs(t_cmd **tab_cmd, t_shell *shell);
-void    write_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell);
-int red_open_heredoc_creat(int *fd_infile, int *i, char *here_doc);
-int red_open_heredoc_read(int *fd_infile, int *i, char *here_doc);
-void delete_heredoc(char **here_docs);
+
+int	get_cmdtab_num(t_cmd **cmd_tab);
+int	get_tab_num(char **tab);
 //-----------------------------------------------sw
 
 #endif
