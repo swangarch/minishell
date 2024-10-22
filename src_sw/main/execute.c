@@ -7,8 +7,6 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
     int type_cmd;
     pid_t pid;
     int *p_fd;
-
-    char *here_doc; //++++++++++++++++++++++delete
     char **here_docs;//++++++++++++++++++++++
     int num_cmd;//++++++++++++++++++++++
 
@@ -17,7 +15,6 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
         return ;/////protect
     
     num_cmd = get_cmdtab_num(tab_cmd);//++++++++++++++++++++++
-    here_doc = NULL;
     here_docs = process_heredocs(tab_cmd, shell);
 
     i = 0;

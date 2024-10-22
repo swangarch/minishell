@@ -13,34 +13,42 @@
 #ifndef STRUCT_H
 # define STRUCT_H
 
-typedef enum e_type
-{
-	WORD,
-	HEREDOC,
-	OUTPUT,
-	APPEND,
-	INPUT,
-	UNKNOWN
-}	t_type;
+// typedef enum e_type
+// {
+// 	WORD,
+// 	HEREDOC,
+// 	OUTPUT,
+// 	APPEND,
+// 	INPUT,
+// 	UNKNOWN
+// }	t_type;
 
-typedef struct s_token
-{
-	t_type			type;
-	struct s_token	*next;
-	struct s_token	*prev;
-	char			*content;
-}	t_token;
+// typedef struct s_token
+// {
+// 	t_type			type;
+// 	struct s_token	*next;
+// 	struct s_token	*prev;
+// 	char			*content;
+// }	t_token;
 
-typedef struct s_cmd_tbl
+// typedef struct s_cmd_tbl
+// {
+// 	char				*cmd;
+// 	t_token				*args;
+// 	struct s_cmd_tbl	*next;
+// 	int					index;
+// 	t_token				*redirs;
+// 	char				**cmd_args;
+// 	char				*heredoc_name;
+// }	t_cmd_tbl;
+typedef struct s_cmd
 {
-	char				*cmd;
-	t_token				*args;
-	struct s_cmd_tbl	*next;
-	int					index;
-	t_token				*redirs;
-	char				**cmd_args;
-	char				*heredoc_name;
-}	t_cmd_tbl;
+	char **redin;
+	char **redout;
+	char **cmd;
+	int	 has_in;
+	int  has_out;
+}	t_cmd;
 
 typedef struct s_env
 {
@@ -52,13 +60,17 @@ typedef struct s_env
 typedef struct s_shell
 {
 	char			*prompt;
-	char			*heredoc;
-	t_cmd_tbl		*cmd_tbls;
+	char			**here_docs;
+	//char			*heredoc;
+	//t_cmd_tbl		*cmd_tbls;
 	t_env			*env_head;
 	char			**env;
 	int				std_fds[2];
+	int				status;
 	char			*trimmed_prompt;
 	char			*terminal_prompt;
+	t_cmd			**tab_cmd;
+	struct termios	termios_set;
 }	t_shell;
 
 typedef struct s_expansion
@@ -82,14 +94,14 @@ typedef struct	s_lstcmd
 	t_list *redout;
 }	t_lstcmd;
 
-typedef struct	s_strcmd
-{
-	char **redin;
-	char **redout;
-	char ***tab_cmd;
-	int	 num_cmd;
-	int	 num_redin;
-	int  num_redout;
-}	t_strcmd;
+// typedef struct	s_strcmd  //delete
+// {
+// 	char **redin;
+// 	char **redout;
+// 	char ***tab_cmd;
+// 	int	 num_cmd;
+// 	int	 num_redin;
+// 	int  num_redout;
+// }	t_strcmd;
 
 #endif

@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int g_status;
+int g_sigint_flag;
 
 int main(int ac, char **av, char **env)
 {
@@ -26,6 +26,6 @@ int main(int ac, char **av, char **env)
     init_shell(&shell, env);
     minishell_loop(&shell);
     free_before_exit(&shell);
-    exit(g_status);
+    exit(shell.status);
     return (0);
 }

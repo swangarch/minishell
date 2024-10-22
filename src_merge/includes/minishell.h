@@ -16,6 +16,7 @@
 # include "libft.h"
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -25,6 +26,7 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <termios.h>
+//# include <sys/ioctl.h>//！！！！！！ioctl function
 # include "struct.h"
 # include "define.h"
 
@@ -32,13 +34,8 @@ void    init_shell(t_shell *shell, char **env);
 void    minishell_loop(t_shell *shell);
 void    set_signal_handler(void);
 void    handle_sigint(int sig);
-void	set_prompt(t_shell *shell);
-char	*ft_strdup(const char *s);
-char	*ft_strjoin(char const *s1, char const *s2);
 void    free_before_exit(t_shell *shell);
-size_t	ft_strlen(const char *s);
-void    configure_terminal(void);
-char	**ft_split(char const *s, char c);
+void    configure_terminal(struct termios *termios_set);
 void    init_no_env(t_shell *shell);
 t_env   *init_default_env(char **env);
 t_env	*init_env_node(char *str);
@@ -47,8 +44,6 @@ char	*get_env_content(char *full, char *var_name);
 void	free_env(t_env *head);
 //void    print_env(t_env *head);//print the list of env!!!
 void	add_back_env_node(t_env	**head, t_env *new);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-int	    ft_strncmp(const char *s1, const char *s2, size_t n);
 void	update_env(t_shell *shell);
 char	**env_list_to_char(t_env *env);
 int	    get_env_list_size(t_env *head);
@@ -57,41 +52,54 @@ char	*get_full_env(t_env *env);
 //int	    is_only_space(char *str);
 //int 	rep_prompt(char *prompt, char *prev_prompt);
 int	    ft_strcmp(const char *s1, const char *s2);
-char	*ft_strtrim(char const *s1, char const *set);
 int	    lexer(t_shell *shell);
 int 	is_empty_line_passed(t_shell *s);
 int 	bad_pipe(t_shell *shell);
 int 	syntax_error(char c);
 int 	syntax_error_newline(void);
 int     wrong_operator_check(const char *s);
-char	*ft_strchr(const char *s, int c);
 void	free_env_path(char **env, char *get_path);
-void	ft_putstr_fd(char *s, int fd);
-char    *expand_var(char *input, t_env *lst_env);
+char    *expand_var(char *input, t_env *lst_env, int status);
 int     init_expansion(t_expansion *exp);
-char	*ft_itoa(int n);
 int     append_str(t_expansion *exp);
 int     append_env(t_expansion *exp);
 char    *expand_buffer(char *old_buffer, int *size);
-size_t	ft_strlcpy(char *dst, const char *src, size_t siz);
 char    *mini_get_env(const char *name, t_env *lst_env);
-int		ft_isalnum(int c);
-void	*ft_memcpy(void *dest, const void *src, size_t n);
 int     valid_exp(int c);
-int		ft_isdigit(int c);
 char    *expand_tilde(char *input, t_env *lst_env);
 
-void    mini_execute(t_shell *shell, t_strcmd *str_cmd);
+void    mini_execute(t_shell *shell, t_cmd **tab_cmd);
 int     is_build_in(const char *s);
 void	execute(char **cmd, char **env);
 char	*get_path(char *cmd, char **env);
 char	**env_split(char **env);
-void    exec_cmd(t_strcmd *str_cmd, t_shell *shell);
-void    red_out(t_strcmd *str_cmd, t_shell *shell);
-void red_in(t_strcmd *str_cmd, t_shell *shell);
+void    red_out(t_cmd *tab_cmd, t_shell *shell);
+void    red_in(t_cmd *tab_cmd, t_shell *shell, int index_p, char **here_docs);
 void close_fds(int *fd, int num);
 
-extern int  g_status;
+void child_signal_handler();
+int     mini_builtin(int type, t_shell *shell, t_cmd **tab_cmd, int i);
+int     mini_exit(t_shell *shell, t_cmd **tab_cmd, int place);
+int     count_cmd(char **str);
+int     mini_env(char **env, t_cmd **tab_cmd, int place);
+int     mini_unset(t_env **head, char **cmd);
+int     str_to_ll(const char *str, long long *val);
+int     is_numeric(const char *str);
+int is_valid_name(const char *var);
+void	unset_var(t_env **lst_env, const char *name);
+int     mini_export(t_env **head, char **cmd);
+void	set_var(t_env **lst_env, char **name, char *cmd);
+char    **split_by_equal(const char *s);
+int     mini_echo(char **cmd);
+int     mini_pwd(char **cmd);
+int     mini_cd(t_env **head, char **cmd);
+void	set_pwd(t_env **lst_env, char *name, char *content);
+
+char    *expand_var_here(char *input, t_env *lst_env, int status);
+
+void	free_in_loop(t_shell *shell);
+
+extern int  g_sigint_flag;
 
 
 //-----------------------------------------------sw
@@ -107,13 +115,13 @@ extern int  g_status;
 #define TEXT 0
 
 
-void    sigint_handler(int sig);
-void    signals(void);
-char	*ft_str3join(char *s1, char *s2, char *s3);
+// void    sigint_handler(int sig);
+// void    signals(void);
+// char	*ft_str3join(char *s1, char *s2, char *s3);
 char	*ft_str4join(char *s1, char *s2, char *s3, char *s4);
 char	*join_prompt(void);
 //void	minishell_loop(void);
-t_strcmd	*parse_line(char *line);
+t_cmd	**parse_line(char *line);
 int		lexer_check(char *line);
 
 char	*ft_strndup(const char *s, int n);
@@ -126,10 +134,10 @@ int		is_red(char *s); //is redirection
 void	print_tab(char **s);
 void	print_lst(t_list *lst);
 void	print_lst_partition(t_list **partition);
-void	print_token_str(t_strcmd *cmd_str);
+//void	print_token_str(t_strcmd *cmd_str);
 
 void	print_token_struct(t_lstcmd *cmd_lst);
-void	print_token_str(t_strcmd *cmd_str);
+//void	print_token_str(t_strcmd *cmd_str);
 
 t_list	**partition_lst(t_list *lst_tk);
 char	**lst_to_chatab(t_list *lst);
@@ -139,6 +147,18 @@ int		count_pipe(t_list *lst);
 int		check_double_pipe(t_list *lst);
 int		check_red_file(t_list *lst);
 int		check_token_err(t_list *lst);
+
+char *here_doc_name(int index_p);
+int has_heredoc(t_cmd *cmd, t_shell *shell);
+char *creat_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell, int index_p);
+char **process_heredocs(t_cmd **tab_cmd, t_shell *shell);
+void    write_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell);
+int open_heredoc_creat(int *fd_infile, int *i, char *here_doc);
+int open_heredoc_read(int *fd_infile, int *i, char *here_doc);
+void delete_heredoc(char **here_docs);
+
+int	get_cmdtab_num(t_cmd **cmd_tab);
+int	get_tab_num(char **tab);
 //-----------------------------------------------sw
 
 #endif

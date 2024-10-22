@@ -169,8 +169,8 @@ int has_heredoc(t_cmd *cmd, t_shell *shell);
 char *creat_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell, int index_p);
 char **process_heredocs(t_cmd **tab_cmd, t_shell *shell);
 void    write_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell);
-int red_open_heredoc_creat(int *fd_infile, int *i, char *here_doc);
-int red_open_heredoc_read(int *fd_infile, int *i, char *here_doc);
+int open_heredoc_creat(int *fd_infile, int *i, char *here_doc);
+int open_heredoc_read(int *fd_infile, int *i, char *here_doc);
 void delete_heredoc(char **here_docs);
 //-----------------------------------------------sw
 
