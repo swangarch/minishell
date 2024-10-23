@@ -34,13 +34,8 @@ void    init_shell(t_shell *shell, char **env);
 void    minishell_loop(t_shell *shell);
 void    set_signal_handler(void);
 void    handle_sigint(int sig);
-void	set_prompt(t_shell *shell);
-char	*ft_strdup(const char *s);
-char	*ft_strjoin(char const *s1, char const *s2);
 void    free_before_exit(t_shell *shell);
-size_t	ft_strlen(const char *s);
 void    configure_terminal(struct termios *termios_set);
-char	**ft_split(char const *s, char c);
 void    init_no_env(t_shell *shell);
 t_env   *init_default_env(char **env);
 t_env	*init_env_node(char *str);
@@ -49,8 +44,6 @@ char	*get_env_content(char *full, char *var_name);
 void	free_env(t_env *head);
 //void    print_env(t_env *head);//print the list of env!!!
 void	add_back_env_node(t_env	**head, t_env *new);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-int	    ft_strncmp(const char *s1, const char *s2, size_t n);
 void	update_env(t_shell *shell);
 char	**env_list_to_char(t_env *env);
 int	    get_env_list_size(t_env *head);
@@ -59,28 +52,20 @@ char	*get_full_env(t_env *env);
 //int	    is_only_space(char *str);
 //int 	rep_prompt(char *prompt, char *prev_prompt);
 int	    ft_strcmp(const char *s1, const char *s2);
-char	*ft_strtrim(char const *s1, char const *set);
 int	    lexer(t_shell *shell);
 int 	is_empty_line_passed(t_shell *s);
 int 	bad_pipe(t_shell *shell);
 int 	syntax_error(char c);
 int 	syntax_error_newline(void);
 int     wrong_operator_check(const char *s);
-char	*ft_strchr(const char *s, int c);
 void	free_env_path(char **env, char *get_path);
-void	ft_putstr_fd(char *s, int fd);
-char    *expand_var(char *input, t_env *lst_env);
+char    *expand_var(char *input, t_env *lst_env, int status);
 int     init_expansion(t_expansion *exp);
-char	*ft_itoa(int n);
 int     append_str(t_expansion *exp);
 int     append_env(t_expansion *exp);
 char    *expand_buffer(char *old_buffer, int *size);
-size_t	ft_strlcpy(char *dst, const char *src, size_t siz);
 char    *mini_get_env(const char *name, t_env *lst_env);
-int		ft_isalnum(int c);
-void	*ft_memcpy(void *dest, const void *src, size_t n);
 int     valid_exp(int c);
-int		ft_isdigit(int c);
 char    *expand_tilde(char *input, t_env *lst_env);
 
 void    mini_execute(t_shell *shell, t_cmd **tab_cmd);
@@ -89,7 +74,7 @@ void	execute(char **cmd, char **env);
 char	*get_path(char *cmd, char **env);
 char	**env_split(char **env);
 void    red_out(t_cmd *tab_cmd, t_shell *shell);
-void    red_in(t_cmd *cmd, t_shell *shell, int index_p, char **here_docs);
+void    red_in(t_cmd *tab_cmd, t_shell *shell, int index_p, char **here_docs);
 void close_fds(int *fd, int num);
 
 void child_signal_handler();
@@ -110,9 +95,11 @@ int     mini_pwd(char **cmd);
 int     mini_cd(t_env **head, char **cmd);
 void	set_pwd(t_env **lst_env, char *name, char *content);
 
-char    *expand_var_here(char *input, t_env *lst_env);
+char    *expand_var_here(char *input, t_env *lst_env, int status);
 
-extern int  g_status;
+void	free_in_loop(t_shell *shell);
+
+extern int  g_sigint_flag;
 
 
 //-----------------------------------------------sw
@@ -143,16 +130,19 @@ char	*ft_strncpy(char *dest, char *src, unsigned int n);
 
 void    ft_err(char *s);
 int		is_red(char *s); //is redirection
+int		is_wordchar(char c);///////////+++++++++++++++++++++++++++++++++++++++++
+void	parse_symbol_single(char *line, t_list	**lst_token, int i);////////++++++++++++++++++++++++++
+void	parse_symbol_double(char *line, t_list	**lst_token, int *i);////////////////+++++++++++++++++++++++++
 
-void	print_tab(char **s);
-void	print_lst(t_list *lst);
-void	print_lst_partition(t_list **partition);
-void	print_token_str(t_strcmd *cmd_str);
+// void	print_tab(char **s);
+// void	print_lst(t_list *lst);
+// void	print_lst_partition(t_list **partition);
+// //void	print_token_str(t_strcmd *cmd_str);
 
-void	print_token_struct(t_lstcmd *cmd_lst);
-void	print_token_str(t_strcmd *cmd_str);
+// void	print_token_struct(t_lstcmd *cmd_lst);
+// //void	print_token_str(t_strcmd *cmd_str);
 
-t_list	**partition_lst(t_list *lst_tk);
+//t_list	**partition_lst(t_list *lst_tk);
 char	**lst_to_chatab(t_list *lst);
 char	*lst_getstr(t_list *lst);
 
@@ -160,9 +150,6 @@ int		count_pipe(t_list *lst);
 int		check_double_pipe(t_list *lst);
 int		check_red_file(t_list *lst);
 int		check_token_err(t_list *lst);
-
-int	get_cmdtab_num(t_cmd **cmd_tab);
-int	get_tab_num(char **tab);
 
 char *here_doc_name(int index_p);
 int has_heredoc(t_cmd *cmd, t_shell *shell);
@@ -172,6 +159,25 @@ void    write_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell);
 int open_heredoc_creat(int *fd_infile, int *i, char *here_doc);
 int open_heredoc_read(int *fd_infile, int *i, char *here_doc);
 void delete_heredoc(char **here_docs);
+
+int	get_cmdtab_num(t_cmd **cmd_tab);
+int	get_tab_num(char **tab);
+
+int		is_wordchar(char c);
+void	parse_symbol_single(char *line, t_list	**lst_token, int i);
+void	parse_symbol_double(char *line, t_list	**lst_token, int *i);
+
+int	parse_error(t_cmd **cmds);
+
+t_cmd *creat_cmd(t_list *lst);
+t_cmd	**creat_cmd_tab(char **tab);
+t_list *dup_node(t_list *lst);
+t_list	*split_line(char *line);
+void on_lst_next_token_exist(t_list **curr, t_list **redin, t_list **redout, t_list **cmd_lst);
+t_cmd *creat_cmd_from_lsts(t_list *cmd_lst, t_list *redin, t_list *redout);
+void	lstclear(t_list **lst);
+void clear_lsts(t_list **lst, t_list **redin, t_list **redout, t_list **cmd_lst);
+void do_noting(void *arg);
 //-----------------------------------------------sw
 
 #endif

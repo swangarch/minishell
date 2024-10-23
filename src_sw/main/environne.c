@@ -13,6 +13,8 @@ char	**env_list_to_char(t_env *env)
 	while (env != NULL && i < size)
 	{
 		result[i] = get_full_env(env);
+		if (!result[i])
+			result[i] = strdup("");
 		env = env->next;
 		i++;
 	}

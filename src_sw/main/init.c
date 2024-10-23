@@ -14,7 +14,7 @@ void    init_no_env(t_shell *shell)
     env = (char **)malloc(5 * sizeof(char *));
     if (!env)
     {
-        ft_putstr_fd(MES_MALLOC_ERR, STDERR_FILENO);
+        ft_putstr_fd(MES_MALLOC_ERR "case 3", STDERR_FILENO);
         exit(EXIT_FAILURE);
     }
     env[0] = ft_strdup("USER=guest");
@@ -45,12 +45,13 @@ void    init_shell(t_shell *shell, char **env)
             exit(EXIT_FAILURE);
         }
     }
+    shell->status = 0;
     shell->env = NULL;
     shell->prompt = NULL;
-	shell->heredoc = NULL;
-	shell->cmd_tbls = NULL;
 	shell->trimmed_prompt = NULL;
 	shell->terminal_prompt = NULL;
+    shell->tab_cmd = NULL;
+    shell->here_docs = NULL;
 	shell->std_fds[0] = dup(STDIN_FILENO);
 	shell->std_fds[1] = dup(STDOUT_FILENO);
     if (shell->std_fds[0] == -1 || shell->std_fds[1] == -1)

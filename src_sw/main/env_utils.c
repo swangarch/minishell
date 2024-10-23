@@ -10,7 +10,7 @@ t_env   *init_default_env(char **env)
     head = init_env_node(env[i++]);
     if (!head)
         return (NULL);
-	while (env[i])//check NULL in while
+	while (env[i])
     {
         new = init_env_node(env[i]);
         if (!new)
@@ -31,9 +31,7 @@ t_env	*init_env_node(char *str)
 
 	env_node = (t_env *)malloc(sizeof(t_env));
 	if (!env_node)
-	{
         return (NULL);
-    }
 	split = ft_split(str, '=');
     if (!split)
         return (free(env_node), NULL);
@@ -66,7 +64,7 @@ char	*get_env_content(char *full, char *var_name)
 	{
 		content_len = ft_strlen(full) - var_name_len - 1;
 		content = malloc(sizeof(char) * (content_len + 1));
-		if (content == NULL)
+		if (!content)
             return (NULL);
 		i = var_name_len + 1;
 		j = -1;
@@ -90,4 +88,11 @@ void	add_back_env_node(t_env	**head, t_env *new)
 	while (curr->next)
 		curr = curr->next;
 	curr->next = new;
+}
+
+void	update_env(t_shell *shell)
+{
+	if (shell->env != NULL)
+		free_char_array(shell->env);
+	shell->env = env_list_to_char(shell->env_head);
 }

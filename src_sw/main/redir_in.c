@@ -70,7 +70,7 @@ void red_in(t_cmd *cmd, t_shell *shell, int index_p, char **here_docs)
     fd_infile = malloc(get_tab_num(cmd->redin) * sizeof(int));
     if (!fd_infile)
     {
-        ft_err(MES_MALLOC_ERR);
+        ft_err(MES_MALLOC_ERR "case 4");
         return ;
     }
     while (cmd->redin[i])

@@ -65,7 +65,6 @@ int red_out_append(t_cmd *cmd, int *fd_outfile, int *i)
 void red_out(t_cmd *cmd, t_shell *shell)
 {
     int i = 0;
-    //int index_fd = 0;
     int *fd_outfile;
 
     if (!cmd->redout[i])
@@ -73,7 +72,7 @@ void red_out(t_cmd *cmd, t_shell *shell)
     fd_outfile = malloc(get_tab_num(cmd->redout) * sizeof(int));
     if (!fd_outfile)
     {
-        ft_err(MES_MALLOC_ERR);
+        ft_err(MES_MALLOC_ERR "case 5");
         return ;
     }
     while (cmd->redout[i])
@@ -89,7 +88,6 @@ void red_out(t_cmd *cmd, t_shell *shell)
                 return ;
         }
         i++;
-        //index_fd++;
     }
     dup2(fd_outfile[i / 2 - 1], STDOUT_FILENO);
     close(fd_outfile[i / 2 - 1]);

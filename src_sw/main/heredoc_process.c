@@ -5,16 +5,15 @@ void    write_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell)
     char *line;
     int index_fd = *i / 2;
 
-    line = readline("> ");///free
-    add_history(line);
-    line = expand_var_here(line, shell->env_head);
-    while (ft_strcmp(line, cmd->redin[*i]))
+    line = readline("> ");
+    line = expand_var_here(line, shell->env_head, shell->status);
+    while (line && ft_strcmp(line, cmd->redin[*i]))
     {
         write(fd_infile[index_fd], line, ft_strlen(line));
         write(fd_infile[index_fd], "\n", 1);
         free(line);
         line = readline("> ");
-        line = expand_var_here(line, shell->env_head);
+        line = expand_var_here(line, shell->env_head, shell->status);
     }
     free(line);
 }
@@ -43,7 +42,10 @@ char *creat_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell, int inde
     index_fd = *i / 2;
     here_doc = here_doc_name(index_p);
     if (!here_doc)
+    {
+        close_fds(fd_infile, *i);
         return (NULL);
+    }
     (*i)++;
     if (!open_heredoc_creat(fd_infile, i, here_doc))
         return (NULL);
@@ -80,8 +82,8 @@ char **process_heredocs(t_cmd **tab_cmd, t_shell *shell)
         fd_infile = malloc(get_tab_num(tab_cmd[index_p]->redin) * sizeof(int));  //table of fds
         if (!fd_infile)
         {
-            ft_err(MES_MALLOC_ERR);
-            //free
+            ft_err(MES_MALLOC_ERR "case 2");
+            free(here_docs);
             return (NULL);
         }
         if (!has_heredoc(tab_cmd[index_p], shell))//如果这个命令没有一个red in, 那么给空字符串用于判断, 直接跳转到下个命令
@@ -89,7 +91,9 @@ char **process_heredocs(t_cmd **tab_cmd, t_shell *shell)
             here_docs[index_p] = ft_strdup("");
             if (!here_docs[index_p])
             {
-                //free tab
+                free_char_array(here_docs);
+                ///////////no need to close fds in this case
+                free(fd_infile);
                 return (NULL);
             }
             index_p++;
@@ -102,7 +106,9 @@ char **process_heredocs(t_cmd **tab_cmd, t_shell *shell)
                 here_docs[index_p] = creat_heredoc(tab_cmd[index_p], fd_infile, &i, shell, index_p);
                 if (!here_docs[index_p])//error
                 {
-                    //free clear tab
+                    //close fd
+                    free_char_array(here_docs);
+                    free(fd_infile);
                     return (NULL);//return NULL
                 }
                 else if (!ft_strcmp("", here_docs[index_p]) && i / 2 != get_tab_num(tab_cmd[index_p]->redin) / 2 - 1)//check if here doc is not the last redin, if not free it, only keep the last one

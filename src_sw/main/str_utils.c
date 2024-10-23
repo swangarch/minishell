@@ -78,3 +78,8 @@ char	*ft_strndup(const char *s, int n)
 	dup[i] = '\0';
 	return (dup);
 }
+
+void do_noting(void *arg)
+{
+	return ;
+}

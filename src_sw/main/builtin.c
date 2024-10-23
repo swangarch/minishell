@@ -3,20 +3,20 @@
 int mini_builtin(int type, t_shell *shell, t_cmd **tab_cmd, int i)
 {
     if (type == MINI_ECHO)
-        g_status = mini_echo(tab_cmd[i]->cmd);
+        shell->status = mini_echo(tab_cmd[i]->cmd);
     else if (type == MINI_CD)
-        g_status = mini_cd(&shell->env_head, tab_cmd[i]->cmd);
+        shell->status = mini_cd(&shell->env_head, tab_cmd[i]->cmd);
     else if (type == MINI_PWD)
-        g_status = mini_pwd(tab_cmd[i]->cmd);
+        shell->status = mini_pwd(tab_cmd[i]->cmd);
     else if (type == MINI_EXPORT)
-        g_status = mini_export(&shell->env_head, tab_cmd[i]->cmd);
+        shell->status = mini_export(&shell->env_head, tab_cmd[i]->cmd);
     else if (type == MINI_UNSET)
-        g_status = mini_unset(&shell->env_head, tab_cmd[i]->cmd);
+        shell->status = mini_unset(&shell->env_head, tab_cmd[i]->cmd);
     else if (type == MINI_ENV)
-        g_status = mini_env(shell->env, tab_cmd, i);
+        shell->status = mini_env(shell->env, tab_cmd, i);
     else if (type == MINI_EXIT)
-        g_status = mini_exit(shell, tab_cmd, i);
-    return (g_status);
+        shell->status = mini_exit(shell, tab_cmd, i);
+    return (shell->status);
 }
 
 // void update_env_vars(const char *old_pwd, const char *new_pwd)

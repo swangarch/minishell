@@ -1,9 +1,11 @@
 #include "../includes/minishell.h"
 
-char    *expand_var_here(char *input, t_env *lst_env)
+char    *expand_var_here(char *input, t_env *lst_env, int status)
 {
     t_expansion exp;
 
+    if (!input)
+        return (NULL);
     if (!init_expansion(&exp))
         return (NULL);
     while (input[exp.i] != '\0')
@@ -26,7 +28,7 @@ char    *expand_var_here(char *input, t_env *lst_env)
             if (input[exp.i] == '?')
             {
                 exp.i++;
-                exp.exit_status = ft_itoa(g_status);
+                exp.exit_status = ft_itoa(status);
                 if (!exp.exit_status || !append_str(&exp))
                     return (free(exp.result), NULL);
             }
@@ -43,7 +45,7 @@ char    *expand_var_here(char *input, t_env *lst_env)
                     exp.i++;
                 if (!ft_strcmp(exp.var_name, "?"))
                 {
-                    exp.exit_status = ft_itoa(g_status);
+                    exp.exit_status = ft_itoa(status);
                     if (!exp.exit_status || !append_str(&exp))
                         return (free(exp.result), NULL);
                 }
