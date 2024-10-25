@@ -38,7 +38,7 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
     if (!p_fd)
     {
         shell->status = 1;
-        ft_putstr_fd(MES_MALLOC_ERR, STDERR_FILENO);
+        //ft_putstr_fd(MES_MALLOC_ERR, STDERR_FILENO);
         return;
     }
     while (i < num_cmd - 1)
@@ -181,12 +181,18 @@ char *get_path(char *cmd, char **env)
     char **all_path;
 
     i = -1;
-    // if (cmd)
-    //     ft_putstr_fd(cmd, 1);
-    // else
-    //     ft_putstr_fd("Pathname is NULL!\n", 1);
     if (access(cmd, F_OK | X_OK) == 0)
         return (cmd);
+    if (ft_strchr(cmd, '/') && access(cmd, F_OK))
+    {
+        ft_put3str_fd(SHELL, cmd, MES_CD_ENOENT, STDERR_FILENO);
+        exit(127);
+    }
+    if (ft_strchr(cmd, '/') && access(cmd, X_OK))
+    {
+        ft_put3str_fd(SHELL, cmd, MES_CD_EACCES, STDERR_FILENO);
+        exit(126);
+    }
     all_path = env_split(env);
     if (!all_path)
         return (NULL);
@@ -199,8 +205,15 @@ char *get_path(char *cmd, char **env)
         if (!full_path)
             return (free_char_array(all_path), free(part_path), NULL);
         free(part_path);
-        if (access(full_path, F_OK | X_OK) == 0)
+        if (access(full_path, F_OK) == 0)
+        {
+            if (access(full_path, X_OK))
+            {
+                ft_put3str_fd(SHELL, cmd, MES_CD_EACCES, STDERR_FILENO);
+                exit(126);
+            }
             return (free_char_array(all_path), full_path);
+        }
         free(full_path);
     }
     return (free_char_array(all_path), NULL);

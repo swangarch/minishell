@@ -157,7 +157,7 @@ char **process_heredocs(t_cmd **tab_cmd, t_shell *shell)
         fd_infile = malloc(get_tab_num(tab_cmd[index_p]->redin) * sizeof(int));  //table of fds
         if (!fd_infile)
         {
-            ft_err(MES_MALLOC_ERR);
+            //ft_err(MES_MALLOC_ERR);
             //free
             return (NULL);
         }

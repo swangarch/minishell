@@ -23,16 +23,6 @@ void handle_sigint(int sig)
     }
 }
 
-void handle_sigquit(int sig)
-{
-    if (sig == SIGQUIT)
-    {
-        write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-        // 退出当前进程，通常退出状态为 131 (128 + SIGQUIT)
-        exit(131);
-    }
-}
-
 int	event(void)
 {
 	return (0);

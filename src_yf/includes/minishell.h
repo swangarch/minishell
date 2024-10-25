@@ -108,6 +108,19 @@ void	set_pwd_end(t_env **lst_env, t_env *current, char *full);
 //void heredoc_sig_handle(int sig);
 void handle_sigquit(int sig);
 
+void	free_2_char(char *s1, char *s2);
+int     export_set_var(t_env **head, char **cmd, int i, int *inval);
+void    export_print(t_env *current);
+void    echo_check_newline(char **cmd, int *info);
+int		set_var_begin(t_env **lst_env, char *cmd);
+int     handle_quotes(char *input, t_expansion *exp);
+int     handle_dollar(char *input, t_expansion *exp, t_env *lst_env, int status);
+int     handle_exit_status(t_expansion *exp, int status);
+int     handle_braces(char *input, t_expansion *exp, t_env *lst_env, int status);
+int     handle_env_var(t_expansion *exp, t_env *lst_env);
+int     handle_variable(char *input, t_expansion *exp, t_env *lst_env);
+int     handle_buffer(t_expansion *exp);
+
 extern int  g_sigint_flag;
 
 

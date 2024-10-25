@@ -73,7 +73,7 @@ void red_out(t_cmd *cmd, t_shell *shell)
     fd_outfile = malloc(get_tab_num(cmd->redout) * sizeof(int));
     if (!fd_outfile)
     {
-        ft_err(MES_MALLOC_ERR);
+        //ft_err(MES_MALLOC_ERR);
         return ;
     }
     while (cmd->redout[i])

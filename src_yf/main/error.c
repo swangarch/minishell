@@ -23,3 +23,8 @@ void    ft_put3str_fd(char *s1, char *s2, char *s3, int fd)
     if (s3)
         ft_putstr_fd(s3, fd);
 }
+
+void    ft_err(char *s)
+{
+    ft_putstr_fd(s, 2);
+}
