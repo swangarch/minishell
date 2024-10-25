@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int		count_pipe(t_list *lst)
+int		count_pipe(t_list *lst) //no need to protect, if !lst the result will be 0 no segfault++++++++++++++
 {
 	t_list	*curr;
 	int		num_pipe;
@@ -21,61 +21,58 @@ int		count_pipe(t_list *lst)
 	curr = lst;
 	while (curr)
 	{
-		if (!ft_strcmp((char*)(curr->content), "|")) 
+		if (!ft_strcmp(lst_getstr(curr), "|")) 
 			num_pipe++;
 		curr = curr->next;
 	}
 	return (num_pipe);
 }
 
-int		check_double_pipe(t_list *lst)///check if pipe is in the end
+int	red_next_err(char **tab)
 {
-	t_list	*curr;
-	//int		has_double_pipe;
+	int	i;
 
-	//if (!lst)
-	//	return (NULL);
-	//has_double_pipe = 0;  //protect content
-	curr = lst;
-	while (curr)
+	if (!tab)
+		return (-1);
+	i = 0;
+	while (tab[i])
 	{
-		if (!ft_strcmp((char*)(curr->content), "|") && curr->next && !ft_strcmp((char*)(curr->next->content), "|"))
+		if (is_red(tab[i]) != TEXT)//&& !is_red(tab[i + 1]) == WORD)
+		{
+			if (!tab[i + 1] || is_red(tab[i + 1]) != TEXT)
+			{
+				ft_err(ERR_PREF "syntax error near unexpected token `");
+				if (tab[i + 1])
+					ft_putstr_fd(tab[i + 1], 2);
+					///next depends one pipe or new line
+				ft_err("'\n");
+				return (1);
+			}
+		}
+		i++;
+	}
+	return (0);
+}
+
+int	parse_error(t_cmd **cmds)
+{
+	int	i;
+
+	i = 0;
+	if (!cmds)
+		return (-1);
+	while (cmds[i])
+	{
+		if (!(cmds[i]->has_in) && !(cmds[i]->has_out) && !(cmds[i]->cmd[0]))
 		{
 			ft_err(ERR_PREF "syntax error near unexpected token `|'\n");
 			return (1);
 		}
-		curr = curr->next;
-	}
-	return (0);
-}
-
-int		check_red_file(t_list *lst)///check if pipe is in the end
-{
-	t_list	*curr_quick;
-	t_list	*curr_slow;
-
-	curr_quick = lst;
-	while (curr_quick)
-	{
-		curr_slow = curr_quick;
-		curr_quick = curr_quick->next;
-		if (is_red((char*)(curr_slow->content)) > 0 && is_red((char*)(curr_quick->content)) > 0)
+		if (red_next_err(cmds[i]->redin) || red_next_err(cmds[i]->redout))
 		{
-			ft_err(ERR_PREF "syntax error near unexpected token `><'\n"); /////////////////fix
 			return (1);
 		}
+		i++;
 	}
-	return (0);
-}
-
-int		check_token_err(t_list *lst)
-{
-	int	token_err;
-
-	token_err = 0;
-	token_err = token_err + check_double_pipe(lst);
-	token_err = token_err + check_red_file(lst);
-	if (token_err)
-		return (1);
 	return (0);
 }

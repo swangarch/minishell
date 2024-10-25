@@ -73,8 +73,8 @@ int     is_build_in(const char *s);
 void	execute(char **cmd, char **env);
 char	*get_path(char *cmd, char **env);
 char	**env_split(char **env);
-void    red_out(t_cmd *tab_cmd, t_shell *shell);
-void    red_in(t_cmd *tab_cmd, t_shell *shell, int index_p, char **here_docs);
+int    red_out(t_cmd *tab_cmd, t_shell *shell);
+int    red_in(t_cmd *tab_cmd, t_shell *shell, int index_p);
 void close_fds(int *fd, int num);
 
 void child_signal_handler();
@@ -99,6 +99,28 @@ char    *expand_var_here(char *input, t_env *lst_env, int status);
 
 void	free_in_loop(t_shell *shell);
 
+char    *cd_set_dir(t_env **head, char **cmd);
+int     cd_change_dir(char *dir);
+void    ft_put3str_fd(char *s1, char *s2, char *s3, int fd);
+int		set_pwd_begin(t_env **lst_env, char *full);
+void	set_pwd_end(t_env **lst_env, t_env *current, char *full);
+
+//void heredoc_sig_handle(int sig);
+void handle_sigquit(int sig);
+
+void	free_2_char(char *s1, char *s2);
+int     export_set_var(t_env **head, char **cmd, int i, int *inval);
+void    export_print(t_env *current);
+void    echo_check_newline(char **cmd, int *info);
+int		set_var_begin(t_env **lst_env, char *cmd);
+int     handle_quotes(char *input, t_expansion *exp);
+int     handle_dollar(char *input, t_expansion *exp, t_env *lst_env, int status);
+int     handle_exit_status(t_expansion *exp, int status);
+int     handle_braces(char *input, t_expansion *exp, t_env *lst_env, int status);
+int     handle_env_var(t_expansion *exp, t_env *lst_env);
+int     handle_variable(char *input, t_expansion *exp, t_env *lst_env);
+int     handle_buffer(t_expansion *exp);
+
 extern int  g_sigint_flag;
 
 
@@ -115,12 +137,8 @@ extern int  g_sigint_flag;
 #define TEXT 0
 
 
-// void    sigint_handler(int sig);
-// void    signals(void);
-// char	*ft_str3join(char *s1, char *s2, char *s3);
 char	*ft_str4join(char *s1, char *s2, char *s3, char *s4);
 char	*join_prompt(void);
-//void	minishell_loop(void);
 t_cmd	**parse_line(char *line);
 int		lexer_check(char *line);
 
@@ -134,10 +152,8 @@ int		is_red(char *s); //is redirection
 void	print_tab(char **s);
 void	print_lst(t_list *lst);
 void	print_lst_partition(t_list **partition);
-//void	print_token_str(t_strcmd *cmd_str);
 
 void	print_token_struct(t_lstcmd *cmd_lst);
-//void	print_token_str(t_strcmd *cmd_str);
 
 t_list	**partition_lst(t_list *lst_tk);
 char	**lst_to_chatab(t_list *lst);
@@ -150,15 +166,25 @@ int		check_token_err(t_list *lst);
 
 char *here_doc_name(int index_p);
 int has_heredoc(t_cmd *cmd, t_shell *shell);
-char *creat_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell, int index_p);
 char **process_heredocs(t_cmd **tab_cmd, t_shell *shell);
-void    write_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell);
-int open_heredoc_creat(int *fd_infile, int *i, char *here_doc);
-int open_heredoc_read(int *fd_infile, int *i, char *here_doc);
 void delete_heredoc(char **here_docs);
 
 int	get_cmdtab_num(t_cmd **cmd_tab);
 int	get_tab_num(char **tab);
+
+int		is_wordchar(char c);
+void	parse_symbol_single(char *line, t_list	**lst_token, int i);
+void	parse_symbol_double(char *line, t_list	**lst_token, int *i);
+
+int	parse_error(t_cmd **cmds);
+
+t_cmd *create_cmd(t_list *lst);
+t_cmd	**create_cmd_tab(char **tab);
+t_list	*split_line(char *line);
+void on_lst_next_token_exist(t_list **curr, t_list **redin, t_list **redout, t_list **cmd_lst);
+t_cmd *cmd_from_lsts(t_list *cmd_lst, t_list *redin, t_list *redout);
+void clear_lsts(t_list **lst, t_list **redin, t_list **redout, t_list **cmd_lst);
+void do_noting(void *arg);
 //-----------------------------------------------sw
 
 #endif

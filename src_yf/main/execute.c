@@ -7,17 +7,20 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
     int type_cmd;
     pid_t pid;
     int *p_fd;
-    char **here_docs; //++++++++++++++++++++++
+    //char **here_docs; //++++++++++++++++++++++
     int num_cmd;      //++++++++++++++++++++++
+
+    // int redin_success;
+    // int redout_success;
 
     if (!tab_cmd || !shell)
     {
         shell->status = 2;
         return;
     }
-    num_cmd = get_cmdtab_num(tab_cmd); //++++++++++++++++++++++
-    here_docs = process_heredocs(tab_cmd, shell);
-    if (!here_docs)
+    num_cmd = get_cmdtab_num(tab_cmd);
+    shell->here_docs = process_heredocs(tab_cmd, shell);
+    if (!shell->here_docs)
         return;
     i = 0;
     if (num_cmd == 1)
@@ -25,10 +28,17 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
         type_cmd = is_build_in(tab_cmd[0]->cmd[0]);
         if (type_cmd)
         {
-            red_in(tab_cmd[0], shell, i, here_docs);
-            red_out(tab_cmd[0], shell);
+            // redin_success = red_in(tab_cmd[0], shell, i);
+            // redout_success = red_in(tab_cmd[0], shell, i);
+            if (!red_in(tab_cmd[0], shell, i) || !red_in(tab_cmd[0], shell, i))
+            {
+                delete_heredoc(shell->here_docs);
+                shell->here_docs = NULL;
+                return ;
+            }
             shell->status = mini_builtin(type_cmd, shell, tab_cmd, 0);
-            delete_heredoc(here_docs);
+            delete_heredoc(shell->here_docs);
+            shell->here_docs = NULL;////+++++++++++++++++++++++++++++++++++++++oct24 sw
             dup2(shell->std_fds[0], STDIN_FILENO);
             dup2(shell->std_fds[1], STDOUT_FILENO);
             return;
@@ -38,7 +48,6 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
     if (!p_fd)
     {
         shell->status = 1;
-        //ft_putstr_fd(MES_MALLOC_ERR, STDERR_FILENO);
         return;
     }
     while (i < num_cmd - 1)
@@ -77,8 +86,14 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
             {
                 dup2(p_fd[i * 2 + 1], 1);
             }
-            red_in(tab_cmd[i], shell, i, here_docs);
-            red_out(tab_cmd[i], shell);
+            // redin_success = red_in(tab_cmd[i], shell, i);
+            // redout_success = red_out(tab_cmd[i], shell);
+            if (!red_in(tab_cmd[i], shell, i) || !red_out(tab_cmd[i], shell))
+            {
+                delete_heredoc(shell->here_docs);
+                shell->here_docs = NULL;
+                exit(EXIT_FAILURE); ///////////////////////!!!!!!!!
+            }
             j = 0;
             while (j < 2 * (num_cmd - 1))
             {
@@ -136,7 +151,8 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
     //     // 处理正常退出
     // }
     // shell->status /= 256;
-    delete_heredoc(here_docs);
+    delete_heredoc(shell->here_docs);
+    shell->here_docs = NULL;////+++++++++++++++++++++++++++++++++++++++oct24 sw
     free(p_fd);
     //signal(SIGINT, handle_sigint);//！！！！！！！！！！1
 }

@@ -63,7 +63,7 @@ char	*get_env_content(char *full, char *var_name)
 	else
 	{
 		content_len = ft_strlen(full) - var_name_len - 1;
-		content = malloc(sizeof(char) * (content_len + 1));
+		content = (char *)malloc(sizeof(char) * (content_len + 1));
 		if (!content)
             return (NULL);
 		i = var_name_len + 1;
@@ -79,6 +79,8 @@ void	add_back_env_node(t_env	**head, t_env *new)
 {
 	t_env	*curr;
 
+	if (!head)
+		return ;
 	if (!(*head))
 	{
 		*head = new;
@@ -93,6 +95,9 @@ void	add_back_env_node(t_env	**head, t_env *new)
 void	update_env(t_shell *shell)
 {
 	if (shell->env != NULL)
+	{
 		free_char_array(shell->env);
+		shell->env = NULL;
+	}
 	shell->env = env_list_to_char(shell->env_head);
 }

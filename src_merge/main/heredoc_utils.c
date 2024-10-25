@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-char *join_here_doc_name(int count, int index_p)
+static char *join_here_doc_name(int count, int index_p)   ///////////////////safe with no leaks
 {
     char *filename;
     char *basename;
@@ -24,25 +24,14 @@ char *join_here_doc_name(int count, int index_p)
     return (here_doc_name);
 }
 
-char *here_doc_name(int index_p)
+char *here_doc_name(int index_p)  ///////////////////safe with no leaks
 {
     int fd_heredoc;
     char *filename;
-    // char *basename;
     int count;
     char *strnum;
 
-    // basename = "/tmp/.heredoc++-+-+-+--+";
     count = 0;
-    // strnum = ft_itoa(count);
-    // if (!strnum)
-    //     return (NULL);
-    
-    // filename = ft_strjoin(basename, strnum);//free
-    // filename = ft_strjoin(filename, ft_itoa(index_p));//protect and free
-    // free(strnum);
-    // if (!filename)
-    //     return (NULL);
     filename = join_here_doc_name(count, index_p);
     if (!filename)
         return (NULL);
@@ -57,7 +46,7 @@ char *here_doc_name(int index_p)
     return (filename);
 }
 
-int has_heredoc(t_cmd *cmd, t_shell *shell)
+int has_heredoc(t_cmd *cmd, t_shell *shell)  ///////////////////safe with no leaks
 {
     int i;
 
@@ -73,7 +62,7 @@ int has_heredoc(t_cmd *cmd, t_shell *shell)
     return (0);
 }
 
-void delete_heredoc(char **here_docs)
+void delete_heredoc(char **here_docs)  ///////////////////safe with no leaks
 {
     int i;
 

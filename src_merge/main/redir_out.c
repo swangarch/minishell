@@ -35,10 +35,10 @@ int red_out_tofile(t_cmd *cmd, int *fd_outfile, int *i)
     fd_outfile[index_fd] = open(cmd->redout[*i], O_CREAT | O_WRONLY | O_TRUNC, 0666);
     if (fd_outfile[index_fd] < 0)
     {
+        ft_putstr_fd(SHELL,2);
         perror(cmd->redout[*i]);
         close_fds(fd_outfile, *i);
         free(fd_outfile);
-        //freeshell cmd
         return (0);
     }
     return (1);
@@ -53,45 +53,47 @@ int red_out_append(t_cmd *cmd, int *fd_outfile, int *i)
     fd_outfile[index_fd] = open(cmd->redout[*i], O_CREAT | O_WRONLY | O_APPEND, 0666);
     if (fd_outfile[index_fd] < 0)
     {
-        perror(cmd->redout[*i]);
+        ft_putstr_fd(SHELL,2);
+        perror(cmd->redout[*i]); 
         close_fds(fd_outfile, *i);
         free(fd_outfile);
-        //freeshell cmd
         return (0);
     }
     return (1);
 }
 
-void red_out(t_cmd *cmd, t_shell *shell)
+void dup_last(int *fd_outfile, int i)
 {
-    int i = 0;
-    //int index_fd = 0;
+    dup2(fd_outfile[i / 2 - 1], STDOUT_FILENO);
+    close(fd_outfile[i / 2 - 1]);
+}
+
+int red_out(t_cmd *cmd, t_shell *shell)
+{
+    int i;
     int *fd_outfile;
 
+    i = 0;
     if (!cmd->redout[i])
-        return;
+        return (1);
     fd_outfile = malloc(get_tab_num(cmd->redout) * sizeof(int));
     if (!fd_outfile)
-    {
-        ft_err(MES_MALLOC_ERR);
-        return ;
-    }
+        return (0);
     while (cmd->redout[i])
     {
         if (is_red(cmd->redout[i]) == REDOUT)
         {
             if (!red_out_tofile(cmd, fd_outfile, &i))
-                return ;
+                return (0);
         }
         else if (is_red(cmd->redout[i]) == APPEND)
         {
             if (!red_out_append(cmd, fd_outfile, &i))
-                return ;
+                return (0);
         }
         i++;
-        //index_fd++;
     }
-    dup2(fd_outfile[i / 2 - 1], STDOUT_FILENO);
-    close(fd_outfile[i / 2 - 1]);
-    free(fd_outfile);    
+    dup_last(fd_outfile, i);
+    free(fd_outfile);
+    return (1);
 }

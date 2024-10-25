@@ -8,7 +8,9 @@ char	**env_list_to_char(t_env *env)
 
 	i = 0;
 	size = get_env_list_size(env);
-	result = malloc(sizeof(char *) * (size + 1));
+	result = (char **)malloc(sizeof(char *) * (size + 1));
+	if (!result)
+		return (NULL);
 	result[size] = NULL;
 	while (env != NULL && i < size)
 	{
@@ -42,6 +44,8 @@ char	*get_full_env(t_env *env)
 	char	*result;
 
 	tmp = ft_strjoin(env->var_name, "=");
+	if (!tmp)
+		return (NULL);
 	if (env->content != NULL)
 	{
 		result = ft_strjoin(tmp, env->content);
@@ -71,8 +75,7 @@ void	unset_var(t_env **lst_env, const char *name)
 	current = *lst_env;
 	while (!ft_strcmp(current->var_name, name))
 	{
-		free(current->content);
-		free(current->var_name);
+		free_2_char(current->content, current->var_name);
 		*lst_env = current->next;
 		free(current);
 		current = *lst_env;
@@ -83,8 +86,7 @@ void	unset_var(t_env **lst_env, const char *name)
     {
         if (!ft_strcmp(current->var_name, name))
         {
-			free(current->content);
-			free(current->var_name);
+			free_2_char(current->content, current->var_name);
 			prev->next = current->next;
 			free(current);
 			current = prev;
@@ -94,7 +96,7 @@ void	unset_var(t_env **lst_env, const char *name)
     }
 }
 
-void	set_var(t_env **lst_env, char **name, char *cmd)
+int		set_var_begin(t_env **lst_env, char *cmd)
 {
 	t_env	*current;
 	t_env	*new;
@@ -105,11 +107,36 @@ void	set_var(t_env **lst_env, char **name, char *cmd)
 		new = init_env_node(cmd);
 		if (!new)
 		{
-			return ;
+			return (1);
 		}
 		current = new;
-		return ;
 	}
+	return (0);
+}
+
+void	set_var_end(t_env **lst_env, t_env *current, char *cmd)
+{
+	t_env	*new;
+
+	if (!current)
+	{
+		new = init_env_node(cmd);
+		if (!new)
+		{
+			return ;
+		}
+		add_back_env_node(lst_env, new);
+	}
+}
+
+void	set_var(t_env **lst_env, char **name, char *cmd)
+{
+	t_env	*current;
+	t_env	*new;
+
+	if (set_var_begin(lst_env, cmd))
+		return ;
+	current = *lst_env;
 	while (current)
     {
         if (!ft_strcmp(current->var_name, name[0]))
@@ -120,14 +147,44 @@ void	set_var(t_env **lst_env, char **name, char *cmd)
 		}
         current = current->next;
     }
+	set_var_end(lst_env, current, cmd);
+}
+
+int		set_pwd_begin(t_env **lst_env, char *full)
+{
+	t_env	*current;
+	t_env	*new;
+
+	current = *lst_env;
 	if (!current)
 	{
-		new = init_env_node(cmd);
+		new = init_env_node(full);
 		if (!new)
 		{
+			free(full);
+			return (1);
+		}
+		current = new;
+		free(full);
+		return (0);
+	}
+	return (0);
+}
+
+void	set_pwd_end(t_env **lst_env, t_env *current, char *full)
+{
+	t_env	*new;
+
+	if (!current)
+	{
+		new = init_env_node(full);
+		if (!new)
+		{
+			free(full);
 			return ;
 		}
 		add_back_env_node(lst_env, new);
+		free(full);
 	}
 }
 
@@ -142,18 +199,8 @@ void	set_pwd(t_env **lst_env, char *name, char *content)
 	tmp_old = ft_strjoin(name, "=");
 	tmp_new = ft_strjoin(tmp_old, content);
 	free(tmp_old);
-	if (!current)
-	{
-		new = init_env_node(tmp_new);
-		if (!new)
-		{
-			free(tmp_new);
-			return ;
-		}
-		current = new;
-		free(tmp_new);
+	if (set_pwd_begin(lst_env, tmp_new))
 		return ;
-	}
 	while (current)
     {
         if (!ft_strcmp(current->var_name, name))
@@ -165,15 +212,5 @@ void	set_pwd(t_env **lst_env, char *name, char *content)
 		}
         current = current->next;
     }
-	if (!current)
-	{
-		new = init_env_node(tmp_new);
-		if (!new)
-		{
-			free(tmp_new);
-			return ;
-		}
-		add_back_env_node(lst_env, new);
-		free(tmp_new);
-	}
+	set_pwd_end(lst_env, current, tmp_new);
 }

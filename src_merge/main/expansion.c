@@ -77,80 +77,130 @@ int     valid_exp(int c)
     return (0);
 }
 
+int     handle_quotes(char *input, t_expansion *exp)
+{
+    if (input[exp->i] == '\'' && !exp->in_dquote)
+    {
+        exp->in_squote = !exp->in_squote;
+        exp->i++;
+        return (0);
+    }
+    else if (input[exp->i] == '"' && !exp->in_squote)
+    {
+        exp->in_dquote = !exp->in_dquote;
+        exp->i++;
+        return (0);
+    }
+    return (1);
+}
+
+int     handle_exit_status(t_expansion *exp, int status)
+{
+    exp->i++;
+    exp->exit_status = ft_itoa(status);
+    if (!exp->exit_status || !append_str(exp))
+        return (0);
+    return (1);
+}
+
+int     handle_env_var(t_expansion *exp, t_env *lst_env)
+{
+    exp->env_val = mini_get_env(exp->var_name, lst_env);
+    if (!exp->env_val || !append_env(exp))
+        return (0);
+    return (1);
+}
+
+int     handle_braces(char *input, t_expansion *exp, t_env *lst_env, int status)
+{
+    exp->i++;
+    exp->k = 0;
+    while (input[exp->i] && input[exp->i] != '}')
+        exp->var_name[exp->k++] = input[exp->i++];
+    exp->var_name[exp->k] = '\0';
+    if (input[exp->i] != '}')
+        return (0);
+    else
+        exp->i++;
+    if (!ft_strcmp(exp->var_name, "?"))
+    {
+        if (!handle_exit_status(exp, status))
+            return (0);
+    }
+    else
+    {
+        if (!handle_env_var(exp, lst_env))
+            return (0);
+    }
+    return (1);
+}
+
+int     handle_variable(char *input, t_expansion *exp, t_env *lst_env)
+{
+    exp->k = 0;
+    while (ft_isalnum(input[exp->i]) || input[exp->i] == '_')
+        exp->var_name[exp->k++] = input[exp->i++];
+    exp->var_name[exp->k] = '\0';
+    if (exp->k > 0)
+    {
+        if (!handle_env_var(exp, lst_env))
+            return (0);
+    }
+    return (1);
+}
+
+int     handle_dollar(char *input, t_expansion *exp, t_env *lst_env, int status)
+{
+    exp->i++;
+    if (input[exp->i] == '?')
+    {
+        if (!handle_exit_status(exp, status))
+            return (0);
+    }
+    else if (ft_isdigit(input[exp->i]))
+        exp->i++;
+    else if (input[exp->i] == '{')
+    {
+        if (!handle_braces(input, exp, lst_env, status))
+            return (0);
+    }
+    else if (ft_isalnum(input[exp->i]) || input[exp->i] == '_')
+    {
+        if (!handle_variable(input, exp, lst_env))
+            return (0);
+    }
+    return (1);
+}
+
+int     handle_buffer(t_expansion *exp)
+{
+    exp->result = expand_buffer(exp->result, &exp->size);
+    if (!exp->result)
+        return (0);
+    return (1);
+}
+
 char    *expand_var(char *input, t_env *lst_env, int status)
 {
     t_expansion exp;
 
+    if (!input)
+        return (NULL);
     if (!init_expansion(&exp))
         return (free(input), NULL);
     while (input[exp.i] != '\0')
     {
-        if (input[exp.i] == '\'' && !exp.in_dquote)
-        {
-            exp.in_squote = !exp.in_squote;
-            exp.i++;
-        }
-        else if (input[exp.i] == '"' && !exp.in_squote)
-        {
-            exp.in_dquote = !exp.in_dquote;
-            exp.i++;
-        }
+        if (!handle_quotes(input, &exp))
+            continue;
         else if (input[exp.i] == '$' && !exp.in_squote && valid_exp(input[exp.i + 1]))
         {
-            exp.i++;
-            if (input[exp.i] == '?')
-            {
-                exp.i++;
-                exp.exit_status = ft_itoa(status);
-                if (!exp.exit_status || !append_str(&exp))
-                    return (free(input), free(exp.result), NULL);
-            }
-            else if (ft_isdigit(input[exp.i]))
-                exp.i++;
-            else if (input[exp.i] == '{')
-            {
-                exp.i++;
-                exp.k = 0;
-                while (input[exp.i] && input[exp.i] != '}')
-                    exp.var_name[exp.k++] = input[exp.i++];
-                exp.var_name[exp.k] = '\0';
-                if (input[exp.i] == '}')
-                    exp.i++;
-                if (!ft_strcmp(exp.var_name, "?"))
-                {
-                    exp.exit_status = ft_itoa(status);
-                    if (!exp.exit_status || !append_str(&exp))
-                        return (free(input), free(exp.result), NULL);
-                }
-                else
-                {
-                    exp.env_val = mini_get_env(exp.var_name, lst_env);
-                    if (!exp.env_val || !append_env(&exp))
-                        return (free(input), free(exp.result), NULL);
-                }
-            }
-            else if (ft_isalnum(input[exp.i]) || input[exp.i] == '_')
-            {
-                exp.k = 0;
-                while (ft_isalnum(input[exp.i]) || input[exp.i] == '_')
-                    exp.var_name[exp.k++] = input[exp.i++];
-                exp.var_name[exp.k] = '\0';
-                if (exp.k > 0)
-                {
-                    exp.env_val = mini_get_env(exp.var_name, lst_env);
-                    if (!exp.env_val || !append_env(&exp))
-                        return (free(input), free(exp.result), NULL);
-                }
-            }
+            if (!handle_dollar(input, &exp, lst_env, status))
+                return (free(input), free(exp.result), NULL);
         }
         else
             exp.result[exp.len++] = input[exp.i++];
-        if (exp.len >= exp.size)
-        {
-            exp.result = expand_buffer(exp.result, &exp.size);
-            if (!exp.result)
-                return (free(input), NULL);
-        }
+        if (exp.len >= exp.size && !handle_buffer(&exp))
+            return (free(input), NULL);
     }
     exp.result[exp.len] = '\0';
     return (free(input), exp.result);
