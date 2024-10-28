@@ -44,7 +44,7 @@
 # define MES_SQUOTE_ERR "minishell: Syntax error: unclosed single quote\n"
 # define MES_DQUOTE_ERR "minishell: Syntax error: unclosed double quote\n"
 # define MES_DUP_ERR "minishell: Dup failed!"
-# define MES_EXIT_OP "exit: options are not allowed\n"
+//# define MES_EXIT_OP "exit: options are not allowed\n"
 # define MES_EXIT_NUM ": numeric argument required\n"
 # define MES_EXIT_TOO_MANY "minishell: exit: too many arguments\n"
 # define MES_ENV_ERR "minishell: env: options or arguments are not allowed\n"

@@ -208,20 +208,11 @@ static void    write_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell)
             return ;
         line = readline("> ");
         if (g_sigint_flag)
-        {
-            free(line);
-            return ;
-        }
+            return (free(line), (void)0);
         if (!line)
-        {
-            ft_putstr_fd("set message!\n", STDERR_FILENO);
-            return ;
-        }
+            return (ft_putstr_fd("set message!\n", STDERR_FILENO), (void)0);
         if (!ft_strcmp(line, cmd->redin[*i]))
-        {
-            free(line);
-            return ;
-        }
+            return (free(line), (void)0);
         line = expand_var_here(line, shell->env_head, shell->status);
         write(fd_infile[index_fd], line, ft_strlen(line));
         write(fd_infile[index_fd], "\n", 1);
@@ -245,7 +236,7 @@ static int open_heredoc_create(int *fd_infile, int *i, char *here_doc)
     return (1);
 }
 
-static char *create_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell, int index_p)//, char **here_docs)
+static char *create_heredoc(t_shell *shell, int *fd_infile, int *i, int index_p)//, char **here_docs)
 {
     char *here_doc;
     int index_fd;
@@ -257,79 +248,169 @@ static char *create_heredoc(t_cmd *cmd, int *fd_infile, int *i, t_shell *shell, 
     (*i)++;
     if (!open_heredoc_create(fd_infile, i, here_doc))
         return (NULL);
-    write_heredoc(cmd, fd_infile, i, shell);
+    write_heredoc(shell->tab_cmd[index_p], fd_infile, i, shell);
     close(fd_infile[index_fd]);
     if (g_sigint_flag)
-    {
-        unlink(here_doc);
-        return (NULL);
-    }
-    if (index_fd != get_tab_num(cmd->redin) / 2 - 1)//如果heredoc不是最后一个重定向in,删除heredoc 返回空字符串用来判断 
-    {
-        unlink(here_doc);
-        free(here_doc);
-        here_doc = NULL;
-        return (ft_strdup(""));
-    }
+        return (unlink(here_doc), NULL);
+    if (index_fd != get_tab_num(shell->tab_cmd[index_p]->redin) / 2 - 1)//如果heredoc不是最后一个重定向in,删除heredoc 返回空字符串用来判断 
+        return (unlink(here_doc),free(here_doc),here_doc = NULL, ft_strdup(""));
     return (here_doc);//如果heredoc是最后一个重定向in, 返回他的名字
 }
 
-char **process_heredocs(t_cmd **tab_cmd, t_shell *shell)
+int  on_has_heredoc(t_cmd **tab_cmd, t_shell *shell, char **here_docs, int index_p)
 {
     int i;
     int *fd_infile;
-    int num_cmd;
+
+    fd_infile = malloc(get_tab_num(tab_cmd[index_p]->redin) * sizeof(int));  //table of fds
+    if (!fd_infile)
+        return (free_char_array(here_docs), 0);
+    i = 0;
+    while (tab_cmd[index_p]->redin[i])
+    {
+        if (is_red(tab_cmd[index_p]->redin[i]) == HEREDOC)
+        {
+            here_docs[index_p] = create_heredoc(shell, fd_infile, &i, index_p);
+            if (!here_docs[index_p])//error
+                return (free_char_array(here_docs), free(fd_infile), 0);//return NULL
+            else if (!ft_strcmp("", here_docs[index_p]) && i / 2 != get_tab_num(tab_cmd[index_p]->redin) / 2 - 1)//check if here doc is not the last redin, if not free it, only keep the last one
+            {
+                free(here_docs[index_p]);
+                here_docs[index_p] = NULL;///not enough
+            }
+        }
+        i++;
+    }
+    free(fd_infile);
+    return(1);
+}
+
+char **process_heredocs(t_cmd **tab_cmd, t_shell *shell, int num_cmd)
+{
     int index_p;
     char **here_docs;
 
     index_p = 0;
     if (!tab_cmd || !shell)
-        return (NULL);/////protect
-    num_cmd = get_cmdtab_num(tab_cmd);
+        return (NULL);
     here_docs = malloc(sizeof(char *) * (num_cmd + 1));
     if(!here_docs)
         return (NULL);
     while (index_p < num_cmd)
     {
-        i = 0;
-        fd_infile = malloc(get_tab_num(tab_cmd[index_p]->redin) * sizeof(int));  //table of fds
-        if (!fd_infile)
-        {
-            free_char_array(here_docs);
-            return (NULL);
-        }
-        if (!has_heredoc(tab_cmd[index_p], shell))//如果这个命令没有一个red in, 那么给空字符串用于判断, 直接跳转到下个命令
+        if (!has_heredoc(tab_cmd[index_p], shell))//如果这个命令没有一个heredoc, 那么给空字符串用于判断, 直接跳转到下个命令
         {
             here_docs[index_p] = ft_strdup("");
-            if (!here_docs[index_p])
-            {
-                free_char_array(here_docs);
-                return (NULL);
-            }
-            index_p++;
+            if (!here_docs[index_p++])
+                return (free_char_array(here_docs), NULL);
             continue ;
         }
-        while (tab_cmd[index_p]->redin[i])
-        {
-            if (is_red(tab_cmd[index_p]->redin[i]) == HEREDOC)
-            {
-                here_docs[index_p] = create_heredoc(tab_cmd[index_p], fd_infile, &i, shell, index_p);
-                if (!here_docs[index_p])//error
-                {
-                    free_char_array(here_docs);
-                    return (NULL);//return NULL
-                }
-                else if (!ft_strcmp("", here_docs[index_p]) && i / 2 != get_tab_num(tab_cmd[index_p]->redin) / 2 - 1)//check if here doc is not the last redin, if not free it, only keep the last one
-                {
-                    free(here_docs[index_p]);
-                    here_docs[index_p] = NULL;
-                }
-            }
-            i++;
-        }//after this loop, if in each command splited by pipe, the last redirection is here doc, here_docs[index_p] should be name of heredoc, other wise is void string, 
-        free(fd_infile);
+        if (!on_has_heredoc(tab_cmd, shell, here_docs, index_p))
+            return (NULL);
         index_p++;
     }
     here_docs[index_p] = NULL;
     return (here_docs);
 }
+
+
+// char **process_heredocs(t_cmd **tab_cmd, t_shell *shell)
+// {
+//     int i;
+//     int *fd_infile;
+//     int num_cmd;
+//     int index_p;
+//     char **here_docs;
+
+//     index_p = 0;
+//     if (!tab_cmd || !shell)
+//         return (NULL);/////protect
+//     num_cmd = get_cmdtab_num(tab_cmd);
+//     here_docs = malloc(sizeof(char *) * (num_cmd + 1));
+//     if(!here_docs)
+//         return (NULL);
+//     while (index_p < num_cmd)
+//     {
+//         fd_infile = malloc(get_tab_num(tab_cmd[index_p]->redin) * sizeof(int));  //table of fds
+//         if (!fd_infile)
+//             return (free_char_array(here_docs), NULL);
+//         if (!has_heredoc(tab_cmd[index_p], shell))//如果这个命令没有一个red in, 那么给空字符串用于判断, 直接跳转到下个命令
+//         {
+//             here_docs[index_p] = ft_strdup("");
+//             if (!here_docs[index_p++])
+//                 return (free_char_array(here_docs), free(fd_infile), NULL);
+//             continue ;
+//         }
+//         i = 0;
+//         while (tab_cmd[index_p]->redin[i])
+//         {
+//             if (is_red(tab_cmd[index_p]->redin[i]) == HEREDOC)
+//             {
+//                 here_docs[index_p] = create_heredoc(shell, fd_infile, &i, index_p);
+//                 if (!here_docs[index_p])//error
+//                     return (free_char_array(here_docs), free(fd_infile), NULL);//return NULL
+//                 else if (!ft_strcmp("", here_docs[index_p]) && i / 2 != get_tab_num(tab_cmd[index_p]->redin) / 2 - 1)//check if here doc is not the last redin, if not free it, only keep the last one
+//                 {
+//                     free(here_docs[index_p]);
+//                     here_docs[index_p] = NULL;
+//                 }
+//             }
+//             i++;
+//         }//after this loop, if in each command splited by pipe, the last redirection is here doc, here_docs[index_p] should be name of heredoc, other wise is void string, 
+//         free(fd_infile);
+//         index_p++;
+//     }
+//     here_docs[index_p] = NULL;
+//     return (here_docs);
+// }
+
+// char **process_heredocs(t_cmd **tab_cmd, t_shell *shell)
+// {
+//     int i;
+//     int *fd_infile;
+//     int num_cmd;
+//     int index_p;
+//     char **here_docs;
+
+//     index_p = 0;
+//     if (!tab_cmd || !shell)
+//         return (NULL);/////protect
+//     num_cmd = get_cmdtab_num(tab_cmd);
+//     here_docs = malloc(sizeof(char *) * (num_cmd + 1));
+//     if(!here_docs)
+//         return (NULL);
+//     while (index_p < num_cmd)
+//     {
+//         i = 0;
+//         fd_infile = malloc(get_tab_num(tab_cmd[index_p]->redin) * sizeof(int));  //table of fds
+//         if (!fd_infile)
+//             return (free_char_array(here_docs), NULL);
+//         if (!has_heredoc(tab_cmd[index_p], shell))//如果这个命令没有一个red in, 那么给空字符串用于判断, 直接跳转到下个命令
+//         {
+//             here_docs[index_p] = ft_strdup("");
+//             if (!here_docs[index_p])
+//                 return (free_char_array(here_docs), NULL);
+//             index_p++;
+//             continue ;
+//         }
+//         while (tab_cmd[index_p]->redin[i])
+//         {
+//             if (is_red(tab_cmd[index_p]->redin[i]) == HEREDOC)
+//             {
+//                 here_docs[index_p] = create_heredoc(tab_cmd[index_p], fd_infile, &i, shell, index_p);
+//                 if (!here_docs[index_p])//error
+//                     return (free_char_array(here_docs), NULL);//return NULL
+//                 else if (!ft_strcmp("", here_docs[index_p]) && i / 2 != get_tab_num(tab_cmd[index_p]->redin) / 2 - 1)//check if here doc is not the last redin, if not free it, only keep the last one
+//                 {
+//                     free(here_docs[index_p]);
+//                     here_docs[index_p] = NULL;
+//                 }
+//             }
+//             i++;
+//         }//after this loop, if in each command splited by pipe, the last redirection is here doc, here_docs[index_p] should be name of heredoc, other wise is void string, 
+//         free(fd_infile);
+//         index_p++;
+//     }
+//     here_docs[index_p] = NULL;
+//     return (here_docs);
+// }

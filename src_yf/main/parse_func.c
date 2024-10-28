@@ -91,7 +91,7 @@ void	parse_word(char *line, t_list **lst_token, int *i)
 // 	}
 // }
 
-t_list	*split_line(char *line)
+t_list	*tokenize_line(char *line)
 {
 	int		i;
 	t_list	*lst_token;
@@ -120,7 +120,8 @@ t_cmd	**parse_line(char *line)  //protected++++++++++++++++++
 	char **tab_str;
 	t_cmd **tab_cmd;
 
-	tab_str = ft_split(line, '|');
+	//tab_str = ft_split(line, '|');
+	tab_str = split_ign_quote(line, '|');
 	if (!tab_str)
 		return (NULL);
 	tab_cmd = create_cmd_tab(tab_str);

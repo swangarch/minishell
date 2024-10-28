@@ -44,7 +44,8 @@ int	red_next_err(char **tab)
 				ft_err(ERR_PREF "syntax error near unexpected token `");
 				if (tab[i + 1])
 					ft_putstr_fd(tab[i + 1], 2);
-					///next depends one pipe or new line
+				else
+					ft_putstr_fd("|", 2);
 				ft_err("'\n");
 				return (1);
 			}

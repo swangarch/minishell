@@ -94,6 +94,15 @@ typedef struct	s_lstcmd
 	t_list *redout;
 }	t_lstcmd;
 
+typedef struct s_split
+{
+    int i;
+    int j;
+    int c;
+    int ins;
+    int ind;
+} t_split;
+
 // typedef struct	s_strcmd  //delete
 // {
 // 	char **redin;

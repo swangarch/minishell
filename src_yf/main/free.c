@@ -24,31 +24,6 @@ void	free_char_array(char **array)
 	free(array);
 }
 
-void	free_env(t_env *head)
-{
-	t_env	*next;
-
-	while (head)
-	{
-		next = head->next;
-		free(head->var_name);
-		free(head->content);
-		free(head);
-		head = next;
-	}
-}
-
-void	free_env_path(char **env, char *get_path)
-{
-	free(get_path);
-	free(env[0]);
-    free(env[1]);
-    free(env[2]);
-    free(env[3]);
-	free(env[4]);
-    free(env);
-}
-
 void	free_in_loop(t_shell *shell)
 {
 	int	i;

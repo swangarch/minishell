@@ -99,20 +99,20 @@ char    *expand_var_here(char *input, t_env *lst_env, int status);
 
 void	free_in_loop(t_shell *shell);
 
-char    *cd_set_dir(t_env **head, char **cmd);
-int     cd_change_dir(char *dir);
+//char    *cd_set_dir(t_env **head, char **cmd);
+//int     cd_change_dir(char *dir);
 void    ft_put3str_fd(char *s1, char *s2, char *s3, int fd);
-int		set_pwd_begin(t_env **lst_env, char *full);
-void	set_pwd_end(t_env **lst_env, t_env *current, char *full);
+//int		set_pwd_begin(t_env **lst_env, char *full);
+//void	set_pwd_end(t_env **lst_env, t_env *current, char *full);
 
 //void heredoc_sig_handle(int sig);
 void handle_sigquit(int sig);
 
 void	free_2_char(char *s1, char *s2);
-int     export_set_var(t_env **head, char **cmd, int i, int *inval);
-void    export_print(t_env *current);
-void    echo_check_newline(char **cmd, int *info);
-int		set_var_begin(t_env **lst_env, char *cmd);
+//int     export_set_var(t_env **head, char **cmd, int i, int *inval);
+//void    export_print(t_env *current);
+//void    echo_check_newline(char **cmd, int *info);
+//int		set_var_begin(t_env **lst_env, char *cmd);
 int     handle_quotes(char *input, t_expansion *exp);
 int     handle_dollar(char *input, t_expansion *exp, t_env *lst_env, int status);
 int     handle_exit_status(t_expansion *exp, int status);
@@ -120,6 +120,8 @@ int     handle_braces(char *input, t_expansion *exp, t_env *lst_env, int status)
 int     handle_env_var(t_expansion *exp, t_env *lst_env);
 int     handle_variable(char *input, t_expansion *exp, t_env *lst_env);
 int     handle_buffer(t_expansion *exp);
+int  init_pipe_fds(int **p_fd, int num_cmd, t_shell *shell);
+void    set_child(int *num, int *p_fd, t_shell *shell, t_cmd *cmd);
 
 extern int  g_sigint_flag;
 
@@ -178,13 +180,14 @@ void	parse_symbol_double(char *line, t_list	**lst_token, int *i);
 
 int	parse_error(t_cmd **cmds);
 
-t_cmd *create_cmd(t_list *lst);
+t_cmd *create_cmd(t_list *lst, t_list *cmd_lst, t_list *redin, t_list *redout);
 t_cmd	**create_cmd_tab(char **tab);
-t_list	*split_line(char *line);
+t_list	*tokenize_line(char *line);
 void on_lst_next_token_exist(t_list **curr, t_list **redin, t_list **redout, t_list **cmd_lst);
 t_cmd *cmd_from_lsts(t_list *cmd_lst, t_list *redin, t_list *redout);
 void clear_lsts(t_list **lst, t_list **redin, t_list **redout, t_list **cmd_lst);
 void do_noting(void *arg);
+char	**split_ign_quote(char const *s, char c);
 //-----------------------------------------------sw
 
 #endif
