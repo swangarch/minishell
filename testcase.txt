@@ -1,0 +1,79 @@
+valgrind --leak-check=full --suppressions=readline.supp --show-leak-kinds=all --track-fds=yes --trace-children=yes ./minishell
+
+#1
+<< OK | | cat -e
+#should has error
+
+#2
+<<OK|cat -e
+#should print nothing
+
+#3
+<<OK|cat -e
+#should has error
+
+#4
+ls|
+#should has error
+
+#5
+<< OK |cat -e|cat -e
+<< OK |cat -e
+<< OK
+<< |a
+#should has error
+
+#6
+check if here doc unlink temp files
+
+#7
+#echo $_
+
+#8
+export 比env少一行
+
+#9
+<< OK |<< KO| << KO cat
+<< OK | << KO cat|<<KO
+#should has error
+
+#10
+echo hello|cat
+ls|echo hello|cat
+
+#11
+bash ls|./minishell
+
+#12
+heredoc ctrl c
+segfault
+
+#13
+< test.sh|cat|<test.sh<<OK cat -e
+<< OK cat|< test.sh
+
+#14
+< test.sh cat|cat -e > outfile >>outfile2
+when outfile has no access
+
+#15
+ctrl\ quit in execution
+
+#16
+echo "$HOME"'$HOME'
+
+#17
+'/bin/ls abbb'
+no such file...
+
+#18
+$? + $?
+
+#19
+echo "cat|cat -e|"
+echo "cat|cat -e|"
+echo "cat$HOME|cat -e|"
+echo "cat$HOME|cat -e'test'|"
+
+#20
+valgrind --leak-check=full --suppressions=readline.supp --show-leak-kinds=all --track-fds=yes --trace-children=yes ./minishell
