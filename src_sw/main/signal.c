@@ -18,18 +18,6 @@ void handle_sigint(int sig)
         rl_done = 1;
         write(STDOUT_FILENO, "\n", 1);
         rl_on_new_line();
-        // rl_replace_line("", 0);
-        // rl_redisplay();
-    }
-}
-
-void handle_sigquit(int sig)
-{
-    if (sig == SIGQUIT)
-    {
-        write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-        // 退出当前进程，通常退出状态为 131 (128 + SIGQUIT)
-        exit(131);
     }
 }
 
@@ -52,19 +40,4 @@ void set_signal_handler()
     sigemptyset(&sa_quit.sa_mask);
     sigaction(SIGQUIT, &sa_quit, NULL);
     rl_event_hook = event;
-}
-
-void child_signal_handler()
-{
-    struct sigaction    sa_int;
-    struct sigaction    sa_quit;
-
-    sa_int.sa_handler = SIG_DFL;
-    sa_int.sa_flags = SA_RESTART;
-    sigemptyset(&sa_int.sa_mask);
-    sigaction(SIGINT, &sa_int, NULL);
-    sa_quit.sa_handler = SIG_IGN;
-    sa_quit.sa_flags = SA_RESTART;
-    sigemptyset(&sa_quit.sa_mask);
-    sigaction(SIGQUIT, &sa_quit, NULL);
 }

@@ -2,7 +2,11 @@
 
 void    free_before_exit(t_shell *shell)
 {
-    
+	rl_clear_history();
+    free_in_loop(shell);
+	delete_heredoc(shell->here_docs);
+	free_char_array(shell->env);
+	free_env(shell->env_head);
 }
 
 void	free_char_array(char **array)
@@ -41,6 +45,7 @@ void	free_env_path(char **env, char *get_path)
     free(env[1]);
     free(env[2]);
     free(env[3]);
+	free(env[4]);
     free(env);
 }
 
@@ -70,4 +75,10 @@ void	free_in_loop(t_shell *shell)
 	}
 	free(shell->tab_cmd);
 	shell->tab_cmd = NULL;
+}
+
+void	free_2_char(char *s1, char *s2)
+{
+	free(s1);
+	free(s2);
 }

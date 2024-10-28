@@ -1,5 +1,15 @@
 #include "../includes/minishell.h"
 
+static void    set_default_env(char **env, char *get_path)
+{
+    env[0] = ft_strdup("USER=guest");
+    env[1] = ft_strdup(DEFAULT_PATH);
+    env[2] = ft_strjoin("PWD=", get_path);
+    env[3] = ft_strdup("SHLVL=1");
+    env[4] = ft_strdup("_=/usr/bin/env");
+    env[5] = NULL;
+}
+
 void    init_no_env(t_shell *shell)
 {
     char    *get_path;
@@ -11,25 +21,18 @@ void    init_no_env(t_shell *shell)
         ft_putstr_fd(MES_CUR_PATH_ERR, STDERR_FILENO);
         exit(EXIT_FAILURE);
     }
-    env = (char **)malloc(5 * sizeof(char *));
+    env = (char **)malloc(6 * sizeof(char *));
     if (!env)
     {
-        ft_putstr_fd(MES_MALLOC_ERR, STDERR_FILENO);
+        free(get_path);
         exit(EXIT_FAILURE);
     }
-    env[0] = ft_strdup("USER=guest");
-    env[1] = ft_strjoin("PWD=", get_path);
-    env[2] = ft_strdup("SHLVL=1");
-    env[3] = ft_strdup("_=/usr/bin/env");
-    env[4] = NULL;
-    if (env[0] && env[1] && env[2] && env[3])
+    set_default_env(env, get_path);
+    if (env[0] && env[1] && env[2] && env[3] && env[4])
         shell->env_head = init_default_env(env);
     free_env_path(env, get_path);
     if (!shell->env_head)
-    {
-        ft_putstr_fd(MES_CREAT_NODE, STDERR_FILENO);
         exit(EXIT_FAILURE);
-    }
 }
 
 void    init_shell(t_shell *shell, char **env)
@@ -40,10 +43,7 @@ void    init_shell(t_shell *shell, char **env)
     {
         shell->env_head = init_default_env(env);
         if (!shell->env_head)
-        {
-            ft_putstr_fd(MES_CREAT_NODE, STDERR_FILENO);
             exit(EXIT_FAILURE);
-        }
     }
     shell->status = 0;
     shell->env = NULL;
@@ -59,19 +59,4 @@ void    init_shell(t_shell *shell, char **env)
         perror(MES_DUP_ERR);
         exit(EXIT_FAILURE);
     }
-    //print_env(shell->env_head);
 }
-
-// void    print_env(t_env *head)
-// {
-//     if (!head)
-//     {
-//         return ;
-//     }
-//     while (head)
-//     {
-//         printf(GREEN "%s" COLOR_E "\n", head->var_name);
-//         printf(YELLOW "%s" COLOR_E "\n", head->content);
-//         head = head->next;
-//     }
-// }

@@ -8,10 +8,7 @@ int str_to_ll(const char *str, long long *val)
     if (str == NULL || *str == '\0')
         return (FALSE);
     if (!ft_strcmp(str, "-9223372036854775808"))
-    {
-        *val = -9223372036854775552LL;
-        return (TRUE);
-    }
+        return (*val = -9223372036854775552LL, TRUE);
     result = 0;
     sign = 1;
     if (*str == '-' || *str == '+')
@@ -24,8 +21,7 @@ int str_to_ll(const char *str, long long *val)
     {
         if (result * 10 + *str - '0' < result)
             return (FALSE);
-        result = result * 10 + *str - '0';
-        str++;
+        result = result * 10 + *str++ - '0';
     }
     if (*str)
         return (FALSE);
@@ -36,21 +32,15 @@ int str_to_ll(const char *str, long long *val)
 int     is_numeric(const char *str)
 {
     if (str == NULL || *str == '\0')
-    {
         return (0);
-    }
     if (str[0] == '-' && !str[1])
         return (0);
     if (str[0] == '-')
-    {
         str++;
-    }
     while (*str)
     {
         if (!ft_isdigit(*str))
-        {
             return (0);
-        }
         str++;
     }
     return (1);
@@ -72,9 +62,13 @@ char    **split_by_equal(const char *s)
         ++i;
     }
     ptr[0] = ft_substr(s, 0, i);
+    if (!ptr[0])
+        return (free(ptr), NULL);
     if (!s[i])
         ptr[1] = ft_strdup("");
     else
         ptr[1] = ft_substr(s, i + 1, ft_strlen(s) - i - 1);
+    if (!ptr[1])
+        return (free(ptr[0]), free(ptr), NULL);
     return (ptr);
 }
