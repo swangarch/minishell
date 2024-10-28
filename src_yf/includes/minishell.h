@@ -166,7 +166,7 @@ int		check_token_err(t_list *lst);
 
 char *here_doc_name(int index_p);
 int has_heredoc(t_cmd *cmd, t_shell *shell);
-char **process_heredocs(t_cmd **tab_cmd, t_shell *shell);
+char **process_heredocs(t_cmd **tab_cmd, t_shell *shell, int num_cmd);
 void delete_heredoc(char **here_docs);
 
 int	get_cmdtab_num(t_cmd **cmd_tab);

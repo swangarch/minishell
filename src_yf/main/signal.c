@@ -43,18 +43,3 @@ void set_signal_handler()
     sigaction(SIGQUIT, &sa_quit, NULL);
     rl_event_hook = event;
 }
-
-void child_signal_handler()
-{
-    struct sigaction    sa_int;
-    struct sigaction    sa_quit;
-
-    sa_int.sa_handler = SIG_DFL;
-    sa_int.sa_flags = SA_RESTART;
-    sigemptyset(&sa_int.sa_mask);
-    sigaction(SIGINT, &sa_int, NULL);
-    sa_quit.sa_handler = SIG_IGN;
-    sa_quit.sa_flags = SA_RESTART;
-    sigemptyset(&sa_quit.sa_mask);
-    sigaction(SIGQUIT, &sa_quit, NULL);
-}

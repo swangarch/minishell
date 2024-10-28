@@ -61,16 +61,18 @@
 # define MES_CD_ENOENT ": No such file or directory\n"
 # define MES_CD_ENOTDIR ": Not a directory\n"
 # define MES_CD_EACCES ": Permission denied\n"
+# define MES_IS_DIR ": Is a directory\n"
 
 # define DEFAULT_PATH "PATH=/home/yfan/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
 
 # define SPACES " \n\t\r\f\v"
 # define OPERATOR "|><"
-# define SHELL "minihsell: "
+# define SHELL "minishell: "
 # define ISDIR "Is a directory"
 # define DQUOTE '\"'
 # define SQUOTE '\''
 # define CMD_NOT_FND "command '' not found"
+# define COMMAND_NO ": command not found\n"
 # define SYN_ERR "syntax error near unexpected token"
 # define SYN_ERR_NEWLINE "syntax error near unexpected token `newline'"
 
