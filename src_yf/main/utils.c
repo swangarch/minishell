@@ -52,7 +52,7 @@ char    **split_by_equal(const char *s)
     int     i;
 
     i = 0;
-    ptr = (char **)malloc(2 * sizeof(char *));
+    ptr = (char **)malloc(3 * sizeof(char *));
     if (!ptr)
         return (NULL);
     while (s[i])
@@ -70,6 +70,7 @@ char    **split_by_equal(const char *s)
         ptr[1] = ft_substr(s, i + 1, ft_strlen(s) - i - 1);
     if (!ptr[1])
         return (free(ptr[0]), free(ptr), NULL);
+    ptr[2] = NULL;
     return (ptr);
 }
 
