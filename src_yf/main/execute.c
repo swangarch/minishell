@@ -41,6 +41,8 @@ static int  cmd_loop(int *num, int *p_fd, t_shell *shell, t_cmd **tab_cmd)
         if (type_cmd)
         {
             shell->status = mini_builtin(type_cmd, shell, tab_cmd, num[1]);
+            free_before_exit(shell);
+            free(p_fd);
             exit(shell->status);
         }
         execute(tab_cmd[num[1]]->cmd, shell->env);
@@ -92,7 +94,10 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
     num[1] = -1;
     while (++(num[1]) < num[0])
         if (cmd_loop(num, p_fd, shell, tab_cmd))
+        {
+            free(p_fd);
             return ;
+        }
     wait_for_children(num[1], p_fd, shell);
     free(p_fd);
     delete_heredoc(shell->here_docs);

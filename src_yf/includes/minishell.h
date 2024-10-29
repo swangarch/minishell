@@ -122,6 +122,7 @@ int     handle_variable(char *input, t_expansion *exp, t_env *lst_env);
 int     handle_buffer(t_expansion *exp);
 int  init_pipe_fds(int **p_fd, int num_cmd, t_shell *shell);
 void    set_child(int *num, int *p_fd, t_shell *shell, t_cmd *cmd);
+void expand_str_cmd(t_cmd **tab_cmd, t_env *env_head, int status);
 
 extern int  g_sigint_flag;
 

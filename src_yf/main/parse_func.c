@@ -130,5 +130,6 @@ t_cmd	**parse_line(char *line)  //protected++++++++++++++++++
 		free_char_array(tab_str);
 		return (NULL);
 	}
+	free_char_array(tab_str);
 	return(tab_cmd);
 }
