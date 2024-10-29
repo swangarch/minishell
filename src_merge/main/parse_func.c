@@ -14,7 +14,7 @@
 
 void	lst_add_back_strn(char *line, t_list **lst_token, int *i, int j)
 {
-	char *token;
+	char	*token;
 
 	token = NULL;
 	token = ft_strndup(&line[*i], j);
@@ -23,7 +23,7 @@ void	lst_add_back_strn(char *line, t_list **lst_token, int *i, int j)
 		ft_lstadd_back(lst_token, NULL);
 		return ;
 	}
-	ft_lstadd_back(lst_token, ft_lstnew(token));//protect??
+	ft_lstadd_back(lst_token, ft_lstnew(token));
 	*i = *i + j - 1;
 }
 
@@ -44,54 +44,14 @@ void	parse_word(char *line, t_list **lst_token, int *i)
 		if (line[*i + j] == '\"' && !in_squote)
 			in_dquote = !in_dquote;
 		if (!is_wordchar(line[*i + j]) && !in_squote && !in_dquote)
-		{
-			lst_add_back_strn(line, lst_token, i, j);
-			return ;
-		}
+			return (lst_add_back_strn(line, lst_token, i, j), (void)0);
 		else if (*i + j == (int)ft_strlen(line) - 1)
-		{
-			lst_add_back_strn(line, lst_token, i, j + 1);
-			return ;
-		}
+			return (lst_add_back_strn(line, lst_token, i, j + 1), (void)0);
 		j++;
 	}
 }
 
-// void	parse_word(char *line, t_list **lst_token, int *i)
-// {
-// 	int		in_squote;
-// 	int		in_dquote;
-// 	int		j;
-// 	char	*token;
-
-// 	in_squote = 0;
-// 	in_dquote = 0;
-// 	j = 0;
-// 	while (line[*i + j])
-// 	{
-// 		if (line[*i + j] == '\'' && !in_dquote)
-// 			in_squote = !in_squote;
-// 		if (line[*i + j] == '\"' && !in_squote)
-// 			in_dquote = !in_dquote;
-// 		if (!is_wordchar(line[*i + j]) && !in_squote && !in_dquote)
-// 		{
-// 			token = ft_strndup(&line[*i], j);//protect
-// 			ft_lstadd_back(lst_token, ft_lstnew(token));//protect
-// 			*i = *i + j - 1;
-// 			return ;
-// 		}
-// 		else if (*i + j == (int)ft_strlen(line) - 1)
-// 		{
-// 			token = ft_strndup(&line[*i], j + 1);//protect
-// 			ft_lstadd_back(lst_token, ft_lstnew(token));//protect
-// 			*i = *i + j;
-// 			return ;
-// 		}
-// 		j++;
-// 	}
-// }
-
-t_list	*split_line(char *line)
+t_list	*tokenize_line(char *line)
 {
 	int		i;
 	t_list	*lst_token;
@@ -115,19 +75,40 @@ t_list	*split_line(char *line)
 	return (lst_token);
 }
 
-t_cmd	**parse_line(char *line)  //protected++++++++++++++++++
-{	
-	char **tab_str;
-	t_cmd **tab_cmd;
+static	void	destroy_tab_cmd(t_cmd **tab_cmd)
+{
+	int	i;
 
-	tab_str = ft_split(line, '|');
+	i = 0;
+	while (tab_cmd[i])
+	{
+		free_char_array(tab_cmd[i]->redin);
+		free_char_array(tab_cmd[i]->redout);
+		free_char_array(tab_cmd[i]->cmd);
+		free(tab_cmd[i]);
+		tab_cmd[i] = NULL;
+		i++;
+	}
+	free(tab_cmd);
+}
+
+t_cmd	**parse_line(char *line)
+{
+	char	**tab_str;
+	t_cmd	**tab_cmd;
+
+	tab_str = split_ign_quote(line, '|');
 	if (!tab_str)
 		return (NULL);
 	tab_cmd = create_cmd_tab(tab_str);
-	if (!tab_cmd || parse_error(tab_cmd))
+	if (!tab_cmd)
+		return (free_char_array(tab_str), NULL);
+	if (parse_error(tab_cmd))
 	{
+		destroy_tab_cmd(tab_cmd);
 		free_char_array(tab_str);
 		return (NULL);
 	}
-	return(tab_cmd);
+	free_char_array(tab_str);
+	return (tab_cmd);
 }

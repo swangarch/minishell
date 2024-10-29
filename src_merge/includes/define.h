@@ -44,7 +44,7 @@
 # define MES_SQUOTE_ERR "minishell: Syntax error: unclosed single quote\n"
 # define MES_DQUOTE_ERR "minishell: Syntax error: unclosed double quote\n"
 # define MES_DUP_ERR "minishell: Dup failed!"
-# define MES_EXIT_OP "exit: options are not allowed\n"
+//# define MES_EXIT_OP "exit: options are not allowed\n"
 # define MES_EXIT_NUM ": numeric argument required\n"
 # define MES_EXIT_TOO_MANY "minishell: exit: too many arguments\n"
 # define MES_ENV_ERR "minishell: env: options or arguments are not allowed\n"
@@ -61,16 +61,19 @@
 # define MES_CD_ENOENT ": No such file or directory\n"
 # define MES_CD_ENOTDIR ": Not a directory\n"
 # define MES_CD_EACCES ": Permission denied\n"
+# define MES_IS_DIR ": Is a directory\n"
+# define MES_DELIM_ERR "minishell: warning: here-document delimited by end-of-file (wanted `"
 
 # define DEFAULT_PATH "PATH=/home/yfan/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
 
 # define SPACES " \n\t\r\f\v"
 # define OPERATOR "|><"
-# define SHELL "minihsell: "
+# define SHELL "minishell: "
 # define ISDIR "Is a directory"
 # define DQUOTE '\"'
 # define SQUOTE '\''
 # define CMD_NOT_FND "command '' not found"
+# define COMMAND_NO ": command not found\n"
 # define SYN_ERR "syntax error near unexpected token"
 # define SYN_ERR_NEWLINE "syntax error near unexpected token `newline'"
 

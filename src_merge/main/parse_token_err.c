@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int		count_pipe(t_list *lst) //no need to protect, if !lst the result will be 0 no segfault++++++++++++++
+int	count_pipe(t_list *lst)
 {
 	t_list	*curr;
 	int		num_pipe;
@@ -21,7 +21,7 @@ int		count_pipe(t_list *lst) //no need to protect, if !lst the result will be 0 
 	curr = lst;
 	while (curr)
 	{
-		if (!ft_strcmp(lst_getstr(curr), "|")) 
+		if (!ft_strcmp(lst_getstr(curr), "|"))
 			num_pipe++;
 		curr = curr->next;
 	}
@@ -37,14 +37,15 @@ int	red_next_err(char **tab)
 	i = 0;
 	while (tab[i])
 	{
-		if (is_red(tab[i]) != TEXT)//&& !is_red(tab[i + 1]) == WORD)
+		if (is_red(tab[i]) != TEXT)
 		{
 			if (!tab[i + 1] || is_red(tab[i + 1]) != TEXT)
 			{
 				ft_err(ERR_PREF "syntax error near unexpected token `");
 				if (tab[i + 1])
 					ft_putstr_fd(tab[i + 1], 2);
-					///next depends one pipe or new line
+				else
+					ft_putstr_fd("|", 2);
 				ft_err("'\n");
 				return (1);
 			}

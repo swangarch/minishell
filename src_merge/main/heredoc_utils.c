@@ -1,82 +1,94 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc_utils.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: shuwang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 18:13:21 by shuwang           #+#    #+#             */
+/*   Updated: 2024/10/29 18:13:27 by shuwang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-static char *join_here_doc_name(int count, int index_p)   ///////////////////safe with no leaks
+static	char	*join_here_doc_name(int count, int index_p)
 {
-    char *filename;
-    char *basename;
-    char *strnum;
-    char *heredocnum;
-    char *here_doc_name;
+	char	*filename;
+	char	*basename;
+	char	*strnum;
+	char	*heredocnum;
+	char	*here_doc_name;
 
-    basename = "/tmp/.heredoc++-+-+-+--+";
-    strnum = ft_itoa(count);
-    if (!strnum)
-        return (NULL);
-    heredocnum = ft_itoa(index_p);
-    if (!heredocnum)
-    {
-        free(strnum);
-        return (NULL);
-    }
-    here_doc_name = ft_str4join(basename, strnum, "_", heredocnum);
-    free(strnum);
-    free(heredocnum);
-    return (here_doc_name);
+	basename = "/tmp/.heredoc++-+-+-+--+";
+	strnum = ft_itoa(count);
+	if (!strnum)
+		return (NULL);
+	heredocnum = ft_itoa(index_p);
+	if (!heredocnum)
+	{
+		free(strnum);
+		return (NULL);
+	}
+	here_doc_name = ft_str4join(basename, strnum, "_", heredocnum);
+	free(strnum);
+	free(heredocnum);
+	return (here_doc_name);
 }
 
-char *here_doc_name(int index_p)  ///////////////////safe with no leaks
+char	*here_doc_name(int index_p)
 {
-    int fd_heredoc;
-    char *filename;
-    int count;
-    char *strnum;
+	int		fd_heredoc;
+	char	*filename;
+	int		count;
+	char	*strnum;
 
-    count = 0;
-    filename = join_here_doc_name(count, index_p);
-    if (!filename)
-        return (NULL);
-    while (access(filename, F_OK) == 0)
-    {
-        count++;
-        free(filename);
-        filename = join_here_doc_name(count, index_p);
-        if (!filename)
-            return (NULL);
-    }
-    return (filename);
+	count = 0;
+	filename = join_here_doc_name(count, index_p);
+	if (!filename)
+		return (NULL);
+	while (access(filename, F_OK) == 0)
+	{
+		count++;
+		free(filename);
+		filename = join_here_doc_name(count, index_p);
+		if (!filename)
+			return (NULL);
+	}
+	return (filename);
 }
 
-int has_heredoc(t_cmd *cmd, t_shell *shell)  ///////////////////safe with no leaks
+int	has_heredoc(t_cmd *cmd, t_shell *shell)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    if (!cmd || !shell)
-        return (0);
-    while (cmd->redin[i])
-    {
-        if (is_red(cmd->redin[i]) == HEREDOC)
-            return (1);
-        i++;
-    }
-    return (0);
+	i = 0;
+	if (!cmd || !shell)
+		return (0);
+	while (cmd->redin[i])
+	{
+		if (is_red(cmd->redin[i]) == HEREDOC)
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
-void delete_heredoc(char **here_docs)  ///////////////////safe with no leaks
+void	delete_heredoc(char **here_docs)
 {
-    int i;
+	int	i;
 
-    if (!here_docs)
-        return ;
-    i = 0;
-    while (here_docs[i])
-    {
-        if (ft_strcmp("", here_docs[i]) && access(here_docs[i], F_OK) == 0)
-            unlink(here_docs[i]);
-        free(here_docs[i]);
-        here_docs[i] = NULL;
-        i++;
-    }
-    free(here_docs);
-    here_docs = NULL;
+	if (!here_docs)
+		return ;
+	i = 0;
+	while (here_docs[i])
+	{
+		if (ft_strcmp("", here_docs[i]) && access(here_docs[i], F_OK) == 0)
+			unlink(here_docs[i]);
+		free(here_docs[i]);
+		here_docs[i] = NULL;
+		i++;
+	}
+	free(here_docs);
+	here_docs = NULL;
 }
