@@ -37,8 +37,7 @@ static int  cmd_loop(int *num, int *p_fd, t_shell *shell, t_cmd **tab_cmd)
     {
         signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
-        close(shell->std_fds[0]);//+++++++++++
-	    close(shell->std_fds[1]);//+++++++++++++
+        set_close(shell->std_fds);
         set_child(num, p_fd, shell, tab_cmd[num[1]]);
         if (type_cmd)
         {
@@ -47,7 +46,7 @@ static int  cmd_loop(int *num, int *p_fd, t_shell *shell, t_cmd **tab_cmd)
             free(p_fd);
             exit(shell->status);
         }
-        execute(tab_cmd[num[1]]->cmd, shell->env);
+        execute(tab_cmd[num[1]]->cmd, shell->env, shell, p_fd);
     }
     return (0);
 }
@@ -106,13 +105,17 @@ void mini_execute(t_shell *shell, t_cmd **tab_cmd)
     shell->here_docs = NULL;
 }
 
-void execute(char **cmd, char **env)
+void execute(char **cmd, char **env, t_shell *shell, int *p_fd)
 {
     char *path;
     struct stat cmd_stat;
 
     if (!cmd[0][0])
+    {
+        free_before_exit(shell);
+        free(p_fd);
         exit(0);
+    }
     path = get_path(cmd[0], env);
     if (!path)
     {
@@ -128,8 +131,9 @@ void execute(char **cmd, char **env)
     if (execve(path, cmd, env) == -1)
     {
         free(path);
+        free_before_exit(shell);
+        free(p_fd);
         perror("execve");
         exit(126);
     }
-    free(path);
 }

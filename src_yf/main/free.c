@@ -3,8 +3,7 @@
 void    free_before_exit(t_shell *shell)
 {
 	rl_clear_history();
-	close(shell->std_fds[0]);
-	close(shell->std_fds[1]);
+	set_close(shell->std_fds);
     free_in_loop(shell);
 	delete_heredoc(shell->here_docs);
 	free_char_array(shell->env);

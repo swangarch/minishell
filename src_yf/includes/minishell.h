@@ -70,7 +70,7 @@ char    *expand_tilde(char *input, t_env *lst_env);
 
 void    mini_execute(t_shell *shell, t_cmd **tab_cmd);
 int     is_build_in(const char *s);
-void	execute(char **cmd, char **env);
+void	execute(char **cmd, char **env, t_shell *shell, int *p_fd);
 char	*get_path(char *cmd, char **env);
 char	**env_split(char **env);
 int    red_out(t_cmd *tab_cmd, t_shell *shell);
@@ -123,6 +123,7 @@ int     handle_buffer(t_expansion *exp);
 int  init_pipe_fds(int **p_fd, int num_cmd, t_shell *shell);
 void    set_child(int *num, int *p_fd, t_shell *shell, t_cmd *cmd);
 void expand_str_cmd(t_cmd **tab_cmd, t_env *env_head, int status);
+void    set_close(int *fds);
 
 extern int  g_sigint_flag;
 

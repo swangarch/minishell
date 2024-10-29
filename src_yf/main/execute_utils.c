@@ -56,7 +56,11 @@ void    set_child(int *num, int *p_fd, t_shell *shell, t_cmd *cmd)
         }
     }
     if (!red_in(cmd, shell, num[1]) || !red_out(cmd, shell))
+    {
+        free_before_exit(shell);
+        free(p_fd);
         exit(EXIT_FAILURE);
+    }
     i = 0;
     while (i < 2 * (num[0] - 1))
         close(p_fd[i++]);

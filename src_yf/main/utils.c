@@ -82,3 +82,17 @@ int	    ft_strcmp(const char *s1, const char *s2)
 	}
 	return (*(unsigned char *)s1 - *(unsigned char *)s2);
 }
+
+void    set_close(int *fds)
+{
+    if (fds[0] >= 0)
+	{
+		close(fds[0]);
+		fds[0] = -1;
+	}
+	if (fds[1] >= 0)
+	{
+		close(fds[1]);
+		fds[1] = -1;
+	}
+}
