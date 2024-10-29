@@ -1,26 +1,38 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 15:06:27 by yfan              #+#    #+#             */
+/*   Updated: 2024/10/29 15:06:28 by yfan             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-t_env   *init_default_env(char **env)
+t_env	*init_default_env(char **env)
 {
-    size_t  i;
-    t_env   *head;
-    t_env   *new;
+	size_t	i;
+	t_env	*head;
+	t_env	*new;
 
-    i = 0;
-    head = init_env_node(env[i++]);
-    if (!head)
-        return (NULL);
+	i = 0;
+	head = init_env_node(env[i++]);
+	if (!head)
+		return (NULL);
 	while (env[i])
-    {
-        new = init_env_node(env[i]);
-        if (!new)
-        {
-            free_env(head);
-            return (NULL);
-        }
+	{
+		new = init_env_node(env[i]);
+		if (!new)
+		{
+			free_env(head);
+			return (NULL);
+		}
 		add_back_env_node(&head, new);
-        ++i;
-    }
+		++i;
+	}
 	return (head);
 }
 
@@ -31,16 +43,16 @@ t_env	*init_env_node(char *str)
 
 	env_node = (t_env *)malloc(sizeof(t_env));
 	if (!env_node)
-        return (NULL);
+		return (NULL);
 	split = ft_split(str, '=');
-    if (!split)
-        return (free(env_node), NULL);
+	if (!split)
+		return (free(env_node), NULL);
 	env_node->var_name = ft_strdup(split[0]);
-    if (!env_node->var_name)
-        return (free_char_array(split), free(env_node), NULL);
+	if (!env_node->var_name)
+		return (free_char_array(split), free(env_node), NULL);
 	env_node->content = get_env_content(str, split[0]);
-    if (!env_node->content)
-        return (free(env_node->var_name), free(env_node),\
+	if (!env_node->content)
+		return (free(env_node->var_name), free(env_node),
 			free_char_array(split), NULL);
 	env_node->next = NULL;
 	free_char_array(split);
@@ -49,7 +61,7 @@ t_env	*init_env_node(char *str)
 
 char	*get_env_content(char *full, char *var_name)
 {
-    int		i;
+	int		i;
 	int		j;
 	char	*content;
 	int		content_len;
@@ -65,7 +77,7 @@ char	*get_env_content(char *full, char *var_name)
 		content_len = ft_strlen(full) - var_name_len - 1;
 		content = (char *)malloc(sizeof(char) * (content_len + 1));
 		if (!content)
-            return (NULL);
+			return (NULL);
 		i = var_name_len + 1;
 		j = -1;
 		while (full[i + ++j] != '\0')
@@ -75,7 +87,7 @@ char	*get_env_content(char *full, char *var_name)
 	return (content);
 }
 
-void	add_back_env_node(t_env	**head, t_env *new)
+void	add_back_env_node(t_env **head, t_env *new)
 {
 	t_env	*curr;
 

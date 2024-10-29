@@ -12,10 +12,10 @@
 
 #include "../includes/minishell.h"
 
-int		is_red(char *s) //is redirection
+int	is_red(char *s)
 {
 	if (!s)
-		return(-1);
+		return (-1);
 	if (!strcmp(s, "<"))
 		return (REDIN);
 	if (!strcmp(s, "<<"))
@@ -29,7 +29,7 @@ int		is_red(char *s) //is redirection
 
 void	lst_add_back_str(char *s, t_list **lst_token)
 {
-	char *token;
+	char	*token;
 
 	token = NULL;
 	token = ft_strdup(s);
@@ -38,12 +38,12 @@ void	lst_add_back_str(char *s, t_list **lst_token)
 		ft_lstadd_back(lst_token, NULL);
 		return ;
 	}
-	ft_lstadd_back(lst_token, ft_lstnew(token));//protect??
+	ft_lstadd_back(lst_token, ft_lstnew(token));
 }
 
-void	parse_symbol_single(char *line, t_list	**lst_token, int i)
+void	parse_symbol_single(char *line, t_list **lst_token, int i)
 {
-	char *token;
+	char	*token;
 
 	if (!line)
 		return ;
@@ -56,22 +56,22 @@ void	parse_symbol_single(char *line, t_list	**lst_token, int i)
 		lst_add_back_str("|", lst_token);
 }
 
-void	parse_symbol_double(char *line, t_list	**lst_token, int *i)
+void	parse_symbol_double(char *line, t_list **lst_token, int *i)
 {
-	char *token;
+	char	*token;
 
 	if (!line)
 		return ;
 	token = NULL;
-	if(!ft_strncmp(line + *i, ">>", 2))
+	if (!ft_strncmp(line + *i, ">>", 2))
 		token = ft_strdup(">>");
 	else if (!ft_strncmp(line + *i, "<<", 2))
-		token = ft_strdup("<<");//protect
-	ft_lstadd_back(lst_token, ft_lstnew(token));//protect
+		token = ft_strdup("<<");
+	ft_lstadd_back(lst_token, ft_lstnew(token));
 	(*i)++;
 }
 
-int		is_wordchar(char c)
+int	is_wordchar(char c)
 {
 	if (c == '\0')
 		return (0);

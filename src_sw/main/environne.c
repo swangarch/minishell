@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   environne.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 15:08:46 by yfan              #+#    #+#             */
+/*   Updated: 2024/10/29 15:08:48 by yfan             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 char	**env_list_to_char(t_env *env)
@@ -23,7 +35,7 @@ char	**env_list_to_char(t_env *env)
 	return (result);
 }
 
-int     get_env_list_size(t_env *head)
+int	get_env_list_size(t_env *head)
 {
 	t_env	*curr;
 	int		i;
@@ -56,161 +68,13 @@ char	*get_full_env(t_env *env)
 	return (result);
 }
 
-char    *mini_get_env(const char *name, t_env *lst_env)
+char	*mini_get_env(const char *name, t_env *lst_env)
 {
-    while (lst_env)
-    {
-        if (!ft_strcmp(lst_env->var_name, name))
-            return (ft_strdup(lst_env->content));
-        lst_env = lst_env->next;
-    }
-    return (ft_strdup(""));
-}
-
-void	unset_var(t_env **lst_env, const char *name)
-{
-	t_env	*prev;
-	t_env	*current;
-
-	current = *lst_env;
-	while (!ft_strcmp(current->var_name, name))
+	while (lst_env)
 	{
-		free_2_char(current->content, current->var_name);
-		*lst_env = current->next;
-		free(current);
-		current = *lst_env;
+		if (!ft_strcmp(lst_env->var_name, name))
+			return (ft_strdup(lst_env->content));
+		lst_env = lst_env->next;
 	}
-	prev = current;
-	current = current->next;
-	while (current)
-    {
-        if (!ft_strcmp(current->var_name, name))
-        {
-			free_2_char(current->content, current->var_name);
-			prev->next = current->next;
-			free(current);
-			current = prev;
-		}
-		prev = current;
-        current = current->next;
-    }
-}
-
-int		set_var_begin(t_env **lst_env, char *cmd)
-{
-	t_env	*current;
-	t_env	*new;
-
-	current = *lst_env;
-	if (!current)
-	{
-		new = init_env_node(cmd);
-		if (!new)
-		{
-			return (1);
-		}
-		current = new;
-	}
-	return (0);
-}
-
-void	set_var_end(t_env **lst_env, t_env *current, char *cmd)
-{
-	t_env	*new;
-
-	if (!current)
-	{
-		new = init_env_node(cmd);
-		if (!new)
-		{
-			return ;
-		}
-		add_back_env_node(lst_env, new);
-	}
-}
-
-void	set_var(t_env **lst_env, char **name, char *cmd)
-{
-	t_env	*current;
-	t_env	*new;
-
-	if (set_var_begin(lst_env, cmd))
-		return ;
-	current = *lst_env;
-	while (current)
-    {
-        if (!ft_strcmp(current->var_name, name[0]))
-        {
-			free(current->content);
-			current->content = ft_strdup(name[1]);
-			return ;
-		}
-        current = current->next;
-    }
-	set_var_end(lst_env, current, cmd);
-}
-
-int		set_pwd_begin(t_env **lst_env, char *full)
-{
-	t_env	*current;
-	t_env	*new;
-
-	current = *lst_env;
-	if (!current)
-	{
-		new = init_env_node(full);
-		if (!new)
-		{
-			free(full);
-			return (1);
-		}
-		current = new;
-		free(full);
-		return (0);
-	}
-	return (0);
-}
-
-void	set_pwd_end(t_env **lst_env, t_env *current, char *full)
-{
-	t_env	*new;
-
-	if (!current)
-	{
-		new = init_env_node(full);
-		if (!new)
-		{
-			free(full);
-			return ;
-		}
-		add_back_env_node(lst_env, new);
-		free(full);
-	}
-}
-
-void	set_pwd(t_env **lst_env, char *name, char *content)
-{
-	t_env	*current;
-	t_env	*new;
-	char	*tmp_old;
-	char	*tmp_new;
-
-	current = *lst_env;
-	tmp_old = ft_strjoin(name, "=");
-	tmp_new = ft_strjoin(tmp_old, content);
-	free(tmp_old);
-	if (set_pwd_begin(lst_env, tmp_new))
-		return ;
-	while (current)
-    {
-        if (!ft_strcmp(current->var_name, name))
-        {
-			free(current->content);
-			current->content = ft_strdup(content);
-			free(tmp_new);
-			return ;
-		}
-        current = current->next;
-    }
-	set_pwd_end(lst_env, current, tmp_new);
+	return (ft_strdup(""));
 }

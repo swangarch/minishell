@@ -12,15 +12,16 @@
 
 #include "../includes/minishell.h"
 
-void on_lst_next_token_exist(t_list **curr, t_list **redin, t_list **redout, t_list **cmd_lst)
+void	on_lst_next_token_exist(t_list **curr, t_list **redin, \
+	t_list **redout, t_list **cmd_lst)
 {
-	if (is_red(lst_getstr(*curr)) == REDIN || is_red(lst_getstr(*curr)) == HEREDOC)
+	if (is_red(lst_getstr(*curr)) == 1 || is_red(lst_getstr(*curr)) == 2)
 	{
 		ft_lstadd_back(redin, ft_lstnew(lst_getstr(*curr)));
 		(*curr) = (*curr)->next;
 		ft_lstadd_back(redin, ft_lstnew(lst_getstr(*curr)));
 	}
-	else if (is_red(lst_getstr(*curr)) == REDOUT || is_red(lst_getstr(*curr)) == APPEND)
+	else if (is_red(lst_getstr(*curr)) == 3 || is_red(lst_getstr(*curr)) == 4)
 	{
 		ft_lstadd_back(redout, ft_lstnew(lst_getstr(*curr)));
 		*curr = (*curr)->next;
@@ -30,54 +31,19 @@ void on_lst_next_token_exist(t_list **curr, t_list **redin, t_list **redout, t_l
 		ft_lstadd_back(cmd_lst, ft_lstnew(lst_getstr(*curr)));
 }
 
-// t_cmd *create_cmd(t_list *lst)  ///ok
-// {
-// 	t_list	*cmd_lst;
-// 	t_list	*redin;
-// 	t_list	*redout;
-// 	t_list	*curr;
-// 	t_cmd	*cmd;
-	
-// 	redin = NULL;
-// 	redout = NULL;
-// 	cmd_lst = NULL;
-// 	curr = lst;
-// 	while (curr)
-// 	{
-// 		if (curr->next)
-// 			on_lst_next_token_exist(&curr, &redin, &redout, &cmd_lst);
-// 		else if (is_red(lst_getstr(curr)) == REDIN || is_red(lst_getstr(curr)) == HEREDOC)
-// 			ft_lstadd_back(&redin, ft_lstnew(lst_getstr(curr)));
-// 		else if (is_red(lst_getstr(curr)) == REDOUT || is_red(lst_getstr(curr)) == APPEND)
-// 			ft_lstadd_back(&redout, ft_lstnew(lst_getstr(curr)));
-// 		else
-// 			ft_lstadd_back(&cmd_lst, ft_lstnew(lst_getstr(curr)));
-// 		curr = curr->next;
-// 	}
-// 	cmd = cmd_from_lsts(cmd_lst, redin, redout);
-// 	clear_lsts(&lst, &redin, &redout, &cmd_lst);
-// 	return (cmd);
-// }
-
-t_cmd *create_cmd(t_list *lst, t_list *cmd_lst, t_list *redin, t_list *redout)  ///ok
+t_cmd	*create_cmd(t_list *lst, t_list *cmd_lst, t_list *redin, t_list *redout)
 {
-	// t_list	*cmd_lst;
-	// t_list	*redin;
-	// t_list	*redout;
 	t_list	*curr;
 	t_cmd	*cmd;
-	
-	// redin = NULL;
-	// redout = NULL;
-	// cmd_lst = NULL;
+
 	curr = lst;
 	while (curr)
 	{
 		if (curr->next)
 			on_lst_next_token_exist(&curr, &redin, &redout, &cmd_lst);
-		else if (is_red(lst_getstr(curr)) == REDIN || is_red(lst_getstr(curr)) == HEREDOC)
+		else if (is_red(lst_getstr(curr)) == 1 || is_red(lst_getstr(curr)) == 2)
 			ft_lstadd_back(&redin, ft_lstnew(lst_getstr(curr)));
-		else if (is_red(lst_getstr(curr)) == REDOUT || is_red(lst_getstr(curr)) == APPEND)
+		else if (is_red(lst_getstr(curr)) == 3 || is_red(lst_getstr(curr)) == 4)
 			ft_lstadd_back(&redout, ft_lstnew(lst_getstr(curr)));
 		else
 			ft_lstadd_back(&cmd_lst, ft_lstnew(lst_getstr(curr)));
@@ -92,13 +58,13 @@ t_cmd	**create_cmd_tab(char **tab)
 {
 	t_cmd	**tab_cmd;
 	t_list	*lst_command;
-	int	num;
-	int	i;
+	int		num;
+	int		i;
 
 	if (!tab)
 		return (NULL);
 	num = get_tab_num(tab);
-	tab_cmd = malloc(sizeof(t_cmd**) * (num + 1));
+	tab_cmd = malloc(sizeof(t_cmd **) * (num + 1));
 	if (!tab_cmd)
 		return (NULL);
 	i = 0;

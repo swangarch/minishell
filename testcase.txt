@@ -9,7 +9,7 @@ valgrind --leak-check=full --suppressions=readline.supp --show-leak-kinds=all --
 #should print nothing
 
 #3
-<<OK|cat -e
+<<OK|cat -e>>
 #should has error
 
 #4
@@ -17,11 +17,10 @@ ls|
 #should has error
 
 #5
-<< OK |cat -e|cat -e
-<< OK |cat -e
-<< OK
-<< |a
-#should has error
+<< OK |cat -e|cat -e  
+<< OK #should not has error
+<< |a #should has error
+
 
 #6
 check if here doc unlink temp files
@@ -77,3 +76,93 @@ echo "cat$HOME|cat -e'test'|"
 
 #20
 valgrind --leak-check=full --suppressions=readline.supp --show-leak-kinds=all --track-fds=yes --trace-children=yes ./minishell
+
+#21
+clear   2fds hasn't closed
+
+#22
+valgrind   << OK cat      this case is ok without leak and unclosed fds
+
+#23
+ctrl D   ok
+<<  ctrl D  ok
+
+#24
+echo | |env     leak
+ls >> >> cat     leak
+ls||cat    no leak
+<< OK |cat    when there is no command in child, there will be leak
+<< OK         leak
+<< OK cat      ctrl C break here doc      leak and error
+<< OK cat      ctrl D break here doc      OK
+<< OK cat |sleep 10      OK
+< test.sh > outfile    no command leak  ??
+< test.sh cat > outfile     OK
+
+
+#25
+dup in redin and redout need to protect
+
+#26
+echo "Hello||world|"|echo              OK
+echo "Hello||world|"lets'do a test'    OK
+echo "Hello||world|"		       OK										
+echo "Hello||world|                    OK
+echo "cat lol.c | cat > lol.c$HOME"    OK
+echo "cat lol.c | cat > lol.c"	       OK
+echo "Hello $HOME"		       OK
+echo 'Hello $HOME'                     OK
+echo "Hello $HOME"test'$HOME'          OK
+<< OK cat     '$HOME' in here doc      OK
+<< OK cat     "$HOME" in here doc      OK
+<< OK cat     $HOME in here doc        OK
+
+#26
+env                                   OK
+export A=10			     invalid read & leak KO 
+export 3			     invalid read & leak KO 
+export A=1 B=2			     invalid read & leak KO 
+export A B C			     invalid read & leak KO
+
+unset				      OK
+unset HOME			      OK
+unset PATH    ls  
+	bash: ls: No such file or directory
+	minishell: ls: command not found
+	
+	in general when command does't exist there are memory errors.
+
+#27
+export PATH=/home/shuwang/sw/FINISHED_PROJECT/so_long:/home/shuwang/sw/philo/philo/
+philo				  OK
+export PATH=/home/shuwang/sw/philo/philo/:/home/shuwang/sw/FINISHED_PROJECT/so_long
+philo                             OK
+
+#28
+cat lexer.c|grep int| cat -e>outfile1>outfile2   OK with or without outifile1 permission
+
+#29
+cat|cat|ls      OK
+
+#30
+echo "'Hello$USER'"  	OK
+echo 'Hello$USER'	OK
+
+#31
+echo hello>outfile               builtin in parent KO
+echo hello>>outfile		 builtin in parent KO
+ls > outfile			 non builtin in children OK
+ls >> outfile			 non builtin in children OK
+env|echo "Hello" > outfile	 builtin in children OK
+env|echo "Hello" >> outfile	 builtin in children OK
+
+builtin doesn't read from stdin so can't test redin in parent, maybe don't need
+
+#32
+normal control c  OK
+
+#33
+write here_doc function      set message
+
+#34
+when abs path doesn't exist, there is an error

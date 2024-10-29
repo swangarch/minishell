@@ -3,6 +3,7 @@
 void    free_before_exit(t_shell *shell)
 {
 	rl_clear_history();
+	set_close(shell->std_fds);
     free_in_loop(shell);
 	delete_heredoc(shell->here_docs);
 	free_char_array(shell->env);
@@ -22,31 +23,6 @@ void	free_char_array(char **array)
 		i++;
 	}
 	free(array);
-}
-
-void	free_env(t_env *head)
-{
-	t_env	*next;
-
-	while (head)
-	{
-		next = head->next;
-		free(head->var_name);
-		free(head->content);
-		free(head);
-		head = next;
-	}
-}
-
-void	free_env_path(char **env, char *get_path)
-{
-	free(get_path);
-	free(env[0]);
-    free(env[1]);
-    free(env[2]);
-    free(env[3]);
-	free(env[4]);
-    free(env);
 }
 
 void	free_in_loop(t_shell *shell)
@@ -81,4 +57,11 @@ void	free_2_char(char *s1, char *s2)
 {
 	free(s1);
 	free(s2);
+}
+
+void	free_save_line(t_shell *shell, int *p_fd, char *path)
+{
+	free_before_exit(shell);
+	free(p_fd);
+	free(path);
 }

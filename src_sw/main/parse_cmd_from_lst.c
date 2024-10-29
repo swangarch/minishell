@@ -12,11 +12,11 @@
 
 #include "../includes/minishell.h"
 
-char	**lst_to_chatab(t_list *lst)//safe
+char	**lst_to_chatab(t_list *lst)
 {
-	int	i; 
-	t_list *curr;
-	char **chatab;
+	int		i;
+	t_list	*curr;
+	char	**chatab;
 
 	i = 0;
 	curr = lst;
@@ -33,7 +33,7 @@ char	**lst_to_chatab(t_list *lst)//safe
 	return (chatab);
 }
 
-static void init_cmd_struct(t_cmd *command)
+static	void	init_cmd_struct(t_cmd *command)
 {
 	command->cmd = NULL;
 	command->redin = NULL;
@@ -42,7 +42,8 @@ static void init_cmd_struct(t_cmd *command)
 	command->has_out = FALSE;
 }
 
-static int	assign_cmd_tabs(t_cmd *command, t_list *cmd_lst, t_list *redin, t_list *redout)
+static	int	assign_cmd_tabs(t_cmd *command, t_list *cmd_lst, \
+	t_list *redin, t_list *redout)
 {
 	command->cmd = lst_to_chatab(cmd_lst);
 	if (!command->cmd)
@@ -54,7 +55,7 @@ static int	assign_cmd_tabs(t_cmd *command, t_list *cmd_lst, t_list *redin, t_lis
 		return (0);
 	}
 	command->redout = lst_to_chatab(redout);
-	if (!command->redout)   //if NULL means malloc fail, should avoid to access the member, in next function
+	if (!command->redout)
 	{
 		free_char_array(command->cmd);
 		free_char_array(command->redin);
@@ -63,16 +64,16 @@ static int	assign_cmd_tabs(t_cmd *command, t_list *cmd_lst, t_list *redin, t_lis
 	return (1);
 }
 
-static t_cmd *on_no_cmd(t_cmd *command)
+static	t_cmd	*on_no_cmd(t_cmd *command)
 {
 	free_char_array(command->cmd);
 	command->cmd = malloc(sizeof(char *) * 2);
-    if (!command->cmd)
+	if (!command->cmd)
 	{
 		free_char_array(command->redin);
 		free_char_array(command->redout);
 		free(command);
-        return (NULL);
+		return (NULL);
 	}
 	command->cmd[0] = ft_strdup("");
 	if (!command->cmd[0])
@@ -81,13 +82,13 @@ static t_cmd *on_no_cmd(t_cmd *command)
 		free_char_array(command->redout);
 		free_char_array(command->cmd);
 		free(command);
-        return (NULL);
+		return (NULL);
 	}
 	command->cmd[1] = NULL;
 	return (command);
 }
 
-t_cmd *cmd_from_lsts(t_list *cmd_lst, t_list *redin, t_list *redout)  //ok
+t_cmd	*cmd_from_lsts(t_list *cmd_lst, t_list *redin, t_list *redout)
 {
 	t_cmd	*command;
 
@@ -104,7 +105,7 @@ t_cmd *cmd_from_lsts(t_list *cmd_lst, t_list *redin, t_list *redout)  //ok
 		command->has_in = TRUE;
 	if (command->redout[0])
 		command->has_out = TRUE;
-	if ((command->has_in || command->has_out) && !(command->cmd[0]))   //0 command but has redirection, and previous malloc(tab) didn't fail, should free previous command and create a new one to put **tab and let tab[0] == void str 
+	if ((command->has_in || command->has_out) && !(command->cmd[0]))
 		return (on_no_cmd(command));
 	return (command);
 }

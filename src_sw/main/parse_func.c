@@ -14,7 +14,7 @@
 
 void	lst_add_back_strn(char *line, t_list **lst_token, int *i, int j)
 {
-	char *token;
+	char	*token;
 
 	token = NULL;
 	token = ft_strndup(&line[*i], j);
@@ -23,7 +23,7 @@ void	lst_add_back_strn(char *line, t_list **lst_token, int *i, int j)
 		ft_lstadd_back(lst_token, NULL);
 		return ;
 	}
-	ft_lstadd_back(lst_token, ft_lstnew(token));//protect??
+	ft_lstadd_back(lst_token, ft_lstnew(token));
 	*i = *i + j - 1;
 }
 
@@ -44,15 +44,9 @@ void	parse_word(char *line, t_list **lst_token, int *i)
 		if (line[*i + j] == '\"' && !in_squote)
 			in_dquote = !in_dquote;
 		if (!is_wordchar(line[*i + j]) && !in_squote && !in_dquote)
-		{
-			lst_add_back_strn(line, lst_token, i, j);
-			return ;
-		}
+			return (lst_add_back_strn(line, lst_token, i, j), (void)0);
 		else if (*i + j == (int)ft_strlen(line) - 1)
-		{
-			lst_add_back_strn(line, lst_token, i, j + 1);
-			return ;
-		}
+			return (lst_add_back_strn(line, lst_token, i, j + 1), (void)0);
 		j++;
 	}
 }
@@ -81,9 +75,9 @@ t_list	*tokenize_line(char *line)
 	return (lst_token);
 }
 
-static void	destroy_tab_cmd(t_cmd **tab_cmd)
+static	void	destroy_tab_cmd(t_cmd **tab_cmd)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (tab_cmd[i])
@@ -99,9 +93,9 @@ static void	destroy_tab_cmd(t_cmd **tab_cmd)
 }
 
 t_cmd	**parse_line(char *line)
-{	
-	char **tab_str;
-	t_cmd **tab_cmd;
+{
+	char	**tab_str;
+	t_cmd	**tab_cmd;
 
 	tab_str = split_ign_quote(line, '|');
 	if (!tab_str)
@@ -116,5 +110,5 @@ t_cmd	**parse_line(char *line)
 		return (NULL);
 	}
 	free_char_array(tab_str);
-	return(tab_cmd);
+	return (tab_cmd);
 }
