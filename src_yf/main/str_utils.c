@@ -56,8 +56,8 @@ char	*ft_strndup(const char *s, int n)
 {
 	char	*dup;
 	int		i;
-	int	len;
-	int	s_len;
+	int		len;
+	int		s_len;
 
 	i = 0;
 	if (!s)

@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 18:07:29 by yfan              #+#    #+#             */
+/*   Updated: 2024/10/29 18:07:31 by yfan             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-void    free_before_exit(t_shell *shell)
+void	free_before_exit(t_shell *shell)
 {
 	rl_clear_history();
 	set_close(shell->std_fds);
-    free_in_loop(shell);
+	free_in_loop(shell);
 	delete_heredoc(shell->here_docs);
 	free_char_array(shell->env);
 	free_env(shell->env_head);
@@ -28,14 +40,14 @@ void	free_char_array(char **array)
 void	free_in_loop(t_shell *shell)
 {
 	int	i;
-	
+
 	i = 0;
 	free(shell->prompt);
-    free(shell->trimmed_prompt);
-    free(shell->terminal_prompt);
+	free(shell->trimmed_prompt);
+	free(shell->terminal_prompt);
 	shell->prompt = NULL;
-    shell->trimmed_prompt = NULL;
-    shell->terminal_prompt = NULL;
+	shell->trimmed_prompt = NULL;
+	shell->terminal_prompt = NULL;
 	while (shell->tab_cmd && shell->tab_cmd[i])
 	{
 		free_char_array(shell->tab_cmd[i]->redin);

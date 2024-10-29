@@ -12,20 +12,20 @@
 
 #include "../includes/minishell.h"
 
-int g_sigint_flag;
+int	g_sigint_flag;
 
-int main(int ac, char **av, char **env)
+int	main(int ac, char **av, char **env)
 {
-    t_shell shell;
+	t_shell	shell;
 
-    if (ac != 1 && av)
-    {
-        ft_putstr_fd(MES_ARG_NO_ONE, STDERR_FILENO);
-        exit(EXIT_SUCCESS);
-    }
-    init_shell(&shell, env);
-    minishell_loop(&shell);
-    free_before_exit(&shell);
-    exit(shell.status);
-    return (0);
+	if (ac != 1 && av)
+	{
+		ft_putstr_fd(MES_ARG_NO_ONE, STDERR_FILENO);
+		exit(EXIT_SUCCESS);
+	}
+	init_shell(&shell, env);
+	minishell_loop(&shell);
+	free_before_exit(&shell);
+	exit(shell.status);
+	return (0);
 }

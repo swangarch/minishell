@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   prompt.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 18:20:23 by yfan              #+#    #+#             */
+/*   Updated: 2024/10/29 18:20:24 by yfan             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
- char	*ft_str4join(char *s1, char *s2, char *s3, char *s4)
+char	*ft_str4join(char *s1, char *s2, char *s3, char *s4)
 {
 	char	*temp1;
 	char	*temp2;
@@ -14,9 +26,9 @@
 	return (result);
 }
 
- char *last_dir(char *s)
+char	*last_dir(char *s)
 {
-	int	i;
+	int		i;
 	char	**path;
 	char	*tmp;
 
@@ -33,23 +45,21 @@
 	return (tmp);
 }
 
- char	*join_prompt(void)
+char	*join_prompt(void)
 {
 	char	cwd[PATH_MAX];
-	//char	*read_pwd;
 	char	*current_path;
 	char	*join_path;
 	char	*last_path;
 
-	//read_pwd = getcwd(cwd, PATH_MAX);
 	if (!getcwd(cwd, PATH_MAX))
 	{
 		perror("getcwd() error");
-		current_path = ft_strdup("$ ");//protect
+		current_path = ft_strdup("$ ");
 	}
 	else
 	{
-		current_path = ft_strjoin(cwd,"$ ");//protect
+		current_path = ft_strjoin(cwd, "$ ");
 	}
 	last_path = last_dir(current_path);
 	free(current_path);
@@ -58,8 +68,3 @@
 	free(last_path);
 	return (join_path);
 }
-
-// void	set_prompt(t_shell *shell)
-// {
-//     shell->terminal_prompt = join_prompt();
-// }

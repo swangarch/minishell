@@ -47,13 +47,13 @@ static int	cd_change_dir(char *dir)
 	{
 		if (errno == ENOENT)
 			ft_put3str_fd(SHELL "cd: ", dir,
-						  MES_CD_ENOENT, STDERR_FILENO);
+				MES_CD_ENOENT, STDERR_FILENO);
 		else if (errno == ENOTDIR)
 			ft_put3str_fd(SHELL "cd: ", dir,
-						  MES_CD_ENOTDIR, STDERR_FILENO);
+				MES_CD_ENOTDIR, STDERR_FILENO);
 		else if (errno == EACCES)
 			ft_put3str_fd(SHELL "cd: ", dir,
-						  MES_CD_EACCES, STDERR_FILENO);
+				MES_CD_EACCES, STDERR_FILENO);
 		else
 		{
 			ft_put3str_fd(SHELL "cd: ", dir, ": ", STDERR_FILENO);
@@ -65,11 +65,11 @@ static int	cd_change_dir(char *dir)
 	return (0);
 }
 
-int mini_cd(t_env **head, char **cmd)
+int	mini_cd(t_env **head, char **cmd)
 {
-	char *dir;
-	char *old_pwd;
-	char *new_pwd;
+	char	*dir;
+	char	*old_pwd;
+	char	*new_pwd;
 
 	if (!head)
 		return (1);
@@ -78,7 +78,7 @@ int mini_cd(t_env **head, char **cmd)
 		return (ft_putstr_fd(MES_CUR_PATH_ERR, STDERR_FILENO), 1);
 	if (count_cmd(cmd) > 2)
 		return (ft_putstr_fd(MES_CD_TOO_MANY, STDERR_FILENO),
-				free(old_pwd), 1);
+			free(old_pwd), 1);
 	dir = cd_set_dir(head, cmd);
 	if (!dir)
 		return (free(old_pwd), 1);
@@ -87,7 +87,7 @@ int mini_cd(t_env **head, char **cmd)
 	new_pwd = getcwd(NULL, 0);
 	if (!new_pwd)
 		return (ft_putstr_fd(MES_CUR_PATH_ERR, STDERR_FILENO),
-				free(old_pwd), free(dir), 1);
+			free(old_pwd), free(dir), 1);
 	set_pwd(head, "PWD", new_pwd);
 	set_pwd(head, "OLDPWD", old_pwd);
 	return (free(old_pwd), free(dir), free(new_pwd), 0);
