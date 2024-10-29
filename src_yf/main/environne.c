@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   environne.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 15:08:46 by yfan              #+#    #+#             */
+/*   Updated: 2024/10/29 15:08:48 by yfan             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 char	**env_list_to_char(t_env *env)
@@ -23,7 +35,7 @@ char	**env_list_to_char(t_env *env)
 	return (result);
 }
 
-int     get_env_list_size(t_env *head)
+int	get_env_list_size(t_env *head)
 {
 	t_env	*curr;
 	int		i;
@@ -56,13 +68,13 @@ char	*get_full_env(t_env *env)
 	return (result);
 }
 
-char    *mini_get_env(const char *name, t_env *lst_env)
+char	*mini_get_env(const char *name, t_env *lst_env)
 {
-    while (lst_env)
-    {
-        if (!ft_strcmp(lst_env->var_name, name))
-            return (ft_strdup(lst_env->content));
-        lst_env = lst_env->next;
-    }
-    return (ft_strdup(""));
+	while (lst_env)
+	{
+		if (!ft_strcmp(lst_env->var_name, name))
+			return (ft_strdup(lst_env->content));
+		lst_env = lst_env->next;
+	}
+	return (ft_strdup(""));
 }

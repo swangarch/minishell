@@ -124,6 +124,8 @@ int  init_pipe_fds(int **p_fd, int num_cmd, t_shell *shell);
 void    set_child(int *num, int *p_fd, t_shell *shell, t_cmd *cmd);
 void expand_str_cmd(t_cmd **tab_cmd, t_env *env_head, int status);
 void    set_close(int *fds);
+void	free_save_line(t_shell *shell, int *p_fd, char *path);
+void	final_execute(t_shell *shell, char *path, char **cmd, int *p_fd);
 
 extern int  g_sigint_flag;
 

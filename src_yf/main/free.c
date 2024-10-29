@@ -58,3 +58,10 @@ void	free_2_char(char *s1, char *s2)
 	free(s1);
 	free(s2);
 }
+
+void	free_save_line(t_shell *shell, int *p_fd, char *path)
+{
+	free_before_exit(shell);
+	free(p_fd);
+	free(path);
+}
