@@ -120,11 +120,15 @@ void execute(char **cmd, char **env, t_shell *shell, int *p_fd)
     if (!path)
     {
         ft_put3str_fd(SHELL, cmd[0], COMMAND_NO, STDERR_FILENO);
+        free_before_exit(shell);
+        free(p_fd);
         exit(127);
     }
     if (stat(path, &cmd_stat) == 0 && (cmd_stat.st_mode & S_IFMT) == S_IFDIR)
     {
         ft_put3str_fd(SHELL, path, MES_IS_DIR, STDERR_FILENO);
+        free_before_exit(shell);
+        free(p_fd);
         free(path);
         exit(126);
     }
