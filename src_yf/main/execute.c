@@ -19,7 +19,7 @@ static int	handle_single_builtin(t_shell *shell, t_cmd **tab_cmd)
 	type_cmd = is_build_in(tab_cmd[0]->cmd[0]);
 	if (type_cmd)
 	{
-		if (!red_in(tab_cmd[0], shell, 0) || !red_in(tab_cmd[0], shell, 0))
+		if (!red_in(tab_cmd[0], shell, 0) || !red_out(tab_cmd[0], shell))
 		{
 			delete_heredoc(shell->here_docs);
 			shell->here_docs = NULL;
