@@ -37,6 +37,8 @@ static int  cmd_loop(int *num, int *p_fd, t_shell *shell, t_cmd **tab_cmd)
     {
         signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
+        close(shell->std_fds[0]);//+++++++++++
+	    close(shell->std_fds[1]);//+++++++++++++
         set_child(num, p_fd, shell, tab_cmd[num[1]]);
         if (type_cmd)
         {
