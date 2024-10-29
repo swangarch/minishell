@@ -71,7 +71,7 @@ char    *expand_tilde(char *input, t_env *lst_env);
 void    mini_execute(t_shell *shell, t_cmd **tab_cmd);
 int     is_build_in(const char *s);
 void	execute(char **cmd, char **env, t_shell *shell, int *p_fd);
-char	*get_path(char *cmd, char **env);
+char	*get_path(char *cmd, t_shell *shell, int *p_fd);
 char	**env_split(char **env);
 int    red_out(t_cmd *tab_cmd, t_shell *shell);
 int    red_in(t_cmd *tab_cmd, t_shell *shell, int index_p);
