@@ -34,16 +34,13 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		return (ft_strdup(s2));
 	if (!s2)
 		return (ft_strdup(s1));
-	i = 0;
+	i = -1;
 	j = 0;
 	s = malloc(slen(s1) + slen(s2) + 1);
 	if (s == NULL)
 		return (NULL);
-	while (i < slen(s1))
-	{
+	while (s1[++i])
 		s[i] = s1[i];
-		i++;
-	}
 	while (j < slen(s2))
 	{
 		s[i + j] = s2[j];
