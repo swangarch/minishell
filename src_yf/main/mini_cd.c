@@ -77,11 +77,12 @@ int	mini_cd(t_env **head, char **cmd)
 	if (!old_pwd)
 		return (ft_putstr_fd(MES_CUR_PATH_ERR, STDERR_FILENO), 1);
 	if (count_cmd(cmd) > 2)
-		return (ft_putstr_fd(MES_CD_TOO_MANY, STDERR_FILENO),
-			free(old_pwd), 1);
+		return (ft_putstr_fd(MES_CD_TOO_MANY, 2), free(old_pwd), 1);
 	dir = cd_set_dir(head, cmd);
 	if (!dir)
 		return (free(old_pwd), 1);
+	if (!dir[0])
+		return (free(old_pwd), 0);
 	if (cd_change_dir(dir))
 		return (free(old_pwd), free(dir), 1);
 	new_pwd = getcwd(NULL, 0);
