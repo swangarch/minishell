@@ -89,7 +89,9 @@ int	mini_env(char **env, t_cmd **tab_cmd, int place)
 {
 	int	i;
 
-	if (count_cmd(tab_cmd[place]->cmd) != 1)
+	if (!env || !tab_cmd)
+		return (1);
+	if (tab_cmd[place] && count_cmd(tab_cmd[place]->cmd) != 1)
 	{
 		ft_putstr_fd(MES_ENV_ERR, STDERR_FILENO);
 		return (2);

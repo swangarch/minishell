@@ -124,7 +124,7 @@ void	execute(char **cmd, char **env, t_shell *shell, int *p_fd)
 		free_save_line(shell, p_fd, NULL);
 		exit(0);
 	}
-	path = get_path(cmd[0], env);
+	path = get_path(cmd[0], shell, p_fd);
 	if (!path)
 	{
 		ft_put3str_fd(SHELL, cmd[0], COMMAND_NO, STDERR_FILENO);

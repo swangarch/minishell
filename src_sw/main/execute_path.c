@@ -12,18 +12,30 @@
 
 #include "../includes/minishell.h"
 
-static int	check_path_access(char *cmd)
+static int	check_path_access(char *cmd, t_shell *shell, int *p_fd)
 {
+	char	*tmp;
+
 	if (access(cmd, F_OK | X_OK) == 0)
 		return (0);
+	tmp = mini_get_env("PATH", shell->env_head);
+	if (!tmp || !tmp[0])
+	{
+		ft_put3str_fd(SHELL, cmd, MES_CD_ENOENT, STDERR_FILENO);
+		free_save_line(shell, p_fd, tmp);
+		exit(127);
+	}
+	free(tmp);
 	if (ft_strchr(cmd, '/') && access(cmd, F_OK))
 	{
 		ft_put3str_fd(SHELL, cmd, MES_CD_ENOENT, STDERR_FILENO);
+		free_save_line(shell, p_fd, NULL);
 		exit(127);
 	}
 	if (ft_strchr(cmd, '/') && access(cmd, X_OK))
 	{
 		ft_put3str_fd(SHELL, cmd, MES_CD_EACCES, STDERR_FILENO);
+		free_save_line(shell, p_fd, NULL);
 		exit(126);
 	}
 	return (1);
@@ -59,16 +71,16 @@ static int	validate_access(char *cmd, char *full_path, char **all_path)
 	return (FALSE);
 }
 
-char	*get_path(char *cmd, char **env)
+char	*get_path(char *cmd, t_shell *shell, int *p_fd)
 {
 	int		i;
 	char	*full_path;
 	char	**all_path;
 
 	i = -1;
-	if (!check_path_access(cmd))
+	if (!check_path_access(cmd, shell, p_fd))
 		return (cmd);
-	all_path = env_split(env);
+	all_path = env_split(shell->env);
 	if (!all_path)
 		return (NULL);
 	while (all_path[++i])

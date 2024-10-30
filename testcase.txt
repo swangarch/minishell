@@ -166,3 +166,6 @@ write here_doc function      set message
 
 #34
 when abs path doesn't exist, there is an error
+
+#35
+first time open a file, there will be error when copy file

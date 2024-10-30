@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-static int		set_pwd_begin(t_env **lst_env, char *full)
+static int	set_pwd_begin(t_env **lst_env, char *full)
 {
 	t_env	*current;
 	t_env	*new;
@@ -64,15 +64,15 @@ void	set_pwd(t_env **lst_env, char *name, char *content)
 	if (set_pwd_begin(lst_env, tmp_new))
 		return ;
 	while (current)
-    {
-        if (!ft_strcmp(current->var_name, name))
-        {
+	{
+		if (!ft_strcmp(current->var_name, name))
+		{
 			free(current->content);
 			current->content = ft_strdup(content);
 			free(tmp_new);
 			return ;
 		}
-        current = current->next;
-    }
+		current = current->next;
+	}
 	set_pwd_end(lst_env, current, tmp_new);
 }
