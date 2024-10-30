@@ -126,6 +126,7 @@ void expand_str_cmd(t_cmd **tab_cmd, t_env *env_head, int status);
 void    set_close(int *fds);
 void	free_save_line(t_shell *shell, int *p_fd, char *path);
 void	final_execute(t_shell *shell, char *path, char **cmd, int *p_fd);
+void	check_tty(t_shell *shell)；
 
 extern int  g_sigint_flag;
 

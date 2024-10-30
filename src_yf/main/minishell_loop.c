@@ -21,8 +21,25 @@ static int	handle_null_prompt(void)
 	return (1);
 }
 
+static void	execute_commands(t_shell *shell)
+{
+	if (!g_sigint_flag && lexer(shell))
+	{
+		shell->tab_cmd = parse_line(shell->trimmed_prompt);
+		expand_str_cmd(shell->tab_cmd, shell->env_head, shell->status);
+		mini_execute(shell, shell->tab_cmd);
+	}
+	if (g_sigint_flag)
+		shell->status = 130;
+}
+
 static int	read_and_process_input(t_shell *shell)
 {
+	if (!isatty(STDIN_FILENO))
+	{
+		check_tty(shell);
+		return (1);
+	}
 	errno = 0;
 	shell->terminal_prompt = join_prompt();
 	shell->prompt = readline(shell->terminal_prompt);
@@ -38,18 +55,6 @@ static int	read_and_process_input(t_shell *shell)
 		update_env(shell);
 	}
 	return (0);
-}
-
-static void	execute_commands(t_shell *shell)
-{
-	if (!g_sigint_flag && lexer(shell))
-	{
-		shell->tab_cmd = parse_line(shell->trimmed_prompt);
-		expand_str_cmd(shell->tab_cmd, shell->env_head, shell->status);
-		mini_execute(shell, shell->tab_cmd);
-	}
-	if (g_sigint_flag)
-		shell->status = 130;
 }
 
 static void	post_execution_cleanup(t_shell *shell)

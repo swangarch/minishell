@@ -78,3 +78,19 @@ char	*ft_strndup(const char *s, int n)
 	dup[i] = '\0';
 	return (dup);
 }
+
+void	check_tty(t_shell *shell)
+{
+	char	*line;
+
+	line = get_next_line(STDIN_FILENO);
+	while (line)
+	{
+		shell->trimmed_prompt = ft_strtrim(line, SPACES);
+		execute_commands(shell);
+		free(line);
+		free(shell->trimmed_prompt);
+		shell->trimmed_prompt = NULL;
+		line = get_next_line(STDIN_FILENO);
+	}
+}
