@@ -58,13 +58,11 @@ char	*join_prompt(void)
 		current_path = ft_strdup("$ ");
 	}
 	else
-	{
 		current_path = ft_strjoin(cwd, "$ ");
-	}
 	last_path = last_dir(current_path);
 	free(current_path);
 	join_path = ft_str4join(BLUE_B "yf&sw" COLOR_END, WHITE_B "@" \
-		COLOR_END, RED_B "minishell❄" COLOR_END, last_path);
+		COLOR_END, RED_B "minishell*" COLOR_END, last_path);
 	free(last_path);
 	return (join_path);
 }
