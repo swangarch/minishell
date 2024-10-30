@@ -45,6 +45,9 @@ char	*lst_getstr(t_list *lst)
 
 void	do_noting(void *arg)
 {
+	long long	num;
+
+	num = (long long)arg;
 	return ;
 }
 

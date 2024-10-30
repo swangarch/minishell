@@ -13,13 +13,6 @@
 #ifndef DEFINE_H
 # define DEFINE_H
 
-/* colors */
-// # define RED "\001\033[1;31m\002"
-// # define GREEN "\001\033[1;32m\002"
-// # define YELLOW "\001\033[1;33m\002"
-// # define BLUE "\001\033[1;34m\002"
-// # define COLOR_E "\001\033[0m\002"
-
 # define BLACK "\001\033[30m\002"
 # define RED "\001\033[31m\002"
 # define RED_B "\001\033[1;31m\002"
@@ -44,7 +37,6 @@
 # define MES_SQUOTE_ERR "minishell: Syntax error: unclosed single quote\n"
 # define MES_DQUOTE_ERR "minishell: Syntax error: unclosed double quote\n"
 # define MES_DUP_ERR "minishell: Dup failed!"
-//# define MES_EXIT_OP "exit: options are not allowed\n"
 # define MES_EXIT_NUM ": numeric argument required\n"
 # define MES_EXIT_TOO_MANY "minishell: exit: too many arguments\n"
 # define MES_ENV_ERR "minishell: env: options or arguments are not allowed\n"
@@ -62,9 +54,12 @@
 # define MES_CD_ENOTDIR ": Not a directory\n"
 # define MES_CD_EACCES ": Permission denied\n"
 # define MES_IS_DIR ": Is a directory\n"
-# define MES_DELIM_ERR "minishell: warning: here-document delimited by end-of-file (wanted `"
+# define MES_DELIM_ERR "minishell: warning: here-document \
+						delimited by end-of-file (wanted `"
 
-# define DEFAULT_PATH "PATH=/home/yfan/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+# define DEFAULT_PATH "PATH=/home/yfan/bin:/usr/local/sbin:/usr/local/bin\
+						:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:\
+						/usr/local/games:/snap/bin"
 
 # define SPACES " \n\t\r\f\v"
 # define OPERATOR "|><"
@@ -76,12 +71,10 @@
 # define COMMAND_NO ": command not found\n"
 # define SYN_ERR "syntax error near unexpected token"
 # define SYN_ERR_NEWLINE "syntax error near unexpected token `newline'"
+# define ERR_PREF "minishell: "
 
 # define INIT_SIZE 64
 # define FACTOR 2
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 512
-# endif
 
 # define NOBULTIN 0
 # define MINI_ECHO 1
@@ -91,5 +84,10 @@
 # define MINI_UNSET 5
 # define MINI_ENV 6
 # define MINI_EXIT 7
+# define REDIN 1
+# define HEREDOC 2
+# define REDOUT 3
+# define APPEND 4
+# define TEXT 0
 
 #endif

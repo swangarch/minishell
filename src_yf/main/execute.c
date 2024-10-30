@@ -19,7 +19,7 @@ static int	handle_single_builtin(t_shell *shell, t_cmd **tab_cmd)
 	type_cmd = is_build_in(tab_cmd[0]->cmd[0]);
 	if (type_cmd)
 	{
-		if (!red_in(tab_cmd[0], shell, 0) || !red_out(tab_cmd[0], shell))
+		if (!red_in(tab_cmd[0], shell, 0) || !red_out(tab_cmd[0]))
 		{
 			delete_heredoc(shell->here_docs);
 			shell->here_docs = NULL;
@@ -58,7 +58,7 @@ static int	cmd_loop(int *num, int *p_fd, t_shell *shell, t_cmd **tab_cmd)
 			free(p_fd);
 			exit(shell->status);
 		}
-		execute(tab_cmd[num[1]]->cmd, shell->env, shell, p_fd);
+		execute(tab_cmd[num[1]]->cmd, shell, p_fd);
 	}
 	return (0);
 }
@@ -114,7 +114,7 @@ void	mini_execute(t_shell *shell, t_cmd **tab_cmd)
 	shell->here_docs = NULL;
 }
 
-void	execute(char **cmd, char **env, t_shell *shell, int *p_fd)
+void	execute(char **cmd, t_shell *shell, int *p_fd)
 {
 	char		*path;
 	struct stat	cmd_stat;

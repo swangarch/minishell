@@ -21,7 +21,7 @@ static int	handle_null_prompt(void)
 	return (1);
 }
 
-static void	execute_commands(t_shell *shell)
+void	execute_commands(t_shell *shell)
 {
 	if (!g_sigint_flag && lexer(shell))
 	{
@@ -42,6 +42,8 @@ static int	read_and_process_input(t_shell *shell)
 	}
 	errno = 0;
 	shell->terminal_prompt = join_prompt();
+	if (!shell->terminal_prompt)
+		return (2);
 	shell->prompt = readline(shell->terminal_prompt);
 	if (!shell->prompt)
 		return (handle_null_prompt());

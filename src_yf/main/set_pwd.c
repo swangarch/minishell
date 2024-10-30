@@ -53,7 +53,6 @@ static void	set_pwd_end(t_env **lst_env, t_env *current, char *full)
 void	set_pwd(t_env **lst_env, char *name, char *content)
 {
 	t_env	*current;
-	t_env	*new;
 	char	*tmp_old;
 	char	*tmp_new;
 

@@ -77,7 +77,6 @@ static void	set_var_end(t_env **lst_env, t_env *current, char *cmd)
 void	set_var(t_env **lst_env, char **name, char *cmd)
 {
 	t_env	*current;
-	t_env	*new;
 
 	if (set_var_begin(lst_env, cmd))
 		return ;

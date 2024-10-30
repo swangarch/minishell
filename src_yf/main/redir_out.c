@@ -70,7 +70,7 @@ void	dup_last(int *fd_outfile, int i)
 	close(fd_outfile[i / 2 - 1]);
 }
 
-int	red_out(t_cmd *cmd, t_shell *shell)
+int	red_out(t_cmd *cmd)
 {
 	int	i;
 	int	*fd_outfile;

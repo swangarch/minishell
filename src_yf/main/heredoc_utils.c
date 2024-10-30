@@ -14,7 +14,6 @@
 
 static	char	*join_here_doc_name(int count, int index_p)
 {
-	char	*filename;
 	char	*basename;
 	char	*strnum;
 	char	*heredocnum;
@@ -38,10 +37,8 @@ static	char	*join_here_doc_name(int count, int index_p)
 
 char	*here_doc_name(int index_p)
 {
-	int		fd_heredoc;
 	char	*filename;
 	int		count;
-	char	*strnum;
 
 	count = 0;
 	filename = join_here_doc_name(count, index_p);

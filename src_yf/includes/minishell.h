@@ -70,10 +70,10 @@ char    *expand_tilde(char *input, t_env *lst_env);
 
 void    mini_execute(t_shell *shell, t_cmd **tab_cmd);
 int     is_build_in(const char *s);
-void	execute(char **cmd, char **env, t_shell *shell, int *p_fd);
+void	execute(char **cmd, t_shell *shell, int *p_fd);
 char	*get_path(char *cmd, t_shell *shell, int *p_fd);
 char	**env_split(char **env);
-int    red_out(t_cmd *tab_cmd, t_shell *shell);
+int    red_out(t_cmd *tab_cmd);
 int    red_in(t_cmd *tab_cmd, t_shell *shell, int index_p);
 void close_fds(int *fd, int num);
 
@@ -106,7 +106,7 @@ void    ft_put3str_fd(char *s1, char *s2, char *s3, int fd);
 //void	set_pwd_end(t_env **lst_env, t_env *current, char *full);
 
 //void heredoc_sig_handle(int sig);
-void handle_sigquit(int sig);
+//void handle_sigquit(int sig);
 
 void	free_2_char(char *s1, char *s2);
 //int     export_set_var(t_env **head, char **cmd, int i, int *inval);
@@ -126,28 +126,19 @@ void expand_str_cmd(t_cmd **tab_cmd, t_env *env_head, int status);
 void    set_close(int *fds);
 void	free_save_line(t_shell *shell, int *p_fd, char *path);
 void	final_execute(t_shell *shell, char *path, char **cmd, int *p_fd);
-void	check_tty(t_shell *shell)；
+void	check_tty(t_shell *shell);
+void	execute_commands(t_shell *shell);
 
 extern int  g_sigint_flag;
 
 
 //-----------------------------------------------sw
 
-# define ERR_PREF "minishell: "
-# define TRUE 1
-# define FALSE 0
-
-#define REDIN 1
-#define HEREDOC 2
-#define REDOUT 3
-#define APPEND 4
-#define TEXT 0
-
 
 char	*ft_str4join(char *s1, char *s2, char *s3, char *s4);
 char	*join_prompt(void);
 t_cmd	**parse_line(char *line);
-int		lexer_check(char *line);
+//int		lexer_check(char *line);
 
 char	*ft_strndup(const char *s, int n);
 void	ft_putstr(char *s);
@@ -156,20 +147,20 @@ char	*ft_strncpy(char *dest, char *src, unsigned int n);
 void    ft_err(char *s);
 int		is_red(char *s); //is redirection
 
-void	print_tab(char **s);
-void	print_lst(t_list *lst);
-void	print_lst_partition(t_list **partition);
+//void	print_tab(char **s);
+// void	print_lst(t_list *lst);
+// void	print_lst_partition(t_list **partition);
 
-void	print_token_struct(t_lstcmd *cmd_lst);
+// void	print_token_struct(t_lstcmd *cmd_lst);
 
-t_list	**partition_lst(t_list *lst_tk);
+//t_list	**partition_lst(t_list *lst_tk);
 char	**lst_to_chatab(t_list *lst);
 char	*lst_getstr(t_list *lst);
 
 int		count_pipe(t_list *lst);
-int		check_double_pipe(t_list *lst);
-int		check_red_file(t_list *lst);
-int		check_token_err(t_list *lst);
+// int		check_double_pipe(t_list *lst);
+// int		check_red_file(t_list *lst);
+// int		check_token_err(t_list *lst);
 
 char *here_doc_name(int index_p);
 int has_heredoc(t_cmd *cmd, t_shell *shell);

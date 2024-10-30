@@ -32,7 +32,6 @@ void	parse_word(char *line, t_list **lst_token, int *i)
 	int		in_squote;
 	int		in_dquote;
 	int		j;
-	char	*token;
 
 	in_squote = 0;
 	in_dquote = 0;

@@ -41,7 +41,7 @@ static int	check_path_access(char *cmd, t_shell *shell, int *p_fd)
 	return (1);
 }
 
-static char	*get_full_path(char *cmd, char *path, char **all_path)
+static char	*get_full_path(char *cmd, char *path)
 {
 	char	*part_path;
 	char	*full_path;
@@ -79,13 +79,13 @@ char	*get_path(char *cmd, t_shell *shell, int *p_fd)
 
 	i = -1;
 	if (!check_path_access(cmd, shell, p_fd))
-		return (cmd);
+		return (ft_strdup(cmd));
 	all_path = env_split(shell->env);
 	if (!all_path)
 		return (NULL);
 	while (all_path[++i])
 	{
-		full_path = get_full_path(cmd, all_path[i], all_path);
+		full_path = get_full_path(cmd, all_path[i]);
 		if (!full_path)
 			return (free_char_array(all_path), NULL);
 		if (validate_access(cmd, full_path, all_path))

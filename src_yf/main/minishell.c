@@ -17,15 +17,19 @@ int	g_sigint_flag;
 int	main(int ac, char **av, char **env)
 {
 	t_shell	shell;
+	t_shell	*ptr;
 
 	if (ac != 1 && av)
 	{
 		ft_putstr_fd(MES_ARG_NO_ONE, STDERR_FILENO);
 		exit(EXIT_SUCCESS);
 	}
-	init_shell(&shell, env);
-	minishell_loop(&shell);
-	free_before_exit(&shell);
+	ptr = &shell;
+	if (!ptr)
+		return (1);
+	init_shell(ptr, env);
+	minishell_loop(ptr);
+	free_before_exit(ptr);
 	exit(shell.status);
 	return (0);
 }

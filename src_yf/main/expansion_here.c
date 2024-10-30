@@ -94,6 +94,8 @@ int	append_env(t_expansion *exp)
 
 int	init_expansion(t_expansion *exp)
 {
+	if (!exp)
+		return (0);
 	exp->size = INIT_SIZE;
 	exp->result = (char *)malloc(exp->size * sizeof(char));
 	if (!exp->result)

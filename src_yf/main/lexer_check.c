@@ -14,8 +14,8 @@
 
 int	lexer(t_shell *shell)
 {
-	if (ft_strlen(shell->trimmed_prompt) == 0 \
-		|| is_empty_line_passed(shell) == TRUE)
+	if (shell->trimmed_prompt && (ft_strlen(shell->trimmed_prompt) == 0 \
+		|| is_empty_line_passed(shell) == TRUE))
 		return (FALSE);
 	else if (wrong_operator_check(shell->trimmed_prompt) == TRUE)
 	{
