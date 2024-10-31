@@ -93,6 +93,7 @@ $(OBJS_DIR)/%.o:	%.c
 clean:
 		@echo "$(YELLOW)Cleaning object files...$(RESET)"
 		@$(RM) -r $(OBJS)
+		@$(RM) -r $(OBJS_DIR)
 		@make clean -sC ./libft
 		@echo "$(GREEN)Object files cleaned!$(RESET)"
 
