@@ -23,13 +23,13 @@ static int	handle_null_prompt(void)
 
 void	execute_commands(t_shell *shell)
 {
-	if (!g_sigint_flag && lexer(shell))
+	if (g_sig != SIGINT && lexer(shell))
 	{
 		shell->tab_cmd = parse_line(shell->trimmed_prompt);
 		expand_str_cmd(shell->tab_cmd, shell->env_head, shell->status);
 		mini_execute(shell, shell->tab_cmd);
 	}
-	if (g_sigint_flag)
+	if (g_sig == SIGINT)
 		shell->status = 130;
 }
 
@@ -47,7 +47,7 @@ static int	read_and_process_input(t_shell *shell)
 	shell->prompt = readline(shell->terminal_prompt);
 	if (!shell->prompt)
 		return (handle_null_prompt());
-	if (!g_sigint_flag)
+	if (g_sig != SIGINT)
 	{
 		shell->trimmed_prompt = ft_strtrim(shell->prompt, SPACES);
 		if (!shell->trimmed_prompt)
@@ -61,7 +61,7 @@ static int	read_and_process_input(t_shell *shell)
 
 static void	post_execution_cleanup(t_shell *shell)
 {
-	g_sigint_flag = FALSE;
+	g_sig = 0;
 	rl_done = 0;
 	free_in_loop(shell);
 	delete_heredoc(shell->here_docs);

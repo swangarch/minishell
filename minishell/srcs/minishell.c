@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int	g_sigint_flag;
+int	g_sig;
 
 int	main(int ac, char **av, char **env)
 {

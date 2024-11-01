@@ -21,10 +21,10 @@ static	void	write_heredoc(t_cmd *cmd, int *fd_infile, \
 	index_fd = *i / 2;
 	while (1)
 	{
-		if (g_sigint_flag)
+		if (g_sig == SIGINT)
 			return ;
 		line = readline("> ");
-		if (g_sigint_flag)
+		if (g_sig == SIGINT)
 			return (free(line), (void)0);
 		if (!line)
 			return (ft_put3str_fd(MES_DELIM_ERR, cmd->redin[*i], "')\n", \
@@ -68,7 +68,7 @@ static	char	*create_heredoc(t_shell *shell, int *fd_infile, \
 		return (NULL);
 	write_heredoc(shell->tab_cmd[index_p], fd_infile, i, shell);
 	close(fd_infile[index_fd]);
-	if (g_sigint_flag)
+	if (g_sig == SIGINT)
 		return (unlink(here_doc), free(here_doc), NULL);
 	if (index_fd != get_tab_num(shell->tab_cmd[index_p]->redin) / 2 - 1)
 		return (unlink(here_doc), free(here_doc), here_doc = NULL, \

@@ -26,7 +26,7 @@ void	handle_sigint(int sig)
 {
 	if (sig == SIGINT)
 	{
-		g_sigint_flag = TRUE;
+		g_sig = SIGINT;
 		rl_done = 1;
 		write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();

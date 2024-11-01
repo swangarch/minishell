@@ -29,7 +29,7 @@
 # include "struct.h"
 # include "define.h"
 
-extern int	g_sigint_flag;
+extern int	g_sig;
 
 void		execute_commands(t_shell *shell);
 void		minishell_loop(t_shell *shell);
