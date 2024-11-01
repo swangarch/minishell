@@ -51,7 +51,27 @@ int	is_valid_name(const char *var)
 	while (*var)
 	{
 		if (!ft_isalnum(*var) && *var != '_')
+		{
 			return (FALSE);
+		}
+		++var;
+	}
+	return (TRUE);
+}
+
+int	is_valid_name_equal(const char *var)
+{
+	if (!var || *var == '\0' || (!ft_isalpha(*var) && *var != '_'))
+		return (FALSE);
+	++var;
+	while (*var)
+	{
+		if (!ft_isalnum(*var) && *var != '_')
+		{
+			if (*var == '=' && *(var + 1) == '\0')
+				return (TRUE);
+			return (FALSE);
+		}
 		++var;
 	}
 	return (TRUE);

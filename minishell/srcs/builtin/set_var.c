@@ -18,7 +18,7 @@ void	unset_var(t_env **lst_env, const char *name)
 	t_env	*current;
 
 	current = *lst_env;
-	while (!ft_strcmp(current->var_name, name))
+	while (!ft_strncmp(current->var_name, name, ft_strlen(name)))
 	{
 		free_2_char(current->content, current->var_name);
 		*lst_env = current->next;
@@ -29,7 +29,7 @@ void	unset_var(t_env **lst_env, const char *name)
 	current = current->next;
 	while (current)
 	{
-		if (!ft_strcmp(current->var_name, name))
+		if (!ft_strncmp(current->var_name, name, ft_strlen(name)))
 		{
 			free_2_char(current->content, current->var_name);
 			prev->next = current->next;
@@ -74,22 +74,42 @@ static void	set_var_end(t_env **lst_env, t_env *current, char *cmd)
 	}
 }
 
+static int	set_var_check_equal(t_env *current, char *tmp, char **name)
+{
+	if (!ft_strncmp(current->var_name, tmp, ft_strlen(tmp)) \
+		&& (current->var_name[ft_strlen(tmp)] == '=' \
+		|| current->var_name[ft_strlen(tmp)] == '\0'))
+	{
+		if (ft_strlen(tmp) != ft_strlen(name[0]))
+		{
+			free_2_char(current->content, current->var_name);
+			current->content = ft_strdup(name[1]);
+			current->var_name = ft_strdup(name[0]);
+			return (0);
+		}
+		else
+			return (0);
+	}
+	return (1);
+}
+
 void	set_var(t_env **lst_env, char **name, char *cmd)
 {
 	t_env	*current;
+	char	*tmp;
 
 	if (set_var_begin(lst_env, cmd))
 		return ;
 	current = *lst_env;
+	tmp = ft_strtrim(name[0], "=");
+	if (!tmp)
+		return ;
 	while (current)
 	{
-		if (!ft_strcmp(current->var_name, name[0]))
-		{
-			free(current->content);
-			current->content = ft_strdup(name[1]);
-			return ;
-		}
+		if (!set_var_check_equal(current, tmp, name))
+			return (free(tmp), (void)0);
 		current = current->next;
 	}
+	free(tmp);
 	set_var_end(lst_env, current, cmd);
 }

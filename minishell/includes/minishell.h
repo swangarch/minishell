@@ -44,6 +44,7 @@ int			mini_unset(t_env **head, char **cmd);
 int			is_build_in(const char *s);
 int			count_cmd(char **str);
 int			is_valid_name(const char *var);
+int			is_valid_name_equal(const char *var);
 int			mini_cd(t_env **head, char **cmd);
 int			mini_echo(char **cmd);
 int			mini_export(t_env **head, char **cmd);
@@ -89,7 +90,7 @@ char		*get_env_content(char *full, char *var_name);
 void		add_back_env_node(t_env **head, t_env *new);
 void		update_env(t_shell *shell);
 char		**env_list_to_char(t_env *env);
-int			get_env_list_size(t_env *head);
+size_t		get_env_list_size(t_env *head);
 char		*get_full_env(t_env *env);
 char		*mini_get_env(const char *name, t_env *lst_env);
 
@@ -179,7 +180,7 @@ void		check_tty(t_shell *shell);
 
 int			str_to_ll(const char *str, long long *val);
 int			is_numeric(const char *str);
-char		**split_by_equal(const char *s, int *flag);
+char		**split_by_equal(const char *s);
 int			ft_strcmp(const char *s1, const char *s2);
 void		set_close(int *fds);
 

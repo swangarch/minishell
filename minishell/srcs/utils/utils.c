@@ -58,30 +58,31 @@ int	is_numeric(const char *str)
 	return (1);
 }
 
-char	**split_by_equal(const char *s, int *flag)
+char	**split_by_equal(const char *s)
 {
 	char	**ptr;
 	int		i;
 
 	i = -1;
 	ptr = (char **)malloc(3 * sizeof(char *));
-	if (!ptr || !flag)
+	if (!ptr)
 		return (NULL);
 	while (s[++i])
 		if (s[i] == '=')
 			break ;
-	ptr[0] = ft_substr(s, 0, i);
-	if (!ptr[0])
-		return (free(ptr), NULL);
-	if (!s[i])
+	if (s[i] == '=')
 	{
-		ptr[1] = ft_strdup("");
-		*flag = TRUE;
+		++i;
+		ptr[0] = ft_substr(s, 0, i);
+		ptr[1] = ft_substr(s, i, ft_strlen(s) - i);
 	}
 	else
-		ptr[1] = ft_substr(s, i + 1, ft_strlen(s) - i - 1);
-	if (!ptr[1])
-		return (free(ptr[0]), free(ptr), NULL);
+	{
+		ptr[0] = ft_substr(s, 0, i);
+		ptr[1] = ft_strdup("");
+	}
+	if (!ptr[0] || !ptr[1])
+		return (free(ptr[0]), free(ptr[1]), free(ptr), NULL);
 	ptr[2] = NULL;
 	return (ptr);
 }

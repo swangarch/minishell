@@ -15,8 +15,8 @@
 char	**env_list_to_char(t_env *env)
 {
 	char	**result;
-	int		size;
-	int		i;
+	size_t	size;
+	size_t	i;
 
 	i = 0;
 	size = get_env_list_size(env);
@@ -26,6 +26,11 @@ char	**env_list_to_char(t_env *env)
 	result[size] = NULL;
 	while (env != NULL && i < size)
 	{
+		if (env->var_name[ft_strlen(env->var_name) - 1] != '=')
+		{
+			env = env->next;
+			continue ;
+		}
 		result[i] = get_full_env(env);
 		if (!result[i])
 			result[i] = strdup("");
@@ -35,36 +40,34 @@ char	**env_list_to_char(t_env *env)
 	return (result);
 }
 
-int	get_env_list_size(t_env *head)
+size_t	get_env_list_size(t_env *head)
 {
 	t_env	*curr;
-	int		i;
+	size_t	i;
+	size_t	len;
 
 	i = 0;
 	curr = head;
 	while (curr != NULL)
 	{
+		len = ft_strlen(curr->var_name);
+		if (curr->var_name[len - 1] == '=')
+			++i;
 		curr = curr->next;
-		i++;
 	}
 	return (i);
 }
 
 char	*get_full_env(t_env *env)
 {
-	char	*tmp;
 	char	*result;
 
-	tmp = ft_strjoin(env->var_name, "=");
-	if (!tmp)
-		return (NULL);
 	if (env->content != NULL)
 	{
-		result = ft_strjoin(tmp, env->content);
-		free(tmp);
+		result = ft_strjoin(env->var_name, env->content);
 	}
 	else
-		return (tmp);
+		return (env->var_name);
 	return (result);
 }
 
@@ -72,7 +75,9 @@ char	*mini_get_env(const char *name, t_env *lst_env)
 {
 	while (lst_env)
 	{
-		if (!ft_strcmp(lst_env->var_name, name))
+		if (!ft_strncmp(lst_env->var_name, name, ft_strlen(name)) \
+			&& (lst_env->var_name[ft_strlen(name)] == '=' \
+			|| lst_env->var_name[ft_strlen(name)] == '\0'))
 			return (ft_strdup(lst_env->content));
 		lst_env = lst_env->next;
 	}

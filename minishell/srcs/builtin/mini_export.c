@@ -14,10 +14,19 @@
 
 static void	export_print(t_env *current)
 {
+	size_t	len;
+
 	while (current)
 	{
-		if (ft_strcmp(current->var_name, "_"))
-			printf(EXPORT_PRE "%s=%s\n", current->var_name, current->content);
+		len = ft_strlen(current->var_name);
+		if (ft_strcmp(current->var_name, "_="))
+		{
+			if (current->var_name[len - 1] != '=')
+				printf(EXPORT_PRE "%s\n", current->var_name);
+			else
+				printf(EXPORT_PRE "%s\"%s\"\n", current->var_name, \
+					current->content);
+		}
 		current = current->next;
 	}
 }
@@ -25,26 +34,25 @@ static void	export_print(t_env *current)
 static int	export_set_var(t_env **head, char **cmd, int i, int *inval)
 {
 	char	**arg;
-	int		flag;
 
+	if (!inval || !head || !cmd)
+		return (1);
 	while (cmd[i])
 	{
-		flag = FALSE;
 		if (cmd[1][0] == '-' && ft_strcmp(cmd[1], "-") \
 			&& ft_strcmp(cmd[1], "--"))
 			return (ft_putstr_fd(MES_EXPORT_OP, STDERR_FILENO), 2);
-		arg = split_by_equal(cmd[i], &flag);
+		arg = split_by_equal(cmd[i]);
 		if (!arg)
 			return (1);
-		if (!is_valid_name(arg[0]))
+		if (!is_valid_name_equal(arg[0]))
 		{
 			*inval = TRUE;
 			ft_put3str_fd(MES_EXP_PRE, cmd[i], MES_EXP_POST, STDERR_FILENO);
 			++i;
 			continue ;
 		}
-		if (!flag)
-			set_var(head, arg, cmd[i]);
+		set_var(head, arg, cmd[i]);
 		free_char_array(arg);
 		++i;
 	}

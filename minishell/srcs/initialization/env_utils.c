@@ -44,7 +44,7 @@ t_env	*init_env_node(char *str)
 	env_node = (t_env *)malloc(sizeof(t_env));
 	if (!env_node)
 		return (NULL);
-	split = ft_split(str, '=');
+	split = split_by_equal(str);
 	if (!split)
 		return (free(env_node), NULL);
 	env_node->var_name = ft_strdup(split[0]);
@@ -68,17 +68,15 @@ char	*get_env_content(char *full, char *var_name)
 	size_t	var_name_len;
 
 	var_name_len = ft_strlen(var_name);
-	if (var_name_len + 1 == ft_strlen(full))
+	if (var_name_len == ft_strlen(full))
 		content = ft_strdup("");
-	else if (var_name_len == ft_strlen(full))
-		content = NULL;
 	else
 	{
-		content_len = ft_strlen(full) - var_name_len - 1;
+		content_len = ft_strlen(full) - var_name_len;
 		content = (char *)malloc(sizeof(char) * (content_len + 1));
 		if (!content)
 			return (NULL);
-		i = var_name_len + 1;
+		i = var_name_len;
 		j = -1;
 		while (full[i + ++j] != '\0')
 			content[j] = full[i + j];
