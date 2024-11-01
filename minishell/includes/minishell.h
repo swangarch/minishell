@@ -82,6 +82,8 @@ int			handle_dollar(char *input, t_expansion *exp, \
 int			handle_buffer(t_expansion *exp);
 char		*expand_var(char *input, t_env *lst_env, int status);
 char		*expand_tilde(char *input, t_env *lst_env);
+int			expand_var_here_check(char *input, t_expansion *exp, \
+	t_env *lst_env, int status);
 
 /*initialization*/
 t_env		*init_default_env(char **env);

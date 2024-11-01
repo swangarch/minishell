@@ -22,15 +22,8 @@ char	*expand_var_here(char *input, t_env *lst_env, int status)
 		return (free(input), NULL);
 	while (input[exp.i] != '\0')
 	{
-		if (!handle_quotes(input, &exp))
-			continue ;
-		else if (input[exp.i] == '$' && valid_exp(input[exp.i + 1]))
-		{
-			if (!handle_dollar(input, &exp, lst_env, status))
-				return (free(input), free(exp.result), NULL);
-		}
-		else
-			exp.result[exp.len++] = input[exp.i++];
+		if (expand_var_here_check(input, &exp, lst_env, status))
+			return (free(input), free(exp.result), NULL);
 		if (exp.len >= exp.size && !handle_buffer(&exp))
 			return (free(input), NULL);
 	}

@@ -42,3 +42,26 @@ void	expand_str_cmd(t_cmd **tab_cmd, t_env *env_head, int status)
 		i++;
 	}
 }
+
+int	expand_var_here_check(char *input, t_expansion *exp, \
+	t_env *lst_env, int status)
+{
+	if (input[exp->i] == '\'' && !exp->in_dquote)
+	{
+		exp->in_squote = !exp->in_squote;
+		exp->result[exp->len++] = input[exp->i++];
+	}
+	else if (input[exp->i] == '"' && !exp->in_squote)
+	{
+		exp->in_dquote = !exp->in_dquote;
+		exp->result[exp->len++] = input[exp->i++];
+	}
+	else if (input[exp->i] == '$' && valid_exp(input[exp->i + 1]))
+	{
+		if (!handle_dollar(input, exp, lst_env, status))
+			return (1);
+	}
+	else
+		exp->result[exp->len++] = input[exp->i++];
+	return (0);
+}
