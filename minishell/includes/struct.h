@@ -40,6 +40,7 @@ typedef struct s_shell
 	char			*trimmed_prompt;
 	char			*terminal_prompt;
 	t_cmd			**tab_cmd;
+	pid_t			pid;
 	struct termios	termios_set;
 }	t_shell;
 

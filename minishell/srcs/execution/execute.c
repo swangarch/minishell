@@ -43,6 +43,8 @@ static int	cmd_loop(int *num, int *p_fd, t_shell *shell, t_cmd **tab_cmd)
 
 	type_cmd = is_build_in(tab_cmd[num[1]]->cmd[0]);
 	pid = fork();
+	if (num[1] == num[0] - 1)
+		shell->pid = pid;
 	if (pid == -1)
 		return (shell->status = 3, perror(SHELL "fork"), free(p_fd), 1);
 	else if (pid == 0)
@@ -65,17 +67,20 @@ static int	cmd_loop(int *num, int *p_fd, t_shell *shell, t_cmd **tab_cmd)
 
 static void	wait_for_children(int num_cmd, int *p_fd, t_shell *shell)
 {
-	int	term_sig;
-	int	i;
+	int		term_sig;
+	int		i;
+	pid_t	pid;
 
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
-	i = 0;
-	while (i < 2 * (num_cmd - 1))
-		close(p_fd[i++]);
+	close_multi_fd(num_cmd, p_fd);
 	i = -1;
 	while (++i < num_cmd)
-		waitpid(-1, &shell->status, 0);
+	{
+		pid = waitpid(-1, &term_sig, 0);
+		if (pid == shell->pid)
+			shell->status = term_sig;
+	}
 	if ((shell->status & 0x7F) != 0)
 	{
 		term_sig = shell->status & 0x7F;
