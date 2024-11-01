@@ -21,14 +21,16 @@ void	close_fds(int *fd, int num)
 		return ;
 	while (i < num)
 	{
-		close(fd[i]);
+		if (fd[i] >= 0)
+			close(fd[i]);
 		i++;
 	}
 }
 
 int	red_out_tofile(t_cmd *cmd, int *fd_outfile, int *i)
 {
-	int	index_fd;
+	int		index_fd;
+	char	*info;
 
 	index_fd = (*i) / 2;
 	(*i)++;
@@ -36,10 +38,11 @@ int	red_out_tofile(t_cmd *cmd, int *fd_outfile, int *i)
 		| O_WRONLY | O_TRUNC, 0666);
 	if (fd_outfile[index_fd] < 0)
 	{
-		ft_putstr_fd(SHELL, 2);
-		perror(cmd->redout[*i]);
-		close_fds(fd_outfile, *i);
+		info = ft_strjoin(SHELL, cmd->redout[*i]);
+		perror(info);
+		close_fds(fd_outfile, *i / 2);
 		free(fd_outfile);
+		free(info);
 		return (0);
 	}
 	return (1);
@@ -47,7 +50,8 @@ int	red_out_tofile(t_cmd *cmd, int *fd_outfile, int *i)
 
 int	red_out_append(t_cmd *cmd, int *fd_outfile, int *i)
 {
-	int	index_fd;
+	int		index_fd;
+	char	*info;
 
 	index_fd = (*i) / 2;
 	(*i)++;
@@ -55,10 +59,11 @@ int	red_out_append(t_cmd *cmd, int *fd_outfile, int *i)
 		| O_WRONLY | O_APPEND, 0666);
 	if (fd_outfile[index_fd] < 0)
 	{
-		ft_putstr_fd(SHELL, 2);
-		perror(cmd->redout[*i]);
-		close_fds(fd_outfile, *i);
+		info = ft_strjoin(SHELL, cmd->redout[*i]);
+		perror(info);
+		close_fds(fd_outfile, *i / 2);
 		free(fd_outfile);
+		free(info);
 		return (0);
 	}
 	return (1);
@@ -78,7 +83,7 @@ int	red_out(t_cmd *cmd)
 	i = -1;
 	if (!cmd->redout[0])
 		return (1);
-	fd_outfile = malloc(get_tab_num(cmd->redout) * sizeof(int));
+	fd_outfile = malloc((get_tab_num(cmd->redout) / 2) * sizeof(int));
 	if (!fd_outfile)
 		return (0);
 	while (cmd->redout[++i])

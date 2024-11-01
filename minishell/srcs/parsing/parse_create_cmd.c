@@ -64,7 +64,7 @@ t_cmd	**create_cmd_tab(char **tab)
 	if (!tab)
 		return (NULL);
 	num = get_tab_num(tab);
-	tab_cmd = malloc(sizeof(t_cmd **) * (num + 1));
+	tab_cmd = malloc(sizeof(t_cmd *) * (num + 1));
 	if (!tab_cmd)
 		return (NULL);
 	i = 0;

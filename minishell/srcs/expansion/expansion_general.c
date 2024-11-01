@@ -16,7 +16,7 @@ void	expand_tab(char **tab, t_env *env_head, int status)
 {
 	int	i;
 
-	if (!tab)
+	if (!tab || !env_head)
 		return ;
 	i = 0;
 	while (tab[i])
@@ -31,7 +31,7 @@ void	expand_str_cmd(t_cmd **tab_cmd, t_env *env_head, int status)
 {
 	int	i;
 
-	if (!tab_cmd)
+	if (!tab_cmd || !env_head)
 		return ;
 	i = 0;
 	while (tab_cmd[i])

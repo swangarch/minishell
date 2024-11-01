@@ -12,22 +12,22 @@
 
 #include "../../includes/minishell.h"
 
-int	mini_builtin(int type, t_shell *shell, t_cmd **tab_cmd, int i)
+int	mini_builtin(int type, t_shell *shell, int *p_fd, int i)
 {
 	if (type == MINI_ECHO)
-		shell->status = mini_echo(tab_cmd[i]->cmd);
+		shell->status = mini_echo(shell->tab_cmd[i]->cmd);
 	else if (type == MINI_CD)
-		shell->status = mini_cd(&shell->env_head, tab_cmd[i]->cmd);
+		shell->status = mini_cd(&shell->env_head, shell->tab_cmd[i]->cmd);
 	else if (type == MINI_PWD)
-		shell->status = mini_pwd(tab_cmd[i]->cmd);
+		shell->status = mini_pwd(shell->tab_cmd[i]->cmd);
 	else if (type == MINI_EXPORT)
-		shell->status = mini_export(&shell->env_head, tab_cmd[i]->cmd);
+		shell->status = mini_export(&shell->env_head, shell->tab_cmd[i]->cmd);
 	else if (type == MINI_UNSET)
-		shell->status = mini_unset(&shell->env_head, tab_cmd[i]->cmd);
+		shell->status = mini_unset(&shell->env_head, shell->tab_cmd[i]->cmd);
 	else if (type == MINI_ENV)
-		shell->status = mini_env(shell->env, tab_cmd, i);
+		shell->status = mini_env(shell->env, shell->tab_cmd, i);
 	else if (type == MINI_EXIT)
-		shell->status = mini_exit(shell, tab_cmd, i);
+		shell->status = mini_exit(shell, shell->tab_cmd, i, p_fd);
 	return (shell->status);
 }
 
@@ -56,7 +56,7 @@ int	mini_pwd(char **cmd)
 	return (0);
 }
 
-int	mini_exit(t_shell *shell, t_cmd **tab_cmd, int place)
+int	mini_exit(t_shell *shell, t_cmd **tab_cmd, int place, int *p_fd)
 {
 	int			i;
 	long long	val;
@@ -69,7 +69,7 @@ int	mini_exit(t_shell *shell, t_cmd **tab_cmd, int place)
 			ft_putstr_fd("exit\n", STDERR_FILENO);
 			ft_put3str_fd("minishell: exit: ", tab_cmd[place]->cmd[i],
 				MES_EXIT_NUM, STDERR_FILENO);
-			free_before_exit(shell);
+			free_save_line(shell, p_fd, NULL);
 			exit(2);
 		}
 		if (tab_cmd[place]->cmd[i + 1])
@@ -77,11 +77,11 @@ int	mini_exit(t_shell *shell, t_cmd **tab_cmd, int place)
 		if (val < 0)
 			val = (val % 256 + 256) % 256;
 		ft_putstr_fd("exit\n", STDERR_FILENO);
-		free_before_exit(shell);
+		free_save_line(shell, p_fd, NULL);
 		exit((int)(val % 256));
 	}
 	ft_putstr_fd("exit\n", STDERR_FILENO);
-	free_before_exit(shell);
+	free_save_line(shell, p_fd, NULL);
 	exit(EXIT_SUCCESS);
 }
 

@@ -16,6 +16,8 @@ int	init_pipe_fds(int **p_fd, int num_cmd, t_shell *shell)
 {
 	int	i;
 
+	if (!p_fd)
+		return (1);
 	*p_fd = malloc(2 * (num_cmd - 1) * sizeof(int));
 	if (!*p_fd)
 	{
@@ -37,7 +39,7 @@ int	init_pipe_fds(int **p_fd, int num_cmd, t_shell *shell)
 	return (0);
 }
 
-static void	close_multi_fd(int num, int *p_fd)
+void	close_multi_fd(int num, int *p_fd)
 {
 	int	i;
 
@@ -53,6 +55,7 @@ void	set_child(int *num, int *p_fd, t_shell *shell, t_cmd *cmd)
 		if (dup2(p_fd[(num[1] - 1) * 2], 0) == -1)
 		{
 			perror(SHELL "dup2");
+			free_close(shell, p_fd, num[0]);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -61,13 +64,13 @@ void	set_child(int *num, int *p_fd, t_shell *shell, t_cmd *cmd)
 		if (dup2(p_fd[num[1] * 2 + 1], 1) == -1)
 		{
 			perror(SHELL "dup2");
+			free_close(shell, p_fd, num[0]);
 			exit(EXIT_FAILURE);
 		}
 	}
 	if (!red_in(cmd, shell, num[1]) || !red_out(cmd))
 	{
-		free_before_exit(shell);
-		free(p_fd);
+		free_close(shell, p_fd, num[0]);
 		exit(EXIT_FAILURE);
 	}
 	close_multi_fd(num[0], p_fd);

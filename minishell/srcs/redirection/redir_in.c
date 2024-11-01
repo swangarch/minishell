@@ -14,17 +14,19 @@
 
 static	int	red_in_fromfile(t_cmd *cmd, int *fd_infile, int *i)
 {
-	int	index_fd;
+	int		index_fd;
+	char	*info;
 
 	index_fd = *i / 2;
 	(*i)++;
 	fd_infile[index_fd] = open(cmd->redin[*i], O_RDONLY, 0666);
 	if (fd_infile[index_fd] < 0)
 	{
-		ft_putstr_fd(SHELL, 2);
-		perror(cmd->redin[*i]);
-		close_fds(fd_infile, *i);
+		info = ft_strjoin(SHELL, cmd->redin[*i]);
+		perror(info);
+		close_fds(fd_infile, *i / 2);
 		free(fd_infile);
+		free(info);
 		return (0);
 	}
 	dup2(fd_infile[index_fd], STDIN_FILENO);
@@ -34,16 +36,18 @@ static	int	red_in_fromfile(t_cmd *cmd, int *fd_infile, int *i)
 
 static	int	open_heredoc_read(int *fd_infile, int *i, char *here_doc)
 {
-	int	index_fd;
+	int		index_fd;
+	char	*info;
 
 	index_fd = *i / 2;
 	fd_infile[index_fd] = open(here_doc, O_RDONLY, 0666);
 	if (fd_infile[index_fd] < 0)
 	{
-		ft_putstr_fd(SHELL, 2);
-		perror(here_doc);
-		close_fds(fd_infile, *i);
+		info = ft_strjoin(SHELL, here_doc);
+		perror(info);
+		close_fds(fd_infile, *i / 2);
 		free(fd_infile);
+		free(info);
 		return (0);
 	}
 	return (1);
@@ -70,7 +74,7 @@ int	red_in(t_cmd *cmd, t_shell *shell, int index_p)
 	i = -1;
 	if (!cmd->redin[0])
 		return (1);
-	fd_infile = malloc(get_tab_num(cmd->redin) * sizeof(int));
+	fd_infile = malloc((get_tab_num(cmd->redin) / 2) * sizeof(int));
 	if (!fd_infile)
 		return (0);
 	while (cmd->redin[++i])

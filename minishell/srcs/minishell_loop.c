@@ -43,7 +43,7 @@ static int	read_and_process_input(t_shell *shell)
 	errno = 0;
 	shell->terminal_prompt = join_prompt();
 	if (!shell->terminal_prompt)
-		return (2);
+		return (1);
 	shell->prompt = readline(shell->terminal_prompt);
 	if (!shell->prompt)
 		return (handle_null_prompt());

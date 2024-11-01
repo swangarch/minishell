@@ -87,6 +87,8 @@ void	check_tty(t_shell *shell)
 	while (line)
 	{
 		shell->trimmed_prompt = ft_strtrim(line, SPACES);
+		if (!shell->trimmed_prompt)
+			return ;
 		execute_commands(shell);
 		free(line);
 		free(shell->trimmed_prompt);

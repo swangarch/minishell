@@ -36,3 +36,9 @@ void	free_env_path(char **env, char *get_path)
 	free(env[4]);
 	free(env);
 }
+
+void	free_close(t_shell *shell, int *p_fd, int num)
+{
+	close_multi_fd(num, p_fd);
+	free_save_line(shell, p_fd, NULL);
+}

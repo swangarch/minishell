@@ -35,9 +35,9 @@ void		execute_commands(t_shell *shell);
 void		minishell_loop(t_shell *shell);
 
 /*builtin*/
-int			mini_builtin(int type, t_shell *shell, t_cmd **tab_cmd, int i);
+int			mini_builtin(int type, t_shell *shell, int *p_fd, int i);
 int			mini_pwd(char **cmd);
-int			mini_exit(t_shell *shell, t_cmd **tab_cmd, int place);
+int			mini_exit(t_shell *shell, t_cmd **tab_cmd, int place, int *p_fd);
 int			mini_env(char **env, t_cmd **tab_cmd, int place);
 int			mini_unset(t_env **head, char **cmd);
 
@@ -59,6 +59,7 @@ void		set_child(int *num, int *p_fd, t_shell *shell, t_cmd *cmd);
 void		final_execute(t_shell *shell, char *path, char **cmd, int *p_fd);
 void		mini_execute(t_shell *shell, t_cmd **tab_cmd);
 void		execute(char **cmd, t_shell *shell, int *p_fd);
+void		close_multi_fd(int num, int *p_fd);
 
 /*expansion*/
 void		expand_tab(char **tab, t_env *env_head, int status);
@@ -164,6 +165,7 @@ void		free_char_array(char **array);
 void		free_in_loop(t_shell *shell);
 void		free_2_char(char *s1, char *s2);
 void		free_save_line(t_shell *shell, int *p_fd, char *path);
+void		free_close(t_shell *shell, int *p_fd, int num);
 
 void		configure_terminal(struct termios *termios_set);
 void		handle_sigint(int sig);
@@ -177,7 +179,7 @@ void		check_tty(t_shell *shell);
 
 int			str_to_ll(const char *str, long long *val);
 int			is_numeric(const char *str);
-char		**split_by_equal(const char *s);
+char		**split_by_equal(const char *s, int *flag);
 int			ft_strcmp(const char *s1, const char *s2);
 void		set_close(int *fds);
 

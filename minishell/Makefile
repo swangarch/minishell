@@ -60,7 +60,7 @@ OBJS_DIR		=	objs
 OBJS		=	$(SRCS:%.c=$(OBJS_DIR)/%.o)
 
 #Compiler and CFlags
-CC			=	cc
+CC			=	cc 
 CFLAGS		=	-Wall -Wextra -Werror
 CFLAGS		+=	-I libft -Iinclude
 LDFLAGS     = 	-lreadline

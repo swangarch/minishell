@@ -55,11 +55,10 @@
 # define MES_CD_EACCES ": Permission denied\n"
 # define MES_IS_DIR ": Is a directory\n"
 # define MES_DELIM_ERR "minishell: warning: here-document \
-						delimited by end-of-file (wanted `"
+delimited by end-of-file (wanted `"
 
 # define DEFAULT_PATH "PATH=/home/yfan/bin:/usr/local/sbin:/usr/local/bin\
-						:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:\
-						/usr/local/games:/snap/bin"
+:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
 
 # define SPACES " \n\t\r\f\v"
 # define OPERATOR "|><"

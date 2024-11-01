@@ -25,13 +25,15 @@ static void	export_print(t_env *current)
 static int	export_set_var(t_env **head, char **cmd, int i, int *inval)
 {
 	char	**arg;
+	int		flag;
 
 	while (cmd[i])
 	{
+		flag = FALSE;
 		if (cmd[1][0] == '-' && ft_strcmp(cmd[1], "-") \
 			&& ft_strcmp(cmd[1], "--"))
 			return (ft_putstr_fd(MES_EXPORT_OP, STDERR_FILENO), 2);
-		arg = split_by_equal(cmd[i]);
+		arg = split_by_equal(cmd[i], &flag);
 		if (!arg)
 			return (1);
 		if (!is_valid_name(arg[0]))
@@ -41,7 +43,8 @@ static int	export_set_var(t_env **head, char **cmd, int i, int *inval)
 			++i;
 			continue ;
 		}
-		set_var(head, arg, cmd[i]);
+		if (!flag)
+			set_var(head, arg, cmd[i]);
 		free_char_array(arg);
 		++i;
 	}

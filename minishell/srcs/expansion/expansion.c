@@ -61,7 +61,7 @@ char	*expand_var(char *input, t_env *lst_env, int status)
 {
 	t_expansion	exp;
 
-	if (!input)
+	if (!input || !lst_env)
 		return (NULL);
 	if (!init_expansion(&exp))
 		return (free(input), NULL);

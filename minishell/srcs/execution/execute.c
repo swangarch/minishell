@@ -26,7 +26,7 @@ static int	handle_single_builtin(t_shell *shell, t_cmd **tab_cmd)
 			shell->status = 1;
 			return (1);
 		}
-		shell->status = mini_builtin(type_cmd, shell, tab_cmd, 0);
+		shell->status = mini_builtin(type_cmd, shell, NULL, 0);
 		delete_heredoc(shell->here_docs);
 		shell->here_docs = NULL;
 		dup2(shell->std_fds[0], STDIN_FILENO);
@@ -53,7 +53,7 @@ static int	cmd_loop(int *num, int *p_fd, t_shell *shell, t_cmd **tab_cmd)
 		set_child(num, p_fd, shell, tab_cmd[num[1]]);
 		if (type_cmd)
 		{
-			shell->status = mini_builtin(type_cmd, shell, tab_cmd, num[1]);
+			shell->status = mini_builtin(type_cmd, shell, p_fd, num[1]);
 			free_before_exit(shell);
 			free(p_fd);
 			exit(shell->status);
