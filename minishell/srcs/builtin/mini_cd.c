@@ -12,18 +12,15 @@
 
 #include "../../includes/minishell.h"
 
-static char	*cd_set_dir(t_env **head, char **cmd)
+static char	*cd_set_dir(t_env **head, char **cmd, char *home_path)
 {
 	char	*dir;
 
-	if (count_cmd(cmd) == 1)
+	if (count_cmd(cmd) == 1 || (count_cmd(cmd) == 2 && !strcmp(cmd[1], "--")))
 	{
 		dir = mini_get_env("HOME", *head);
 		if (!dir || !dir[0])
-		{
-			ft_putstr_fd(MES_CD_HOME, STDERR_FILENO);
-			return (free(dir), NULL);
-		}
+			return (ft_putstr_fd(MES_CD_HOME, STDERR_FILENO), free(dir), NULL);
 	}
 	else if (!strcmp(cmd[1], "-"))
 	{
@@ -33,9 +30,9 @@ static char	*cd_set_dir(t_env **head, char **cmd)
 			ft_putstr_fd(MES_CD_OLD, STDERR_FILENO);
 			return (free(dir), NULL);
 		}
-		ft_putstr_fd(dir, STDOUT_FILENO);
-		ft_putstr_fd("\n", STDOUT_FILENO);
 	}
+	else if (!cmd[1][0] && home_path)
+		dir = ft_strdup(home_path);
 	else
 		dir = ft_strdup(cmd[1]);
 	return (dir);
@@ -65,7 +62,7 @@ static int	cd_change_dir(char *dir)
 	return (0);
 }
 
-int	mini_cd(t_env **head, char **cmd)
+int	mini_cd(t_env **head, char **cmd, char *home_path)
 {
 	char	*dir;
 	char	*old_pwd;
@@ -73,22 +70,22 @@ int	mini_cd(t_env **head, char **cmd)
 
 	if (!head)
 		return (1);
-	old_pwd = getcwd(NULL, 0);
-	if (!old_pwd)
-		return (ft_putstr_fd(MES_CUR_PATH_ERR, STDERR_FILENO), 1);
 	if (count_cmd(cmd) > 2)
-		return (ft_putstr_fd(MES_CD_TOO_MANY, 2), free(old_pwd), 1);
-	dir = cd_set_dir(head, cmd);
+		return (ft_putstr_fd(MES_CD_TOO_MANY, 2), 1);
+	dir = cd_set_dir(head, cmd, home_path);
 	if (!dir)
-		return (free(old_pwd), 1);
-	if (!dir[0])
-		return (free(dir), free(old_pwd), 0);
+		return (1);
 	if (cd_change_dir(dir))
-		return (free(old_pwd), free(dir), 1);
+		return (free(dir), 1);
+	if (count_cmd(cmd) == 2 && !ft_strcmp(cmd[1], "-"))
+	{
+		ft_putstr_fd(dir, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+	}
 	new_pwd = getcwd(NULL, 0);
 	if (!new_pwd)
-		return (ft_putstr_fd(MES_CUR_PATH_ERR, STDERR_FILENO),
-			free(old_pwd), free(dir), 1);
+		return (perror(MES_RETRIVE_DIR), free(dir), 1);
+	old_pwd = mini_get_env("PWD", *head);
 	set_pwd(head, "PWD", new_pwd);
 	set_pwd(head, "OLDPWD", old_pwd);
 	return (free(old_pwd), free(dir), free(new_pwd), 0);

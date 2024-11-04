@@ -36,7 +36,7 @@ void		minishell_loop(t_shell *shell);
 
 /*builtin*/
 int			mini_builtin(int type, t_shell *shell, int *p_fd, int i);
-int			mini_pwd(char **cmd);
+int			mini_pwd(char **cmd, t_env *head);
 int			mini_exit(t_shell *shell, t_cmd **tab_cmd, int place, int *p_fd);
 int			mini_env(char **env, t_cmd **tab_cmd, int place);
 int			mini_unset(t_env **head, char **cmd);
@@ -45,7 +45,7 @@ int			is_build_in(const char *s);
 int			count_cmd(char **str);
 int			is_valid_name(const char *var);
 int			is_valid_name_equal(const char *var);
-int			mini_cd(t_env **head, char **cmd);
+int			mini_cd(t_env **head, char **cmd, char *home_path);
 int			mini_echo(char **cmd);
 int			mini_export(t_env **head, char **cmd);
 void		set_pwd(t_env **lst_env, char *name, char *content);

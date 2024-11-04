@@ -28,6 +28,7 @@ void	init_no_env(t_shell *shell)
 	char	**env;
 
 	get_path = getcwd(NULL, 0);
+	shell->home_path = NULL;
 	if (!get_path)
 	{
 		ft_putstr_fd(MES_CUR_PATH_ERR, STDERR_FILENO);
@@ -56,6 +57,7 @@ void	init_shell(t_shell *shell, char **env)
 		shell->env_head = init_default_env(env);
 		if (!shell->env_head)
 			exit(EXIT_FAILURE);
+		shell->home_path = ft_strdup(getenv("HOME"));
 	}
 	shell->status = 0;
 	shell->env = NULL;

@@ -20,6 +20,7 @@ void	free_before_exit(t_shell *shell)
 	delete_heredoc(shell->here_docs);
 	free_char_array(shell->env);
 	free_env(shell->env_head);
+	free(shell->home_path);
 }
 
 void	free_char_array(char **array)

@@ -32,6 +32,7 @@ typedef struct s_env
 typedef struct s_shell
 {
 	char			*prompt;
+	char			*home_path;
 	char			**here_docs;
 	t_env			*env_head;
 	char			**env;

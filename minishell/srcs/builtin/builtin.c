@@ -17,9 +17,10 @@ int	mini_builtin(int type, t_shell *shell, int *p_fd, int i)
 	if (type == MINI_ECHO)
 		shell->status = mini_echo(shell->tab_cmd[i]->cmd);
 	else if (type == MINI_CD)
-		shell->status = mini_cd(&shell->env_head, shell->tab_cmd[i]->cmd);
+		shell->status = mini_cd(&shell->env_head, shell->tab_cmd[i]->cmd, \
+			shell->home_path);
 	else if (type == MINI_PWD)
-		shell->status = mini_pwd(shell->tab_cmd[i]->cmd);
+		shell->status = mini_pwd(shell->tab_cmd[i]->cmd, shell->env_head);
 	else if (type == MINI_EXPORT)
 		shell->status = mini_export(&shell->env_head, shell->tab_cmd[i]->cmd);
 	else if (type == MINI_UNSET)
@@ -31,7 +32,7 @@ int	mini_builtin(int type, t_shell *shell, int *p_fd, int i)
 	return (shell->status);
 }
 
-int	mini_pwd(char **cmd)
+int	mini_pwd(char **cmd, t_env *head)
 {
 	char	*get_path;
 
@@ -47,8 +48,7 @@ int	mini_pwd(char **cmd)
 	get_path = getcwd(NULL, 0);
 	if (!get_path)
 	{
-		ft_putstr_fd(MES_CUR_PATH_ERR, STDERR_FILENO);
-		return (1);
+		get_path = mini_get_env("PWD", head);
 	}
 	ft_putstr_fd(get_path, STDOUT_FILENO);
 	ft_putstr_fd("\n", STDOUT_FILENO);
