@@ -43,11 +43,8 @@ void	lst_add_back_str(char *s, t_list **lst_token)
 
 void	parse_symbol_single(char *line, t_list **lst_token, int i)
 {
-	char	*token;
-
 	if (!line)
 		return ;
-	token = NULL;
 	if (line[i] == '>')
 		lst_add_back_str(">", lst_token);
 	if (line[i] == '<')

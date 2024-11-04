@@ -43,19 +43,20 @@ char	*lst_getstr(t_list *lst)
 	return ((char *)lst->content);
 }
 
-static	void	do_noting(void *arg)
+static	void	do_nothing(void *arg)
 {
 	long long	num;
 
 	num = (long long)arg;
+	(void)num;
 	return ;
 }
 
 void	clear_lsts(t_list **lst, t_list **redin, \
 	t_list **redout, t_list **cmd_lst)
 {
-	ft_lstclear(redin, do_noting);
-	ft_lstclear(redout, do_noting);
-	ft_lstclear(cmd_lst, do_noting);
-	ft_lstclear(lst, do_noting);
+	ft_lstclear(redin, do_nothing);
+	ft_lstclear(redout, do_nothing);
+	ft_lstclear(cmd_lst, do_nothing);
+	ft_lstclear(lst, do_nothing);
 }
