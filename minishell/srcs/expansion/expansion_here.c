@@ -49,6 +49,18 @@ char	*expand_buffer(char *old_buffer, int *size)
 	return (new_buffer);
 }
 
+/**
+ * @brief Appends the exit status string to the expansion result buffer.
+ *
+ * This function checks if there is enough space in the result buffer
+ * to append the exit status string. If not, it expands the buffer
+ * accordingly. After appending, it updates the length of the result
+ * and frees the memory allocated for the exit status string.
+ *
+ * @param exp Pointer to the t_expansion structure containing the
+ *            result buffer and exit status.
+ * @return 1 on success; 0 on failure (if memory allocation fails).
+ */
 int	append_str(t_expansion *exp)
 {
 	int	str_len;
@@ -67,6 +79,18 @@ int	append_str(t_expansion *exp)
 	return (1);
 }
 
+/**
+ * @brief Appends the environment variable value to the expansion result buffer.
+ *
+ * This function checks if there is enough space in the result buffer
+ * to append the environment variable value. If not, it expands the buffer
+ * as needed. After appending, it updates the length of the result
+ * and frees the memory allocated for the environment variable value.
+ *
+ * @param exp Pointer to the t_expansion structure containing the
+ *            result buffer and environment variable value.
+ * @return 1 on success; 0 on failure (if memory allocation fails).
+ */
 int	append_env(t_expansion *exp)
 {
 	int	str_len;

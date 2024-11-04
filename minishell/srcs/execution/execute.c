@@ -94,6 +94,18 @@ static void	wait_for_children(int num_cmd, int *p_fd, t_shell *shell)
 		shell->status = (shell->status >> 8) & 0xFF;
 }
 
+/**
+ * @brief Executes a sequence of commands, handling built-ins and pipes.
+ *
+ * Checks for valid command and shell pointers, processes here-docs,
+ * and handles single built-in commands. Initializes pipe file descriptors,
+ * executes each command in a loop using `cmd_loop`, and waits for all
+ * child processes to finish. Cleans up resources, including here-docs
+ * and pipe file descriptors.
+ *
+ * @param shell Pointer to the shell structure containing environment and status.
+ * @param tab_cmd Array of command structures to execute.
+ */
 void	mini_execute(t_shell *shell, t_cmd **tab_cmd)
 {
 	int	num[2];
@@ -119,6 +131,19 @@ void	mini_execute(t_shell *shell, t_cmd **tab_cmd)
 	shell->here_docs = NULL;
 }
 
+/**
+ * @brief Executes a command after resolving its path and checking its validity.
+ *
+ * If the command is empty, the function exits with a success status. 
+ * It retrieves the command's path, checks if it exists, and verifies
+ * whether it's a directory. If the command is a directory, an error message
+ * is printed, and the process exits with an error status. Otherwise, it 
+ * proceeds to execute the command using `final_execute`.
+ *
+ * @param cmd Array of command arguments, where cmd[0] is the command to execute.
+ * @param shell Pointer to the shell structure containing environment and status.
+ * @param p_fd Array of pipe file descriptors for inter-process communication.
+ */
 void	execute(char **cmd, t_shell *shell, int *p_fd)
 {
 	char		*path;

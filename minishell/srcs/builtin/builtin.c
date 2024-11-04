@@ -12,6 +12,23 @@
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Executes the specified built-in command
+ *
+ * This function determines the type of built-in command to execute based on
+ * the provided `type` parameter. It updates the shell's status according to
+ * the result of executing the corresponding built-in command function (e.g., 
+ * `mini_echo`, `mini_cd`, etc.). The function handles various built-in commands
+ * such as echo, cd, pwd, export, unset, env, and exit. The execution result
+ * is reflected in the shell's status, which can be used for error handling or
+ * reporting.
+ *
+ * @param type An integer representing the type of built-in command to execute
+ * @param shell Pointer to the shell structure containing shell data and commands
+ * @param p_fd Pointer to an integer array for file descriptors (if needed)
+ * @param i Index of the command in the tab_cmd array to be executed
+ * @return Returns the status of the executed built-in command
+ */
 int	mini_builtin(int type, t_shell *shell, int *p_fd, int i)
 {
 	if (type == MINI_ECHO)
@@ -32,6 +49,24 @@ int	mini_builtin(int type, t_shell *shell, int *p_fd, int i)
 	return (shell->status);
 }
 
+/**
+ * @brief Prints the current working directory
+ *
+ * This function retrieves and displays the current working directory.
+ * It first checks if more than one argument is passed; if so, it verifies
+ * that the second argument is not an invalid option (e.g., not "-" or "--").
+ * If an invalid option is detected, an error message is printed to
+ * standard error. The function then attempts to get the current directory
+ * using `getcwd`. If `getcwd` fails, it falls back to retrieving the 
+ * PWD environment variable. Finally, the current directory is printed to
+ * standard output, followed by a newline.
+ *
+ * @param cmd Array of command-line arguments, with the first element
+ *            being the command and subsequent elements being options
+ * @param head Pointer to the environment variable linked list to access
+ *             environment variables
+ * @return Returns 0 on success, 2 if an invalid option is passed
+ */
 int	mini_pwd(char **cmd, t_env *head)
 {
 	char	*get_path;
@@ -56,6 +91,25 @@ int	mini_pwd(char **cmd, t_env *head)
 	return (0);
 }
 
+/**
+ * @brief Exits the minishell with an optional exit status
+ *
+ * This function handles the exit command for the minishell. It checks
+ * if an argument is provided; if so, it attempts to convert it to a
+ * long long integer using `str_to_ll`. If the conversion fails, it prints
+ * an error message and exits with status code 2. If too many arguments
+ * are provided, it also prints a corresponding error message. If the 
+ * value is negative, it adjusts it to fit within the 0-255 range.
+ * Finally, it frees any resources and exits the shell with the specified
+ * exit status or with the default success status if no arguments are given.
+ *
+ * @param shell Pointer to the shell structure containing shell data
+ * @param tab_cmd Array of command-line arguments, with the first element
+ *                 being the command and subsequent elements being options
+ * @param place Index of the command in the tab_cmd array to be executed
+ * @param p_fd Pointer to an integer array for file descriptors (if needed)
+ * @return This function does not return; it exits the program
+ */
 int	mini_exit(t_shell *shell, t_cmd **tab_cmd, int place, int *p_fd)
 {
 	int			i;
@@ -85,6 +139,24 @@ int	mini_exit(t_shell *shell, t_cmd **tab_cmd, int place, int *p_fd)
 	exit(EXIT_SUCCESS);
 }
 
+/**
+ * @brief Displays the current environment variables
+ *
+ * This function prints all the environment variables to standard output.
+ * It first checks if the environment array and command array are valid.
+ * If the command associated with the given index has more than one argument,
+ * it prints an error message indicating invalid usage. If the checks pass,
+ * it iterates through the environment variables and prints each one on a
+ * new line. 
+ *
+ * @param env Array of environment variables
+ * @param tab_cmd Array of command-line arguments, with the first element
+ *                 being the command and subsequent elements being options
+ * @param place Index of the command in the tab_cmd array to be executed
+ * @return Returns 1 if the environment or command array is invalid, 
+ *         2 if an error occurs due to invalid command usage, 
+ *         and 0 on success
+ */
 int	mini_env(char **env, t_cmd **tab_cmd, int place)
 {
 	int	i;
@@ -105,6 +177,16 @@ int	mini_env(char **env, t_cmd **tab_cmd, int place)
 	return (0);
 }
 
+/**
+ * @brief Unsets (removes) environment variables
+ *
+ * @param head Pointer to the head of the environment variable linked list
+ * @param cmd Array of command-line arguments, with the first element
+ *            being the command and subsequent elements being the names of
+ *            environment variables to unset
+ * @return Returns 1 if the head is invalid, 2 for invalid option usage, 
+ *         and 0 on success
+ */
 int	mini_unset(t_env **head, char **cmd)
 {
 	int	i;

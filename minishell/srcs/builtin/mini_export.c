@@ -12,6 +12,17 @@
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Prints environment variables in export format
+ *
+ * This function iterates through the linked list of environment
+ * variables and prints each variable in the format suitable for
+ * export. It excludes the variable with the name "_=". If a variable
+ * has no value, it prints only the name; otherwise, it prints
+ * the name and value in quotes.
+ *
+ * @param current Pointer to the current environment variable node
+ */
 static void	export_print(t_env *current)
 {
 	size_t	len;
@@ -31,6 +42,20 @@ static void	export_print(t_env *current)
 	}
 }
 
+/**
+ * @brief Sets environment variables based on command arguments
+ *
+ * This function processes the command arguments to set environment
+ * variables. It checks for invalid options, splits arguments by the
+ * '=' character, and verifies variable names. Invalid variables are
+ * reported, while valid ones are added to the environment.
+ *
+ * @param head Pointer to the environment variable linked list
+ * @param cmd Array of command-line arguments
+ * @param i Current index in the command arguments
+ * @param inval Pointer to an integer indicating invalid input status
+ * @return Returns 0 on success, or 1 for failure, 2 for invalid options
+ */
 static int	export_set_var(t_env **head, char **cmd, int i, int *inval)
 {
 	char	**arg;

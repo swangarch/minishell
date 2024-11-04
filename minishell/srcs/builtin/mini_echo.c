@@ -12,6 +12,17 @@
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Checks for the "-n" option in echo command
+ *
+ * This function inspects the command arguments for the "-n" option,
+ * which indicates that the output should not be followed by a newline.
+ * It updates the info array to reflect whether the "-n" option is
+ * present and how many 'n' characters follow it.
+ *
+ * @param cmd Array of command-line arguments
+ * @param info Array containing flags and index information
+ */
 static void	echo_check_newline(char **cmd, int *info)
 {
 	while (cmd[info[2]])
@@ -40,6 +51,16 @@ static void	echo_check_newline(char **cmd, int *info)
 	}
 }
 
+/**
+ * @brief Outputs the arguments for the echo command
+ *
+ * This function prints the command-line arguments to standard output.
+ * It checks for the "-n" option to determine if a newline should be
+ * appended at the end of the output. The arguments are separated by spaces.
+ *
+ * @param cmd Array of command-line arguments
+ * @return Returns 0 upon completion
+ */
 int	mini_echo(char **cmd)
 {
 	int	info[4];

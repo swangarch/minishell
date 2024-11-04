@@ -19,6 +19,19 @@ int	valid_exp(int c)
 	return (0);
 }
 
+/**
+ * @brief Handles single and double quotes in the input string.
+ *
+ * This function updates the state of quotation marks encountered in
+ * the input string. It toggles the `in_squote` or `in_dquote` flags
+ * based on whether a single quote or double quote is found and the 
+ * other type of quote is not currently active. The index is incremented
+ * to move past the quote character.
+ *
+ * @param input The input string being processed.
+ * @param exp The expansion structure containing state information.
+ * @return 0 if a quote is handled; 1 if no quote is present.
+ */
 int	handle_quotes(char *input, t_expansion *exp)
 {
 	if (input[exp->i] == '\'' && !exp->in_dquote)
@@ -36,6 +49,17 @@ int	handle_quotes(char *input, t_expansion *exp)
 	return (1);
 }
 
+/**
+ * @brief Handles the exit status expansion for the variable.
+ *
+ * This function increments the index in the expansion structure,
+ * converts the exit status to a string, and appends it to the
+ * result buffer. If the conversion or appending fails, it returns 0.
+ *
+ * @param exp The expansion structure containing the state and result buffer.
+ * @param status The exit status to be converted to a string and appended.
+ * @return 1 on success, 0 on failure.
+ */
 int	handle_exit_status(t_expansion *exp, int status)
 {
 	exp->i++;

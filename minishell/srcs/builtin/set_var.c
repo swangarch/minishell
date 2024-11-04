@@ -12,6 +12,17 @@
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Unsets an environment variable by its name
+ *
+ * This function removes all occurrences of a specified environment 
+ * variable from the linked list. It frees the associated memory for 
+ * both the variable name and its content. If the variable is found 
+ * at the head of the list, it updates the head pointer accordingly.
+ *
+ * @param lst_env Pointer to the environment variable linked list
+ * @param name The name of the environment variable to unset
+ */
 void	unset_var(t_env **lst_env, const char *name)
 {
 	t_env	*prev;
@@ -41,6 +52,17 @@ void	unset_var(t_env **lst_env, const char *name)
 	}
 }
 
+/**
+ * @brief Initializes a new environment variable node if the list is empty
+ *
+ * This function checks if the linked list of environment variables is empty. 
+ * If it is, it creates a new node using the provided command string. 
+ * Returns 1 if memory allocation fails.
+ *
+ * @param lst_env Pointer to the environment variable linked list
+ * @param cmd Command string for initializing the new variable
+ * @return 0 if successful, 1 if memory allocation fails
+ */
 static int	set_var_begin(t_env **lst_env, char *cmd)
 {
 	t_env	*current;
@@ -59,6 +81,13 @@ static int	set_var_begin(t_env **lst_env, char *cmd)
 	return (0);
 }
 
+/**
+ * @brief Adds a new environment variable node to the end of the list
+ *
+ * @param lst_env Pointer to the environment variable linked list
+ * @param current Pointer to the current environment variable node
+ * @param cmd Command string for initializing the new variable
+ */
 static void	set_var_end(t_env **lst_env, t_env *current, char *cmd)
 {
 	t_env	*new;
@@ -74,6 +103,14 @@ static void	set_var_end(t_env **lst_env, t_env *current, char *cmd)
 	}
 }
 
+/**
+ * @brief Checks if the current environment variable matches the given name
+ *
+ * @param current Pointer to the current environment variable node
+ * @param tmp Temporary variable name to compare with
+ * @param name Array containing the new variable name and its value
+ * @return Returns 0 if the variable was updated, 1 if it was not found
+ */
 static int	set_var_check_equal(t_env *current, char *tmp, char **name)
 {
 	if (!ft_strncmp(current->var_name, tmp, ft_strlen(tmp)) \
@@ -93,6 +130,16 @@ static int	set_var_check_equal(t_env *current, char *tmp, char **name)
 	return (1);
 }
 
+/**
+ * @brief Sets or updates an environment variable in the linked list
+ *
+ * This function checks if the environment variable already exists; if it does,
+ * it updates its value and name. If not, it adds a new variable to the list.
+ *
+ * @param lst_env Double pointer to the linked list of environment variables
+ * @param name Array containing the variable name and value
+ * @param cmd The original command string used to set the variable
+ */
 void	set_var(t_env **lst_env, char **name, char *cmd)
 {
 	t_env	*current;

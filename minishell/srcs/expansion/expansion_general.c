@@ -12,6 +12,18 @@
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Expands tilde and environment variables in an array of strings.
+ *
+ * This function iterates through each string in the provided array (`tab`),
+ * replacing any tilde (`~`) with the user's home directory and expanding
+ * any environment variables found within the strings. The expanded strings 
+ * overwrite the original strings in the array.
+ *
+ * @param tab Array of strings to be expanded (e.g., command arguments).
+ * @param env_head Pointer to the head of the environment variable linked list.
+ * @param status Exit status to be used during variable expansion.
+ */
 void	expand_tab(char **tab, t_env *env_head, int status)
 {
 	int	i;
@@ -43,6 +55,20 @@ void	expand_str_cmd(t_cmd **tab_cmd, t_env *env_head, int status)
 	}
 }
 
+/**
+ * @brief Processes input for variable expansion in here-documents.
+ *
+ * This function checks each character in the input string to manage 
+ * quoting and handle variable expansion. It toggles single (`'`) and 
+ * double (`"`) quote states and processes dollar signs (`$`) for variable 
+ * expansion, appending the results to the `result` array.
+ *
+ * @param input The input string being processed.
+ * @param exp Pointer to the expansion structure containing state information.
+ * @param lst_env Pointer to the head of the environment variable list.
+ * @param status Exit status used for variable expansion.
+ * @return Returns 0 on success; 1 if an error occurs during variable handling.
+ */
 int	expand_var_here_check(char *input, t_expansion *exp, \
 	t_env *lst_env, int status)
 {

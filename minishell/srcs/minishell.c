@@ -14,6 +14,20 @@
 
 int	g_sig;
 
+/**
+ * @brief Entry point for the minishell program
+ *
+ * This function initializes the shell environment, enters the main command loop,
+ * and performs cleanup upon exit. It first checks that no command-line arguments
+ * are passed, then initializes shell settings and environment variables,
+ * enters the command processing loop, and finally frees resources and exits with
+ * the shell's final status.
+ *
+ * @param ac Argument count, expected to be 1
+ * @param av Argument vector, unused but checked for non-null
+ * @param env Environment variables passed to initialize the shell
+ * @return Returns 0 on successful execution
+ */
 int	main(int ac, char **av, char **env)
 {
 	t_shell	shell;

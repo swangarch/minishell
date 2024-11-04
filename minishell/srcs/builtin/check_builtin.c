@@ -12,6 +12,20 @@
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Checks if the given string is a built-in command
+ *
+ * This function compares the provided string `s` against a list of known
+ * built-in commands in the shell (e.g., echo, cd, pwd, export, unset, env,
+ * exit). It returns a predefined constant representing the type of the
+ * built-in command if a match is found. If the string does not match any
+ * built-in command, it returns `NOBULTIN` to indicate that the command is
+ * not built-in.
+ *
+ * @param s Pointer to the string representing the command to check
+ * @return Returns a constant indicating the type of built-in command or
+ *         `NOBULTIN` if the command is not a built-in command
+ */
 int	is_build_in(const char *s)
 {
 	if (!ft_strcmp(s, "echo"))
@@ -31,6 +45,18 @@ int	is_build_in(const char *s)
 	return (NOBULTIN);
 }
 
+/**
+ * @brief Counts the number of commands in a string array
+ *
+ * This function counts and returns the number of non-null strings
+ * in the provided array of strings (commonly used for command-line
+ * arguments). If the input array is null, it returns 0. The count
+ * is determined by iterating through the array until a null pointer
+ * is encountered.
+ *
+ * @param str Pointer to an array of strings (commands)
+ * @return Returns the number of commands in the array, or 0 if the array is null
+ */
 int	count_cmd(char **str)
 {
 	int	i;
@@ -43,6 +69,20 @@ int	count_cmd(char **str)
 	return (i);
 }
 
+/**
+ * @brief Checks if a string is a valid variable name
+ *
+ * This function verifies whether the provided string `var` meets the criteria
+ * for a valid variable name in the shell. A valid variable name must start
+ * with an alphabetic character or an underscore, and subsequent characters
+ * can be alphanumeric or underscores. If the input string is null, empty, or
+ * does not conform to these rules, the function returns `FALSE`. Otherwise,
+ * it returns `TRUE` to indicate a valid variable name.
+ *
+ * @param var Pointer to the string to be checked
+ * @return Returns `TRUE` if the string is a valid variable name, 
+ *         `FALSE` otherwise
+ */
 int	is_valid_name(const char *var)
 {
 	if (!var || *var == '\0' || (!ft_isalpha(*var) && *var != '_'))
@@ -59,6 +99,13 @@ int	is_valid_name(const char *var)
 	return (TRUE);
 }
 
+/**
+ * @brief Checks if a string is a valid variable name with an optional assignment
+ *
+ * @param var Pointer to the string to be checked
+ * @return Returns `TRUE` if the string is a valid variable name or a valid
+ *         assignment, `FALSE` otherwise
+ */
 int	is_valid_name_equal(const char *var)
 {
 	if (!var || *var == '\0' || (!ft_isalpha(*var) && *var != '_'))

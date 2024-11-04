@@ -12,6 +12,14 @@
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Determines the target directory for the "cd" command
+ *
+ * @param head Pointer to the environment variable linked list
+ * @param cmd Array of command-line arguments
+ * @param home_path The home directory path
+ * @return Returns the target directory or NULL on error
+ */
 static char	*cd_set_dir(t_env **head, char **cmd, char *home_path)
 {
 	char	*dir;
@@ -38,6 +46,12 @@ static char	*cd_set_dir(t_env **head, char **cmd, char *home_path)
 	return (dir);
 }
 
+/**
+ * @brief Changes the current working directory
+ *
+ * @param dir The target directory path
+ * @return Returns 0 on success, or 1 on failure
+ */
 static int	cd_change_dir(char *dir)
 {
 	if (chdir(dir) != 0)
@@ -62,6 +76,20 @@ static int	cd_change_dir(char *dir)
 	return (0);
 }
 
+/**
+ * @brief Changes the current directory and updates PWD and OLDPWD
+ *
+ * This function changes the working directory based on the command arguments.
+ * It verifies the number of arguments, sets the target directory, and handles
+ * errors during the directory change. It updates the PWD and OLDPWD environment
+ * variables accordingly. If the argument is "-", it also prints the previous
+ * directory. Returns 0 on success or 1 on failure.
+ *
+ * @param head Pointer to the environment variable linked list
+ * @param cmd Array of command-line arguments
+ * @param home_path The home directory path
+ * @return Returns 0 on success, or 1 on failure
+ */
 int	mini_cd(t_env **head, char **cmd, char *home_path)
 {
 	char	*dir;

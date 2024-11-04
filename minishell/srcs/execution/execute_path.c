@@ -12,6 +12,14 @@
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Checks access to a command by verifying its existence and permissions.
+ *
+ * @param cmd The command to check.
+ * @param shell Pointer to the shell structure containing environment variables.
+ * @param p_fd Pointer to file descriptors for saving the state.
+ * @return 0 if the command is accessible, otherwise exits with an error code.
+ */
 static int	check_path_access(char *cmd, t_shell *shell, int *p_fd)
 {
 	char	*tmp;
@@ -41,6 +49,17 @@ static int	check_path_access(char *cmd, t_shell *shell, int *p_fd)
 	return (1);
 }
 
+/**
+ * @brief Constructs the full path for a command using the given directory.
+ *
+ * This function combines a directory path and a command name to create a 
+ * full path. It concatenates the path with the command, ensuring the 
+ * correct format with a '/' separator.
+ *
+ * @param cmd The command name to append to the path.
+ * @param path The directory path to which the command will be appended.
+ * @return The full path as a newly allocated string, or NULL on failure.
+ */
 static char	*get_full_path(char *cmd, char *path)
 {
 	char	*part_path;
