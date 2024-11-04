@@ -54,7 +54,6 @@ char	*join_prompt(void)
 
 	if (!getcwd(cwd, PATH_MAX))
 	{
-		perror("getcwd() error");
 		current_path = ft_strdup("$ ");
 	}
 	else

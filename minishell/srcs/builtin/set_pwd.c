@@ -64,7 +64,9 @@ void	set_pwd(t_env **lst_env, char *name, char *content)
 		return ;
 	while (current)
 	{
-		if (!ft_strcmp(current->var_name, name))
+		if (!ft_strncmp(current->var_name, name, ft_strlen(name)) \
+			&& (current->var_name[ft_strlen(name)] == '=' \
+			|| current->var_name[ft_strlen(name)] == '\0'))
 		{
 			free(current->content);
 			current->content = ft_strdup(content);
