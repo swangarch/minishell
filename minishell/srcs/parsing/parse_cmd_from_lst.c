@@ -36,29 +36,20 @@ char	**lst_to_chatab(t_list *lst)
 static	void	init_cmd_struct(t_cmd *command)
 {
 	command->cmd = NULL;
-	command->redin = NULL;
-	command->redout = NULL;
+	command->red = NULL;
 	command->has_in = FALSE;
 	command->has_out = FALSE;
 }
 
-static	int	assign_cmd_tabs(t_cmd *command, t_list *cmd_lst, \
-	t_list *redin, t_list *redout)
+static	int	assign_cmd_tabs(t_cmd *command, t_list *cmd_lst, t_list *red)
 {
 	command->cmd = lst_to_chatab(cmd_lst);
 	if (!command->cmd)
 		return (0);
-	command->redin = lst_to_chatab(redin);
-	if (!command->redin)
+	command->red = lst_to_chatab(red);
+	if (!command->red)
 	{
 		free_char_array(command->cmd);
-		return (0);
-	}
-	command->redout = lst_to_chatab(redout);
-	if (!command->redout)
-	{
-		free_char_array(command->cmd);
-		free_char_array(command->redin);
 		return (0);
 	}
 	return (1);
@@ -70,16 +61,14 @@ static	t_cmd	*on_no_cmd(t_cmd *command)
 	command->cmd = malloc(sizeof(char *) * 2);
 	if (!command->cmd)
 	{
-		free_char_array(command->redin);
-		free_char_array(command->redout);
+		free_char_array(command->red);
 		free(command);
 		return (NULL);
 	}
 	command->cmd[0] = ft_strdup("");
 	if (!command->cmd[0])
 	{
-		free_char_array(command->redin);
-		free_char_array(command->redout);
+		free_char_array(command->red);
 		free_char_array(command->cmd);
 		free(command);
 		return (NULL);
@@ -88,7 +77,7 @@ static	t_cmd	*on_no_cmd(t_cmd *command)
 	return (command);
 }
 
-t_cmd	*cmd_from_lsts(t_list *cmd_lst, t_list *redin, t_list *redout)
+t_cmd	*cmd_from_lsts(t_list *cmd_lst, t_list *red)
 {
 	t_cmd	*command;
 
@@ -96,14 +85,14 @@ t_cmd	*cmd_from_lsts(t_list *cmd_lst, t_list *redin, t_list *redout)
 	if (!command)
 		return (NULL);
 	init_cmd_struct(command);
-	if (!assign_cmd_tabs(command, cmd_lst, redin, redout))
+	if (!assign_cmd_tabs(command, cmd_lst, red))
 	{
 		free(command);
 		return (NULL);
 	}
-	if (command->redin[0])
+	if (has_in(command->red))
 		command->has_in = TRUE;
-	if (command->redout[0])
+	if (has_out(command->red))
 		command->has_out = TRUE;
 	if ((command->has_in || command->has_out) && !(command->cmd[0]))
 		return (on_no_cmd(command));

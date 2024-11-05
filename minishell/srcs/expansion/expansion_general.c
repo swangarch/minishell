@@ -49,8 +49,7 @@ void	expand_str_cmd(t_cmd **tab_cmd, t_env *env_head, int status)
 	while (tab_cmd[i])
 	{
 		expand_tab(tab_cmd[i]->cmd, env_head, status);
-		expand_tab(tab_cmd[i]->redin, env_head, status);
-		expand_tab(tab_cmd[i]->redout, env_head, status);
+		expand_tab(tab_cmd[i]->red, env_head, status);
 		i++;
 	}
 }
@@ -90,4 +89,47 @@ int	expand_var_here_check(char *input, t_expansion *exp, \
 	else
 		exp->result[exp->len++] = input[exp->i++];
 	return (0);
+}
+
+static void	rm_void_from_cmd(t_cmd *command, int i, int j, int num)
+{
+	char	**tmp_tab;
+
+	tmp_tab = command->cmd;
+	while (command->cmd[i])
+	{
+		if (!strcmp("", command->cmd[i]))
+			i++;
+		else
+			break ;
+	}
+	if (i == num)
+		return ;
+	command->cmd = malloc((num - i + 1) * sizeof(char *));
+	if (!command->cmd)
+		return (command->cmd = tmp_tab, (void)0);
+	while (tmp_tab[i])
+	{
+		command->cmd[j] = ft_strdup(tmp_tab[i]);
+		if (!command->cmd[j])
+			return (free_char_array(command->cmd), \
+				command->cmd = tmp_tab, (void)0);
+		i++;
+		j++;
+	}
+	return (command->cmd[j] = NULL, free_char_array(tmp_tab), (void)0);
+}
+
+void	rm_void_tab_cmd(t_cmd **tab_cmd)
+{
+	int		i;
+	int		num;
+
+	i = 0;
+	while (tab_cmd[i])
+	{
+		num = get_tab_num(tab_cmd[i]->cmd);
+		rm_void_from_cmd(tab_cmd[i], 0, 0, num);
+		i++;
+	}
 }

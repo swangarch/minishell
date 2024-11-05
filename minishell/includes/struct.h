@@ -15,8 +15,7 @@
 
 typedef struct s_cmd
 {
-	char	**redin;
-	char	**redout;
+	char	**red;
 	char	**cmd;
 	int		has_in;
 	int		has_out;

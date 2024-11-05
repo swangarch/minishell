@@ -27,9 +27,9 @@ static	void	write_heredoc(t_cmd *cmd, int *fd_infile, \
 		if (g_sig == SIGINT)
 			return (free(line), (void)0);
 		if (!line)
-			return (ft_put3str_fd(MES_DELIM_ERR, cmd->redin[*i], "')\n", \
+			return (ft_put3str_fd(MES_DELIM_ERR, cmd->red[*i], "')\n", \
 				STDERR_FILENO), (void)0);
-		if (!ft_strcmp(line, cmd->redin[*i]))
+		if (!ft_strcmp(line, cmd->red[*i]))
 			return (free(line), (void)0);
 		line = expand_var_here(line, shell->env_head, shell->status);
 		write(fd_infile[index_fd], line, ft_strlen(line));
@@ -70,7 +70,7 @@ static	char	*create_heredoc(t_shell *shell, int *fd_infile, \
 	close(fd_infile[index_fd]);
 	if (g_sig == SIGINT)
 		return (unlink(here_doc), free(here_doc), NULL);
-	if (index_fd != get_tab_num(shell->tab_cmd[index_p]->redin) / 2 - 1)
+	if (!last_redin(shell->tab_cmd[index_p], *i))
 		return (unlink(here_doc), free(here_doc), here_doc = NULL, \
 			ft_strdup(""));
 	return (here_doc);
@@ -82,19 +82,19 @@ int	on_has_heredoc(t_cmd **tab_cmd, t_shell *shell, \
 	int	i;
 	int	*fd_infile;
 
-	fd_infile = malloc(get_tab_num(tab_cmd[index_p]->redin) * sizeof(int));
+	fd_infile = malloc(get_tab_num(tab_cmd[index_p]->red) * sizeof(int));
 	if (!fd_infile)
 		return (free_char_array(here_docs), 0);
 	i = 0;
-	while (tab_cmd[index_p]->redin[i])
+	while (tab_cmd[index_p]->red[i])
 	{
-		if (is_red(tab_cmd[index_p]->redin[i]) == HEREDOC)
+		if (is_red(tab_cmd[index_p]->red[i]) == HEREDOC)
 		{
 			here_docs[index_p] = create_heredoc(shell, fd_infile, &i, index_p);
 			if (!here_docs[index_p])
 				return (free_char_array(here_docs), free(fd_infile), 0);
 			else if (!ft_strcmp("", here_docs[index_p]) && i / 2 \
-				!= get_tab_num(tab_cmd[index_p]->redin) / 2 - 1)
+				!= get_tab_num(tab_cmd[index_p]->red) / 2 - 1)
 			{
 				free(here_docs[index_p]);
 				here_docs[index_p] = NULL;

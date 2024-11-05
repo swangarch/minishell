@@ -69,10 +69,8 @@ int	parse_error(t_cmd **cmds)
 			ft_err(ERR_PREF "syntax error near unexpected token `|'\n");
 			return (1);
 		}
-		if (red_next_err(cmds[i]->redin) || red_next_err(cmds[i]->redout))
-		{
+		if (red_next_err(cmds[i]->red))
 			return (1);
-		}
 		i++;
 	}
 	return (0);

@@ -84,6 +84,7 @@ char		*expand_var(char *input, t_env *lst_env, int status);
 char		*expand_tilde(char *input, t_env *lst_env);
 int			expand_var_here_check(char *input, t_expansion *exp, \
 	t_env *lst_env, int status);
+void		rm_void_tab_cmd(t_cmd **tab_cmd);
 
 /*initialization*/
 t_env		*init_default_env(char **env);
@@ -112,12 +113,11 @@ int			wrong_operator_check(const char *input);
 
 /*parsing*/
 char		**lst_to_chatab(t_list *lst);
-t_cmd		*cmd_from_lsts(t_list *cmd_lst, t_list *redin, t_list *redout);
+t_cmd		*cmd_from_lsts(t_list *cmd_lst, t_list *red);
 
-void		on_lst_next_token_exist(t_list **curr, t_list **redin, \
-	t_list **redout, t_list **cmd_lst);
-t_cmd		*create_cmd(t_list *lst, t_list *cmd_lst, t_list *redin, \
-	t_list *redout);
+void		on_lst_next_token_exist(t_list **curr, t_list **red, \
+	t_list **cmd_lst);
+t_cmd		*create_cmd(t_list *lst, t_list *cmd_lst, t_list *red);
 t_cmd		**create_cmd_tab(char **tab);
 
 void		lst_add_back_strn(char *line, t_list **lst_token, int *i, int j);
@@ -139,8 +139,9 @@ int			parse_error(t_cmd **cmds);
 int			get_tab_num(char **tab);
 int			get_cmdtab_num(t_cmd **cmd_tab);
 char		*lst_getstr(t_list *lst);
-void		clear_lsts(t_list **lst, t_list **redin, \
-	t_list **redout, t_list **cmd_lst);
+void		clear_lsts(t_list **lst, t_list **red, t_list **cmd_lst);
+int			has_in(char **red);
+int			has_out(char **red);
 
 /*redirection*/
 int			on_has_heredoc(t_cmd **tab_cmd, t_shell *shell, \
@@ -150,10 +151,12 @@ char		**process_heredocs(t_cmd **tab_cmd, t_shell *shell, int num_cmd);
 char		*here_doc_name(int index_p);
 int			has_heredoc(t_cmd *cmd, t_shell *shell);
 void		delete_heredoc(char **here_docs);
-int			red_in(t_cmd *cmd, t_shell *shell, int index_p);
 void		close_fds(int *fd, int num);
-void		dup_last(int *fd_outfile, int i);
-int			red_out(t_cmd *cmd);
+int			last_redin(t_cmd *cmd, int i);
+
+int			redir(t_cmd *cmd, t_shell *shell, int index_p);
+int			red_out_tofile(t_cmd *cmd, int *fd_outfile, int *i);
+int			red_out_append(t_cmd *cmd, int *fd_outfile, int *i);
 
 /*utils*/
 int			syntax_error(char c);

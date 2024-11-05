@@ -62,9 +62,9 @@ int	has_heredoc(t_cmd *cmd, t_shell *shell)
 	i = 0;
 	if (!cmd || !shell)
 		return (0);
-	while (cmd->redin[i])
+	while (cmd->red[i])
 	{
-		if (is_red(cmd->redin[i]) == HEREDOC)
+		if (is_red(cmd->red[i]) == HEREDOC)
 			return (1);
 		i++;
 	}

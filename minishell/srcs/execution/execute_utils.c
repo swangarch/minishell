@@ -68,7 +68,7 @@ void	set_child(int *num, int *p_fd, t_shell *shell, t_cmd *cmd)
 			exit(EXIT_FAILURE);
 		}
 	}
-	if (!red_in(cmd, shell, num[1]) || !red_out(cmd))
+	if (!redir(cmd, shell, num[1]))
 	{
 		free_close(shell, p_fd, num[0]);
 		exit(EXIT_FAILURE);

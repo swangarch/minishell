@@ -51,8 +51,7 @@ void	free_in_loop(t_shell *shell)
 	shell->terminal_prompt = NULL;
 	while (shell->tab_cmd && shell->tab_cmd[i])
 	{
-		free_char_array(shell->tab_cmd[i]->redin);
-		free_char_array(shell->tab_cmd[i]->redout);
+		free_char_array(shell->tab_cmd[i]->red);
 		free_char_array(shell->tab_cmd[i]->cmd);
 		i++;
 	}

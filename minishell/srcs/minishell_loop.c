@@ -51,6 +51,7 @@ void	execute_commands(t_shell *shell)
 	{
 		shell->tab_cmd = parse_line(shell->trimmed_prompt);
 		expand_str_cmd(shell->tab_cmd, shell->env_head, shell->status);
+		rm_void_tab_cmd(shell->tab_cmd);
 		mini_execute(shell, shell->tab_cmd);
 	}
 	if (g_sig == SIGINT)

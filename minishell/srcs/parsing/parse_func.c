@@ -81,8 +81,7 @@ static	void	destroy_tab_cmd(t_cmd **tab_cmd)
 	i = 0;
 	while (tab_cmd[i])
 	{
-		free_char_array(tab_cmd[i]->redin);
-		free_char_array(tab_cmd[i]->redout);
+		free_char_array(tab_cmd[i]->red);
 		free_char_array(tab_cmd[i]->cmd);
 		free(tab_cmd[i]);
 		tab_cmd[i] = NULL;
