@@ -75,6 +75,7 @@ static int	export_set_var(t_env **head, char **cmd, int i, int *inval)
 			*inval = TRUE;
 			ft_put3str_fd(MES_EXP_PRE, cmd[i], MES_EXP_POST, STDERR_FILENO);
 			++i;
+			free_char_array(arg);
 			continue ;
 		}
 		set_var(head, arg, cmd[i]);
