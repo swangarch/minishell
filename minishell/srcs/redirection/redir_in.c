@@ -70,27 +70,28 @@ static	int	red_in_heredoc(int *fd_infile, int *i, t_shell *shell, int index_p)
 
 int	check_flag(int	*fd_redfile, t_shell *shell, int index_p, int *i)
 {
-	t_cmd	*cmd;
-
-	cmd = shell->tab_cmd[index_p];
-	if (is_red(cmd->red[*i]) == REDIN)
+	if (is_red(shell->tab_cmd[index_p]->red[*i]) == REDIN)
 	{
-		if (!red_in_fromfile(cmd, fd_redfile, i))
+		if (!red_in_fromfile(shell->tab_cmd[index_p], fd_redfile, i))
 			return (0);
 	}
-	else if (is_red(cmd->red[*i]) == HEREDOC && last_redin(cmd, *i))
+	else if (is_red(shell->tab_cmd[index_p]->red[*i]) == HEREDOC && \
+		last_redin(shell->tab_cmd[index_p], *i))
 	{
 		if (!red_in_heredoc(fd_redfile, i, shell, index_p))
 			return (0);
 	}
-	else if (is_red(cmd->red[*i]) == REDOUT)
+	else if (is_red(shell->tab_cmd[index_p]->red[*i]) == HEREDOC && \
+		!last_redin(shell->tab_cmd[index_p], *i))
+		fd_redfile[*i / 2] = -1;
+	else if (is_red(shell->tab_cmd[index_p]->red[*i]) == REDOUT)
 	{
-		if (!red_out_tofile(cmd, fd_redfile, i))
+		if (!red_out_tofile(shell->tab_cmd[index_p], fd_redfile, i))
 			return (0);
 	}
-	else if (is_red(cmd->red[*i]) == APPEND)
+	else if (is_red(shell->tab_cmd[index_p]->red[*i]) == APPEND)
 	{
-		if (!red_out_append(cmd, fd_redfile, i))
+		if (!red_out_append(shell->tab_cmd[index_p], fd_redfile, i))
 			return (0);
 	}
 	return (1);
