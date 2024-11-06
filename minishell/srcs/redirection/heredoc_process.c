@@ -85,25 +85,25 @@ int	on_has_heredoc(t_cmd **tab_cmd, t_shell *shell, \
 	fd_infile = malloc(get_tab_num(tab_cmd[index_p]->red) * sizeof(int));
 	if (!fd_infile)
 		return (free_char_array(here_docs), 0);
-	i = 0;
-	while (tab_cmd[index_p]->red[i])
+	i = -1;
+	while (tab_cmd[index_p]->red[++i])
 	{
 		if (is_red(tab_cmd[index_p]->red[i]) == HEREDOC)
 		{
 			here_docs[index_p] = create_heredoc(shell, fd_infile, &i, index_p);
 			if (!here_docs[index_p])
 				return (free_char_array(here_docs), free(fd_infile), 0);
-			else if (!ft_strcmp("", here_docs[index_p]) && i / 2 \
-				!= get_tab_num(tab_cmd[index_p]->red) / 2 - 1)
+			else if (!ft_strcmp("", here_docs[index_p]) && \
+				!last_redin(shell->tab_cmd[index_p], i))
 			{
 				free(here_docs[index_p]);
 				here_docs[index_p] = NULL;
 			}
 		}
-		i++;
 	}
-	free(fd_infile);
-	return (1);
+	if (!here_docs[index_p])
+		here_docs[index_p] = ft_strdup("");
+	return (free(fd_infile), 1);
 }
 
 char	**process_heredocs(t_cmd **tab_cmd, t_shell *shell, int num_cmd)
