@@ -24,7 +24,7 @@ static int	check_path_access(char *cmd, t_shell *shell, int *p_fd)
 {
 	char	*tmp;
 
-	if (access(cmd, F_OK | X_OK) == 0)
+	if (ft_strchr(cmd, '/') && access(cmd, F_OK | X_OK) == 0)
 		return (0);
 	tmp = mini_get_env("PATH", shell->env_head);
 	if (!tmp || !tmp[0])
