@@ -51,6 +51,15 @@ static void	echo_check_newline(char **cmd, int *info)
 	}
 }
 
+static char	*ft_join_free(char *s1, char *s2)
+{
+	char	*result;
+
+	result = ft_strjoin(s1, s2);
+	free(s1);
+	return (result);
+}
+
 /**
  * @brief Outputs the arguments for the echo command
  *
@@ -63,21 +72,25 @@ static void	echo_check_newline(char **cmd, int *info)
  */
 int	mini_echo(char **cmd)
 {
-	int	info[4];
+	int		info[4];
+	char	*result;
 
 	info[0] = FALSE;
 	info[2] = 1;
+	result = NULL;
 	echo_check_newline(cmd, info);
 	while (cmd[info[2]])
 	{
-		ft_putstr_fd(cmd[info[2]], STDOUT_FILENO);
+		result = ft_join_free(result, cmd[info[2]]);
 		if (cmd[info[2] + 1])
 		{
-			ft_putstr_fd(" ", STDOUT_FILENO);
+			result = ft_join_free(result, " ");
 		}
 		++info[2];
 	}
 	if (!info[0])
-		ft_putstr_fd("\n", STDOUT_FILENO);
+		result = ft_join_free(result, "\n");
+	ft_putstr_fd(result, STDOUT_FILENO);
+	free(result);
 	return (0);
 }
