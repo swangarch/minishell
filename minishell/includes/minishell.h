@@ -177,6 +177,7 @@ void		configure_terminal(struct termios *termios_set);
 void		handle_sigint(int sig);
 int			event(void);
 void		set_signal_handler(void);
+void		set_signal_child(void);
 
 void		ft_putstr(char *s);
 char		*ft_strncpy(char *dest, char *src, unsigned int n);

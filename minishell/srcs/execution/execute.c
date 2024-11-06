@@ -49,8 +49,7 @@ static int	cmd_loop(int *num, int *p_fd, t_shell *shell, t_cmd **tab_cmd)
 		return (shell->status = 3, perror(SHELL "fork"), free(p_fd), 1);
 	else if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
+		set_signal_child();
 		set_close(shell->std_fds);
 		set_child(num, p_fd, shell, tab_cmd[num[1]]);
 		if (type_cmd)

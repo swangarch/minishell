@@ -53,3 +53,10 @@ void	set_signal_handler(void)
 	sigaction(SIGQUIT, &sa_quit, NULL);
 	rl_event_hook = event;
 }
+
+void	set_signal_child(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	signal(SIGPIPE, SIG_IGN);
+}
