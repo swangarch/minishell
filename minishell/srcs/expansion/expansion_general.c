@@ -125,6 +125,8 @@ void	rm_void_tab_cmd(t_cmd **tab_cmd)
 	int		i;
 	int		num;
 
+	if (!tab_cmd)
+		return ;
 	i = 0;
 	while (tab_cmd[i])
 	{
