@@ -29,18 +29,14 @@ void	unset_var(t_env **lst_env, const char *name)
 	t_env	*current;
 
 	current = *lst_env;
-	while (!ft_strncmp(current->var_name, name, ft_strlen(name)))
-	{
-		free_2_char(current->content, current->var_name);
-		*lst_env = current->next;
-		free(current);
-		current = *lst_env;
-	}
+	unset_var_begin(lst_env, name);
 	prev = current;
 	current = current->next;
 	while (current)
 	{
-		if (!ft_strncmp(current->var_name, name, ft_strlen(name)))
+		if (!ft_strncmp(current->var_name, name, ft_strlen(name)) \
+			&& (current->var_name[ft_strlen(name)] == '=' \
+			|| current->var_name[ft_strlen(name)] == '\0'))
 		{
 			free_2_char(current->content, current->var_name);
 			prev->next = current->next;

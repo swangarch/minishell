@@ -90,7 +90,8 @@ int	mini_echo(char **cmd)
 	}
 	if (!info[0])
 		result = ft_join_free(result, "\n");
-	ft_putstr_fd(result, STDOUT_FILENO);
+	if (result)
+		ft_putstr_fd(result, STDOUT_FILENO);
 	free(result);
 	return (0);
 }

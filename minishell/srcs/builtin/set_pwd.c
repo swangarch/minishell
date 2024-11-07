@@ -112,3 +112,19 @@ void	set_pwd(t_env **lst_env, char *name, char *content)
 	}
 	set_pwd_end(lst_env, current, tmp_new);
 }
+
+void	unset_var_begin(t_env **lst_env, const char *name)
+{
+	t_env	*current;
+
+	current = *lst_env;
+	while (!ft_strncmp(current->var_name, name, ft_strlen(name)) \
+		&& (current->var_name[ft_strlen(name)] == '=' \
+		|| current->var_name[ft_strlen(name)] == '\0'))
+	{
+		free_2_char(current->content, current->var_name);
+		*lst_env = current->next;
+		free(current);
+		current = *lst_env;
+	}
+}

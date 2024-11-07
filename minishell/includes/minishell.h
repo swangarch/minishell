@@ -50,6 +50,7 @@ int			mini_echo(char **cmd);
 int			mini_export(t_env **head, char **cmd);
 void		set_pwd(t_env **lst_env, char *name, char *content);
 void		unset_var(t_env **lst_env, const char *name);
+void		unset_var_begin(t_env **lst_env, const char *name);
 void		set_var(t_env **lst_env, char **name, char *cmd);
 
 /*execution*/

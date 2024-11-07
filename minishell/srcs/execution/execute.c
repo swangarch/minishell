@@ -72,7 +72,6 @@ static void	wait_for_children(int num_cmd, int *p_fd, t_shell *shell)
 
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
-	close_multi_fd(num_cmd, p_fd);
 	i = -1;
 	while (++i < num_cmd)
 	{
@@ -80,6 +79,7 @@ static void	wait_for_children(int num_cmd, int *p_fd, t_shell *shell)
 		if (pid == shell->pid)
 			shell->status = term_sig;
 	}
+	close_multi_fd(num_cmd, p_fd);
 	if ((shell->status & 0x7F) != 0)
 	{
 		term_sig = shell->status & 0x7F;
