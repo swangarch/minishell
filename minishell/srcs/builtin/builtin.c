@@ -112,29 +112,27 @@ int	mini_pwd(char **cmd, t_env *head)
  */
 int	mini_exit(t_shell *shell, t_cmd **tab_cmd, int place, int *p_fd)
 {
-	int			i;
 	long long	val;
 
-	i = 1;
-	if (tab_cmd[place]->cmd[i])
+	if (tab_cmd[place]->cmd[1])
 	{
-		if (!str_to_ll(tab_cmd[place]->cmd[i], &val))
+		mini_exit_error(shell, &val, place, p_fd);
+		if (tab_cmd[place]->cmd[2])
 		{
-			ft_putstr_fd("exit\n", STDERR_FILENO);
-			ft_put3str_fd("minishell: exit: ", tab_cmd[place]->cmd[i],
-				MES_EXIT_NUM, STDERR_FILENO);
-			free_save_line(shell, p_fd, NULL);
-			exit(2);
+			if (get_cmdtab_num(tab_cmd) == 1)
+				ft_putstr_fd("exit\n", STDERR_FILENO);
+			ft_putstr_fd(MES_EXIT_TOO_MANY, 2);
+			return (1);
 		}
-		if (tab_cmd[place]->cmd[i + 1])
-			return (ft_put3str_fd("exit\n", MES_EXIT_TOO_MANY, NULL, 2), 1);
 		if (val < 0)
 			val = (val % 256 + 256) % 256;
-		ft_putstr_fd("exit\n", STDERR_FILENO);
+		if (get_cmdtab_num(tab_cmd) == 1)
+			ft_putstr_fd("exit\n", STDERR_FILENO);
 		free_save_line(shell, p_fd, NULL);
 		exit((int)(val % 256));
 	}
-	ft_putstr_fd("exit\n", STDERR_FILENO);
+	if (get_cmdtab_num(tab_cmd) == 1)
+		ft_putstr_fd("exit\n", STDERR_FILENO);
 	free_save_line(shell, p_fd, NULL);
 	exit(EXIT_SUCCESS);
 }

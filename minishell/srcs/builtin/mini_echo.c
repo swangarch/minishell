@@ -51,7 +51,7 @@ static void	echo_check_newline(char **cmd, int *info)
 	}
 }
 
-static char	*ft_join_free(char *s1, char *s2)
+char	*ft_join_free(char *s1, char *s2)
 {
 	char	*result;
 

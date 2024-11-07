@@ -40,6 +40,8 @@ int			mini_pwd(char **cmd, t_env *head);
 int			mini_exit(t_shell *shell, t_cmd **tab_cmd, int place, int *p_fd);
 int			mini_env(char **env, t_cmd **tab_cmd, int place);
 int			mini_unset(t_env **head, char **cmd);
+void		mini_exit_error(t_shell *shell, long long *val, \
+	int place, int *p_fd);
 
 int			is_build_in(const char *s);
 int			count_cmd(char **str);
@@ -52,6 +54,7 @@ void		set_pwd(t_env **lst_env, char *name, char *content);
 void		unset_var(t_env **lst_env, const char *name);
 void		unset_var_begin(t_env **lst_env, const char *name);
 void		set_var(t_env **lst_env, char **name, char *cmd);
+char		*ft_join_free(char *s1, char *s2);
 
 /*execution*/
 char		*get_path(char *cmd, t_shell *shell, int *p_fd);

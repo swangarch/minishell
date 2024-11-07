@@ -123,3 +123,22 @@ int	is_valid_name_equal(const char *var)
 	}
 	return (TRUE);
 }
+
+void	mini_exit_error(t_shell *shell, long long *val, int place, int *p_fd)
+{
+	char	*result;
+
+	result = NULL;
+	if (!str_to_ll(shell->tab_cmd[place]->cmd[1], val))
+	{
+		if (get_cmdtab_num(shell->tab_cmd) == 1)
+			ft_putstr_fd("exit\n", STDERR_FILENO);
+		result = ft_strjoin("minishell: exit: ", shell->tab_cmd[place]->cmd[1]);
+		result = ft_join_free(result, MES_EXIT_NUM);
+		if (result)
+			ft_putstr_fd(result, STDERR_FILENO);
+		free_save_line(shell, p_fd, NULL);
+		free(result);
+		exit(2);
+	}
+}
