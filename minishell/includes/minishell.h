@@ -55,6 +55,7 @@ void		unset_var(t_env **lst_env, const char *name);
 void		unset_var_begin(t_env **lst_env, const char *name);
 void		set_var(t_env **lst_env, char **name, char *cmd);
 char		*ft_join_free(char *s1, char *s2);
+char		**export_sort_name(t_env *head);
 
 /*execution*/
 char		*get_path(char *cmd, t_shell *shell, int *p_fd);

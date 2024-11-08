@@ -30,7 +30,7 @@ EXPAND_DIR  =   expansion
 INIT_SRCS	= 	$(INIT_DIR)/init.c $(INIT_DIR)/environne.c $(INIT_DIR)/env_utils.c $(INIT_DIR)/prompt.c
 
 BUILTIN_SRCS=	$(BUILTIN_DIR)/builtin.c $(BUILTIN_DIR)/check_builtin.c $(BUILTIN_DIR)/mini_cd.c \
-	$(BUILTIN_DIR)/mini_echo.c $(BUILTIN_DIR)/mini_export.c $(BUILTIN_DIR)/set_pwd.c $(BUILTIN_DIR)/set_var.c
+	$(BUILTIN_DIR)/mini_echo.c $(BUILTIN_DIR)/mini_export.c $(BUILTIN_DIR)/set_pwd.c $(BUILTIN_DIR)/set_var.c $(BUILTIN_DIR)/export_utils.c
 
 EXEC_SRCS  	=   $(EXEC_DIR)/execute.c $(EXEC_DIR)/execute_path.c $(EXEC_DIR)/execute_utils.c
 

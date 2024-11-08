@@ -26,20 +26,29 @@
 static void	export_print(t_env *current)
 {
 	size_t	len;
+	size_t	i;
+	char	**name;
+	char	*content;
 
-	while (current)
+	i = 0;
+	name = export_sort_name(current);
+	if (!name)
+		return ;
+	while (name[i])
 	{
-		len = ft_strlen(current->var_name);
-		if (ft_strcmp(current->var_name, "_="))
+		len = ft_strlen(name[i]);
+		content = mini_get_env(name[i], current);
+		if (ft_strcmp(name[i], "_="))
 		{
-			if (current->var_name[len - 1] != '=')
-				printf(EXPORT_PRE "%s\n", current->var_name);
+			if (name[i][len - 1] != '=')
+				printf(EXPORT_PRE "%s\n", name[i]);
 			else
-				printf(EXPORT_PRE "%s\"%s\"\n", current->var_name, \
-					current->content);
+				printf(EXPORT_PRE "%s\"%s\"\n", name[i], content);
 		}
-		current = current->next;
+		free(content);
+		++i;
 	}
+	free_char_array(name);
 }
 
 /**
