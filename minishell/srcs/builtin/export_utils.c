@@ -27,6 +27,20 @@ static size_t	list_size_all(t_env *head)
 	return (i);
 }
 
+static int	export_strcmp(char	*s1, char	*s2)
+{
+	while (*s1 && *s1 == *s2 && *s1 != '=')
+	{
+		s1++;
+		s2++;
+	}
+	if (*s1 == '=' && *s2 != '=')
+		return (-1);
+	if (*s1 != '=' && *s2 == '=')
+		return (1);
+	return (*(unsigned char *)s1 - *(unsigned char *)s2);
+}
+
 static void	sort_char_array(char **name)
 {
 	char	*tmp;
@@ -39,7 +53,7 @@ static void	sort_char_array(char **name)
 		j = i + 1;
 		while (name[j])
 		{
-			if (ft_strcmp(name[i], name[j]) > 0)
+			if (export_strcmp(name[i], name[j]) > 0)
 			{
 				tmp = name[i];
 				name[i] = name[j];
